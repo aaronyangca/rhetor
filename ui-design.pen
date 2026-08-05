@@ -2239,42 +2239,30 @@
       "width": 128,
       "height": 128,
       "fill": "$primary",
-      "cornerRadius": 30,
-      "layout": "none",
+      "cornerRadius": 20,
+      "layout": "vertical",
+      "gap": 9,
+      "justifyContent": "center",
+      "alignItems": "center",
       "children": [
         {
-          "type": "path",
-          "id": "obm4J",
-          "x": 0,
-          "y": 0,
-          "name": "Medallion",
-          "geometry": "M14 48a38 38 0 1 0 76 0 38 38 0 1 0-76 0z",
-          "viewBox": [
-            -12,
-            -14,
-            144,
-            144
-          ],
-          "fill": "$accent",
-          "width": 128,
-          "height": 128
+          "type": "text",
+          "id": "lujPl",
+          "name": "Glyph",
+          "fill": "#F7F1E5",
+          "content": "R",
+          "lineHeight": 0.76,
+          "fontFamily": "Cinzel",
+          "fontSize": 76,
+          "fontWeight": "600"
         },
         {
-          "type": "path",
-          "id": "a70lUO",
-          "x": 0,
-          "y": 0,
-          "name": "BustSilhouette",
-          "geometry": "M58 22c12 0 21 7 24 17 1 4 2 6 1 8-1 2-2 3-1 5l13 11c1 1.5 0 3-3 3l-8 0c2 3 2 4 0 5.5 2 1.5 2 3.5-1 5 2 1.5 2 3.5 1 5.5-2 3-8 6-16 8l-8 1-1 15c15 3 27 10 33 22l-66 0c6-12 14-19 19-24l-1-12c-6-4-13-13-14-26-1-16 3-32 14-40 4-3 9-4 14-4z",
-          "viewBox": [
-            -12,
-            -14,
-            144,
-            144
-          ],
-          "fill": "#F7F1E5",
-          "width": 128,
-          "height": 128
+          "type": "rectangle",
+          "id": "uFaqf",
+          "name": "Rule",
+          "fill": "$accent",
+          "width": 38,
+          "height": 3
         }
       ]
     },
@@ -2310,14 +2298,14 @@
               "width": 100,
               "height": 100,
               "cornerRadius": 22,
+              "gap": 7,
               "descendants": {
-                "obm4J": {
-                  "width": 100,
-                  "height": 100
+                "lujPl": {
+                  "fontSize": 59.4
                 },
-                "a70lUO": {
-                  "width": 100,
-                  "height": 100
+                "uFaqf": {
+                  "width": 29.7,
+                  "height": 2.3
                 }
               }
             }
@@ -2350,14 +2338,14 @@
                   "width": 52,
                   "height": 52,
                   "cornerRadius": 12,
+                  "gap": 3.7,
                   "descendants": {
-                    "obm4J": {
-                      "width": 52,
-                      "height": 52
+                    "lujPl": {
+                      "fontSize": 30.9
                     },
-                    "a70lUO": {
-                      "width": 52,
-                      "height": 52
+                    "uFaqf": {
+                      "width": 15.4,
+                      "height": 1.2
                     }
                   }
                 },
@@ -2380,9 +2368,9 @@
                           "name": "R",
                           "fill": "$accent",
                           "content": "R",
-                          "fontFamily": "Fraunces",
+                          "fontFamily": "Cinzel",
                           "fontSize": 27,
-                          "fontWeight": "700"
+                          "fontWeight": "600"
                         },
                         {
                           "type": "text",
@@ -2390,10 +2378,10 @@
                           "name": "HETOR",
                           "fill": "$foreground",
                           "content": "HETOR",
-                          "fontFamily": "Fraunces",
+                          "fontFamily": "Cinzel",
                           "fontSize": 27,
-                          "fontWeight": "700",
-                          "letterSpacing": 1.5
+                          "fontWeight": "600",
+                          "letterSpacing": 2.2
                         }
                       ]
                     },
@@ -2402,11 +2390,11 @@
                       "id": "z4iaXx",
                       "name": "Tagline",
                       "fill": "$muted-foreground",
-                      "content": "THE ART OF ARGUMENT",
+                      "content": "BEFORE THE ROUND",
                       "fontFamily": "$font-primary",
                       "fontSize": 10.5,
                       "fontWeight": "600",
-                      "letterSpacing": 2.2
+                      "letterSpacing": 2.1
                     }
                   ]
                 }
@@ -2441,14 +2429,14 @@
                   "width": 52,
                   "height": 52,
                   "cornerRadius": 12,
+                  "gap": 3.7,
                   "descendants": {
-                    "obm4J": {
-                      "width": 52,
-                      "height": 52
+                    "lujPl": {
+                      "fontSize": 30.9
                     },
-                    "a70lUO": {
-                      "width": 52,
-                      "height": 52
+                    "uFaqf": {
+                      "width": 15.4,
+                      "height": 1.2
                     }
                   }
                 },
@@ -2471,9 +2459,9 @@
                           "name": "R",
                           "fill": "$accent",
                           "content": "R",
-                          "fontFamily": "Fraunces",
+                          "fontFamily": "Cinzel",
                           "fontSize": 27,
-                          "fontWeight": "700"
+                          "fontWeight": "600"
                         },
                         {
                           "type": "text",
@@ -2481,10 +2469,10 @@
                           "name": "HETOR",
                           "fill": "#F7F1E5",
                           "content": "HETOR",
-                          "fontFamily": "Fraunces",
+                          "fontFamily": "Cinzel",
                           "fontSize": 27,
-                          "fontWeight": "700",
-                          "letterSpacing": 1.5
+                          "fontWeight": "600",
+                          "letterSpacing": 2.2
                         }
                       ]
                     },
@@ -2493,11 +2481,11 @@
                       "id": "KPFEc",
                       "name": "Tagline",
                       "fill": "#B7AFC9",
-                      "content": "THE ART OF ARGUMENT",
+                      "content": "BEFORE THE ROUND",
                       "fontFamily": "$font-primary",
                       "fontSize": 10.5,
                       "fontWeight": "600",
-                      "letterSpacing": 2.2
+                      "letterSpacing": 2.1
                     }
                   ]
                 }
@@ -2532,14 +2520,14 @@
                   "width": 24,
                   "height": 24,
                   "cornerRadius": 4,
+                  "gap": 1.7,
                   "descendants": {
-                    "obm4J": {
-                      "width": 24,
-                      "height": 24
+                    "lujPl": {
+                      "fontSize": 14.3
                     },
-                    "a70lUO": {
-                      "width": 24,
-                      "height": 24
+                    "uFaqf": {
+                      "width": 7.1,
+                      "height": 1
                     }
                   }
                 },
@@ -2551,14 +2539,14 @@
                   "width": 32,
                   "height": 32,
                   "cornerRadius": 6,
+                  "gap": 2.3,
                   "descendants": {
-                    "obm4J": {
-                      "width": 32,
-                      "height": 32
+                    "lujPl": {
+                      "fontSize": 19
                     },
-                    "a70lUO": {
-                      "width": 32,
-                      "height": 32
+                    "uFaqf": {
+                      "width": 9.5,
+                      "height": 1
                     }
                   }
                 },
@@ -2570,14 +2558,14 @@
                   "width": 48,
                   "height": 48,
                   "cornerRadius": 8,
+                  "gap": 3.4,
                   "descendants": {
-                    "obm4J": {
-                      "width": 48,
-                      "height": 48
+                    "lujPl": {
+                      "fontSize": 28.5
                     },
-                    "a70lUO": {
-                      "width": 48,
-                      "height": 48
+                    "uFaqf": {
+                      "width": 14.3,
+                      "height": 1.1
                     }
                   }
                 }
@@ -2634,7 +2622,8 @@
               "width": "fill_container",
               "content": "Placeholder",
               "fontFamily": "$font-primary",
-              "fontSize": 14
+              "fontSize": 14,
+              "fontWeight": "normal"
             },
             {
               "type": "icon",
@@ -2690,14 +2679,14 @@
                   "width": 52,
                   "height": 52,
                   "cornerRadius": 12,
+                  "gap": 3.7,
                   "descendants": {
-                    "obm4J": {
-                      "width": 52,
-                      "height": 52
+                    "lujPl": {
+                      "fontSize": 30.9
                     },
-                    "a70lUO": {
-                      "width": 52,
-                      "height": 52
+                    "uFaqf": {
+                      "width": 15.4,
+                      "height": 1.2
                     }
                   }
                 },
@@ -2734,7 +2723,8 @@
                           "fill": "$muted-foreground",
                           "content": "Start building your first case in minutes.",
                           "fontFamily": "$font-primary",
-                          "fontSize": 14
+                          "fontSize": 14,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -2807,7 +2797,8 @@
                       "lineHeight": 1.4,
                       "textAlign": "center",
                       "fontFamily": "$font-primary",
-                      "fontSize": 11.5
+                      "fontSize": 11.5,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "frame",
@@ -2824,7 +2815,8 @@
                           "fill": "$muted-foreground",
                           "content": "Already have an account?",
                           "fontFamily": "$font-primary",
-                          "fontSize": 13
+                          "fontSize": 13,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -2869,37 +2861,1041 @@
           "height": 900
         },
         {
-          "type": "rectangle",
-          "id": "DzGJV",
+          "type": "frame",
+          "id": "saUvb",
           "x": 0,
           "y": 0,
-          "name": "Torchlight",
-          "fill": {
-            "type": "gradient",
-            "gradientType": "radial",
-            "enabled": true,
-            "rotation": 0,
-            "size": {
-              "width": 0.85,
-              "height": 0.9
-            },
-            "colors": [
-              {
-                "color": "#C1622B8C",
-                "position": 0
-              },
-              {
-                "color": "#C1622B00",
-                "position": 1
-              }
-            ],
-            "center": {
-              "x": 0.82,
-              "y": 0.28
-            }
-          },
+          "name": "BackWall",
           "width": 1440,
-          "height": 900
+          "height": 900,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "EfJQK",
+              "x": -40,
+              "y": 234,
+              "name": "WallPlane",
+              "fill": "#1F2749",
+              "width": 1520,
+              "height": 576
+            },
+            {
+              "type": "frame",
+              "id": "i0pDaS",
+              "x": 0,
+              "y": 0,
+              "name": "Ceiling",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "l1cFH",
+                  "x": -40,
+                  "y": 0,
+                  "name": "VaultShadow",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 180,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#151B33",
+                        "position": 0
+                      },
+                      {
+                        "color": "#1A2140",
+                        "position": 0.5
+                      },
+                      {
+                        "color": "#212949",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 1520,
+                  "height": 200
+                },
+                {
+                  "type": "rectangle",
+                  "id": "FqBXw",
+                  "x": -40,
+                  "y": 196,
+                  "name": "CorniceA",
+                  "fill": "#2E3868",
+                  "width": 1520,
+                  "height": 11
+                },
+                {
+                  "type": "rectangle",
+                  "id": "y29Ox5",
+                  "x": -40,
+                  "y": 207,
+                  "name": "CorniceB",
+                  "fill": "#171D39",
+                  "width": 1520,
+                  "height": 7
+                },
+                {
+                  "type": "rectangle",
+                  "id": "sPBxU",
+                  "x": -40,
+                  "y": 214,
+                  "name": "CorniceC",
+                  "fill": "#262E58",
+                  "width": 1520,
+                  "height": 15
+                },
+                {
+                  "type": "rectangle",
+                  "id": "xuRNq",
+                  "x": -40,
+                  "y": 229,
+                  "name": "CorniceD",
+                  "fill": "#141A33",
+                  "width": 1520,
+                  "height": 5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bt8m0",
+              "x": 0,
+              "y": 0,
+              "name": "UpperGallery",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "o5pblw",
+                  "x": 0,
+                  "y": 0,
+                  "name": "GalleryRims",
+                  "geometry": "M-101 172l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z m126 0l0-73a45 45 0 0 1 90 0l0 73z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#242C50",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "path",
+                  "id": "o5gaAH",
+                  "x": 0,
+                  "y": 0,
+                  "name": "GalleryVoids",
+                  "geometry": "M-93 172l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z m126 0l0-73a37 37 0 0 1 74 0l0 73z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#10152B",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Vocpk",
+                  "x": -4,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "I47N5F",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M-64 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "n5I7o",
+                  "x": 122,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "X95WIJ",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M62 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "g4TaAE",
+                  "x": 248,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "RuhwZ",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M188 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Z6n32",
+                  "x": 374,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "rLKnM",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M314 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "sCOpd",
+                  "x": 500,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "RTgxZ",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M440 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "E4uTUH",
+                  "x": 626,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "ZJCcj",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M566 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "R0pCEu",
+                  "x": 752,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "OnB3g",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M692 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "mIihJ",
+                  "x": 878,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "CDdiK",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M818 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "hcCDV",
+                  "x": 1004,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "s3vTM",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M944 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "x77m4",
+                  "x": 1130,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "YtE3m",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M1070 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "qJ79r",
+                  "x": 1256,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "mE1jE",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M1196 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ZklNM",
+                  "x": 1382,
+                  "y": 54,
+                  "name": "GalleryPier",
+                  "fill": "#2A3358",
+                  "width": 22,
+                  "height": 118
+                },
+                {
+                  "type": "path",
+                  "id": "e4tTs",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M1322 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "path",
+                  "id": "M2qn6",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystone",
+                  "geometry": "M1448 52l16 0-2 18-12 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "VocBq",
+                  "x": -60,
+                  "y": 172,
+                  "name": "GallerySill",
+                  "fill": "#2C3663",
+                  "width": 1560,
+                  "height": 11
+                },
+                {
+                  "type": "rectangle",
+                  "id": "t2Zec",
+                  "x": -60,
+                  "y": 183,
+                  "name": "GallerySillShadow",
+                  "fill": "#141A33",
+                  "width": 1560,
+                  "height": 6
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "NczfP",
+              "x": -40,
+              "y": 330,
+              "name": "WallCornice",
+              "fill": "#252E56",
+              "width": 1520,
+              "height": 16
+            },
+            {
+              "type": "path",
+              "id": "WfsEc",
+              "x": 0,
+              "y": 0,
+              "name": "ArchRims",
+              "geometry": "M-148 792l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z m158 0l0-254a60 60 0 0 1 120 0l0 254z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#2A3360",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "FOvfU",
+              "x": 0,
+              "y": 0,
+              "name": "Archivolt",
+              "geometry": "M-144 792l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z m158 0l0-254a56 56 0 0 1 112 0l0 254z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#39427A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "S0OuP1",
+              "x": 0,
+              "y": 0,
+              "name": "ArchVoids",
+              "geometry": "M-140 792l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#0D1226",
+                    "position": 0
+                  },
+                  {
+                    "color": "#0D1226",
+                    "position": 0.54
+                  },
+                  {
+                    "color": "#1A2144",
+                    "position": 0.73
+                  },
+                  {
+                    "color": "#283057",
+                    "position": 0.87
+                  },
+                  {
+                    "color": "#2E3663",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "frame",
+              "id": "cwQ2t",
+              "x": 0,
+              "y": 0,
+              "name": "NicheDepth",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "t3z9VW",
+                  "x": 0,
+                  "y": 0,
+                  "name": "NicheShade",
+                  "geometry": "M-140 792l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z m158 0l0-254a52 52 0 0 1 104 0l0 254z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 180,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#0F1428E0",
+                        "position": 0
+                      },
+                      {
+                        "color": "#0F142866",
+                        "position": 0.55
+                      },
+                      {
+                        "color": "#1B224200",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "rectangle",
+                  "id": "eGcNy",
+                  "x": -144,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "vezTr",
+                  "x": 14,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "q9gZYb",
+                  "x": 172,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ssDJg",
+                  "x": 330,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "jezn0",
+                  "x": 488,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "XVt5L",
+                  "x": 646,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "z4Mv34",
+                  "x": 804,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "c9N4m",
+                  "x": 962,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "l8qBwk",
+                  "x": 1120,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "O7jb0E",
+                  "x": 1278,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                },
+                {
+                  "type": "rectangle",
+                  "id": "B0xoZ",
+                  "x": 1436,
+                  "y": 786,
+                  "name": "NicheLedge",
+                  "fill": "#2E3768",
+                  "width": 112,
+                  "height": 8
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oX3za",
+              "x": 0,
+              "y": 0,
+              "name": "Clerestory",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "llKhX",
+                  "x": 1239,
+                  "y": 320,
+                  "name": "WindowBleed",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "radial",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "width": 1,
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F7C88A45",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F7C88A00",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 190,
+                  "height": 240
+                },
+                {
+                  "type": "rectangle",
+                  "id": "KNrf2",
+                  "x": 1081,
+                  "y": 320,
+                  "name": "WindowBleed",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "radial",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "width": 1,
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F7C88A45",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F7C88A00",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 190,
+                  "height": 240
+                },
+                {
+                  "type": "rectangle",
+                  "id": "W25cX4",
+                  "x": 923,
+                  "y": 320,
+                  "name": "WindowBleed",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "radial",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "width": 1,
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F7C88A45",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F7C88A00",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 190,
+                  "height": 240
+                },
+                {
+                  "type": "rectangle",
+                  "id": "w2jWa",
+                  "x": 765,
+                  "y": 320,
+                  "name": "WindowBleed",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "radial",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "width": 1,
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F7C88A45",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F7C88A00",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 190,
+                  "height": 240
+                },
+                {
+                  "type": "rectangle",
+                  "id": "dRaGs",
+                  "x": 607,
+                  "y": 320,
+                  "name": "WindowBleed",
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "radial",
+                    "enabled": true,
+                    "rotation": 0,
+                    "size": {
+                      "width": 1,
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#F7C88A45",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F7C88A00",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 190,
+                  "height": 240
+                },
+                {
+                  "type": "path",
+                  "id": "ruzhP",
+                  "x": 0,
+                  "y": 0,
+                  "name": "WindowPaneDim",
+                  "geometry": "M35 454l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#2B3358",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "path",
+                  "id": "uauUk",
+                  "x": 0,
+                  "y": 0,
+                  "name": "WindowReveal",
+                  "geometry": "M28 462l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z m158 0l0-68a42 42 0 0 1 84 0l0 68z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#2E3868",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "path",
+                  "id": "nVVYg",
+                  "x": 0,
+                  "y": 0,
+                  "name": "WindowPane",
+                  "geometry": "M667 454l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z m158 0l0-59a35 35 0 0 1 70 0l0 59z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": {
+                    "type": "gradient",
+                    "gradientType": "linear",
+                    "enabled": true,
+                    "rotation": 180,
+                    "size": {
+                      "height": 1
+                    },
+                    "colors": [
+                      {
+                        "color": "#FFF2D8",
+                        "position": 0
+                      },
+                      {
+                        "color": "#F6CE92",
+                        "position": 1
+                      }
+                    ]
+                  },
+                  "width": 1440,
+                  "height": 900
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dKc9h",
+              "x": 0,
+              "y": 0,
+              "name": "ArchDetail",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "path",
+                  "id": "I8sKYw",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Keystones",
+                  "geometry": "M-100 464l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z m158 0l24 0-3 34-18 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#414A88",
+                  "width": 1440,
+                  "height": 900
+                },
+                {
+                  "type": "path",
+                  "id": "lXi3w",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Imposts",
+                  "geometry": "M-158 532l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z",
+                  "viewBox": [
+                    0,
+                    0,
+                    1440,
+                    900
+                  ],
+                  "fill": "#333C72",
+                  "width": 1440,
+                  "height": 900
+                }
+              ]
+            }
+          ]
         },
         {
           "type": "frame",
@@ -2914,28 +3910,28 @@
             {
               "type": "rectangle",
               "id": "p8tMo",
-              "x": 660,
-              "y": 188,
+              "x": -40,
+              "y": 250,
               "name": "Entablature",
               "fill": "#2B3463",
-              "width": 780,
+              "width": 1520,
               "height": 42
             },
             {
               "type": "rectangle",
               "id": "KQ5VS",
-              "x": 660,
-              "y": 230,
+              "x": -40,
+              "y": 292,
               "name": "EntablatureShadow",
               "fill": "#161C38",
-              "width": 780,
+              "width": 1520,
               "height": 10
             },
             {
               "type": "rectangle",
               "id": "yWIyI",
               "x": 729,
-              "y": 240,
+              "y": 302,
               "name": "Capital",
               "fill": "#333C72",
               "width": 104,
@@ -2945,21 +3941,21 @@
               "type": "rectangle",
               "id": "X8UyxQ",
               "x": 742,
-              "y": 260,
+              "y": 322,
               "name": "Shaft",
               "fill": "#2B3463",
               "width": 78,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "Is4jP",
               "x": 742,
-              "y": 260,
+              "y": 322,
               "name": "ShaftLight",
               "fill": "#3D4886",
               "width": 17,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
@@ -2975,7 +3971,7 @@
               "type": "rectangle",
               "id": "g9nioY",
               "x": 887,
-              "y": 240,
+              "y": 302,
               "name": "Capital",
               "fill": "#333C72",
               "width": 104,
@@ -2985,21 +3981,21 @@
               "type": "rectangle",
               "id": "cQy3l",
               "x": 900,
-              "y": 260,
+              "y": 322,
               "name": "Shaft",
               "fill": "#2B3463",
               "width": 78,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "aHMnX",
               "x": 900,
-              "y": 260,
+              "y": 322,
               "name": "ShaftLight",
               "fill": "#3D4886",
               "width": 17,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
@@ -3015,7 +4011,7 @@
               "type": "rectangle",
               "id": "kUSqW",
               "x": 1045,
-              "y": 240,
+              "y": 302,
               "name": "Capital",
               "fill": "#333C72",
               "width": 104,
@@ -3025,21 +4021,21 @@
               "type": "rectangle",
               "id": "w3oqC",
               "x": 1058,
-              "y": 260,
+              "y": 322,
               "name": "Shaft",
               "fill": "#2B3463",
               "width": 78,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "ZJ5Z3",
               "x": 1058,
-              "y": 260,
+              "y": 322,
               "name": "ShaftLight",
               "fill": "#3D4886",
               "width": 17,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
@@ -3055,7 +4051,7 @@
               "type": "rectangle",
               "id": "b1frPU",
               "x": 1203,
-              "y": 240,
+              "y": 302,
               "name": "Capital",
               "fill": "#333C72",
               "width": 104,
@@ -3065,21 +4061,21 @@
               "type": "rectangle",
               "id": "t5SZve",
               "x": 1216,
-              "y": 260,
+              "y": 322,
               "name": "Shaft",
               "fill": "#2B3463",
               "width": 78,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "Wc8Ha",
               "x": 1216,
-              "y": 260,
+              "y": 322,
               "name": "ShaftLight",
               "fill": "#3D4886",
               "width": 17,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
@@ -3095,7 +4091,7 @@
               "type": "rectangle",
               "id": "P34qy",
               "x": 1361,
-              "y": 240,
+              "y": 302,
               "name": "Capital",
               "fill": "#333C72",
               "width": 104,
@@ -3105,21 +4101,21 @@
               "type": "rectangle",
               "id": "n8BFzx",
               "x": 1374,
-              "y": 260,
+              "y": 322,
               "name": "Shaft",
               "fill": "#2B3463",
               "width": 78,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "FMgEY",
               "x": 1374,
-              "y": 260,
+              "y": 322,
               "name": "ShaftLight",
               "fill": "#3D4886",
               "width": 17,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
@@ -3134,204 +4130,2285 @@
             {
               "type": "rectangle",
               "id": "o45Tt",
-              "x": 660,
+              "x": -40,
               "y": 800,
               "name": "Floor",
               "fill": "#252D57",
-              "width": 780,
+              "width": 1520,
               "height": 12
             },
             {
               "type": "rectangle",
               "id": "X1yaId",
               "x": 768,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "W3O3G5",
               "x": 782,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "g1Rn5",
               "x": 796,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "pda69",
               "x": 810,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "cjCb5",
               "x": 926,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "r8gv6",
               "x": 940,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "pDsnx",
               "x": 954,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "VHkDa",
               "x": 968,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "zuUR2",
               "x": 1084,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "qlnzB",
               "x": 1098,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "x1UvaJ",
               "x": 1112,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "cTI3Y",
               "x": 1126,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "IDl2c",
               "x": 1242,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "zwaY4",
               "x": 1256,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "ioAmI",
               "x": 1270,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "UjuWW",
               "x": 1284,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "oIE7F",
               "x": 1400,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "wJ7JF",
               "x": 1414,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
             },
             {
               "type": "rectangle",
               "id": "I44T3",
               "x": 1428,
-              "y": 260,
+              "y": 322,
               "name": "Flute",
               "fill": "#212A54",
               "width": 2,
-              "height": 518
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "JBccm",
+              "x": -61,
+              "y": 302,
+              "name": "Capital",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "hSuyj",
+              "x": -48,
+              "y": 322,
+              "name": "Shaft",
+              "fill": "#2B3463",
+              "width": 78,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "U7aUaL",
+              "x": 6,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "KJPae",
+              "x": 20,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "LCCPg",
+              "x": -61,
+              "y": 778,
+              "name": "Base",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 22
+            },
+            {
+              "type": "rectangle",
+              "id": "cZfhg",
+              "x": 97,
+              "y": 302,
+              "name": "Capital",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "yCJlS",
+              "x": 110,
+              "y": 322,
+              "name": "Shaft",
+              "fill": "#2B3463",
+              "width": 78,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "PWoU4",
+              "x": 110,
+              "y": 322,
+              "name": "ShaftLight",
+              "fill": "#3D4886",
+              "width": 17,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "Pegpq",
+              "x": 136,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "qgMvI",
+              "x": 150,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "bnndI",
+              "x": 164,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "K1UYr",
+              "x": 178,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "AWqrq",
+              "x": 97,
+              "y": 778,
+              "name": "Base",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 22
+            },
+            {
+              "type": "rectangle",
+              "id": "ILiAK",
+              "x": 255,
+              "y": 302,
+              "name": "Capital",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "haWQp",
+              "x": 268,
+              "y": 322,
+              "name": "Shaft",
+              "fill": "#2B3463",
+              "width": 78,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "iAOVd",
+              "x": 268,
+              "y": 322,
+              "name": "ShaftLight",
+              "fill": "#3D4886",
+              "width": 17,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "Imhz4",
+              "x": 294,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "tpdSk",
+              "x": 308,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "WhKtH",
+              "x": 322,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "naB2H",
+              "x": 336,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "NMBAU",
+              "x": 255,
+              "y": 778,
+              "name": "Base",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 22
+            },
+            {
+              "type": "rectangle",
+              "id": "T7Ov2W",
+              "x": 413,
+              "y": 302,
+              "name": "Capital",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "i8TAw",
+              "x": 426,
+              "y": 322,
+              "name": "Shaft",
+              "fill": "#2B3463",
+              "width": 78,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "QRAZt",
+              "x": 426,
+              "y": 322,
+              "name": "ShaftLight",
+              "fill": "#3D4886",
+              "width": 17,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "nFvWs",
+              "x": 452,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "C3JRY",
+              "x": 466,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "tpthq",
+              "x": 480,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "dxEwx",
+              "x": 494,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "T9S3np",
+              "x": 413,
+              "y": 778,
+              "name": "Base",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 22
+            },
+            {
+              "type": "rectangle",
+              "id": "hZL9M",
+              "x": 571,
+              "y": 302,
+              "name": "Capital",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "sKRds",
+              "x": 584,
+              "y": 322,
+              "name": "Shaft",
+              "fill": "#2B3463",
+              "width": 78,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "BikLA",
+              "x": 584,
+              "y": 322,
+              "name": "ShaftLight",
+              "fill": "#3D4886",
+              "width": 17,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "GNq95",
+              "x": 610,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "XX0i2",
+              "x": 624,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "DiC2C",
+              "x": 638,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "JD52r",
+              "x": 652,
+              "y": 322,
+              "name": "Flute",
+              "fill": "#212A54",
+              "width": 2,
+              "height": 456
+            },
+            {
+              "type": "rectangle",
+              "id": "ZkxmX",
+              "x": 571,
+              "y": 778,
+              "name": "Base",
+              "fill": "#333C72",
+              "width": 104,
+              "height": 22
+            },
+            {
+              "type": "frame",
+              "id": "juZOu",
+              "x": 0,
+              "y": 0,
+              "name": "Dentils",
+              "width": 1440,
+              "height": 900,
+              "layout": "none",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "ICfg8",
+                  "x": 12,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "z6pb1",
+                  "x": 38,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "AwzTq",
+                  "x": 64,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "mEEGn",
+                  "x": 90,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "gH3fV",
+                  "x": 116,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "pPxDO",
+                  "x": 142,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "LjlRX",
+                  "x": 168,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "txG77",
+                  "x": 194,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "o7llG",
+                  "x": 220,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Z5FlPE",
+                  "x": 246,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "V4ZwR",
+                  "x": 272,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "fXq0P",
+                  "x": 298,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "jCu82",
+                  "x": 324,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Hmrxz",
+                  "x": 350,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ofSYP",
+                  "x": 376,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "sIKHn",
+                  "x": 402,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "eHFRg",
+                  "x": 428,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Uqfvm",
+                  "x": 454,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "eMX0P",
+                  "x": 480,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Y2u0e",
+                  "x": 506,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Ymnda",
+                  "x": 532,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "t7i1a5",
+                  "x": 558,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "fRk6X",
+                  "x": 584,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "F9xnBc",
+                  "x": 610,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "m9mvPU",
+                  "x": 636,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "o402Af",
+                  "x": 662,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Ek2za",
+                  "x": 688,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ZV1Xu",
+                  "x": 714,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "bwLYA",
+                  "x": 740,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "X3zdtw",
+                  "x": 766,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "XW631",
+                  "x": 792,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "yp0KK",
+                  "x": 818,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "av30N",
+                  "x": 844,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "HUgw2",
+                  "x": 870,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "osAf0",
+                  "x": 896,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Q2WA2Z",
+                  "x": 922,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Dmefy",
+                  "x": 948,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "SzQnN",
+                  "x": 974,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "E7sRgV",
+                  "x": 1000,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "lqTiT",
+                  "x": 1026,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "FWiwj",
+                  "x": 1052,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "XjD2S",
+                  "x": 1078,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "CxjK9",
+                  "x": 1104,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "KjRkF",
+                  "x": 1130,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "X6MNC",
+                  "x": 1156,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "xR8zj",
+                  "x": 1182,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "e5IzG",
+                  "x": 1208,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "SIMRs",
+                  "x": 1234,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Q0GQK",
+                  "x": 1260,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "n7sHm",
+                  "x": 1286,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "QJGk2",
+                  "x": 1312,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "sYYTy",
+                  "x": 1338,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "BsgJo",
+                  "x": 1364,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "EcNtc",
+                  "x": 1390,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "ObAOb",
+                  "x": 1416,
+                  "y": 266,
+                  "name": "Dentil",
+                  "fill": "#3A4478",
+                  "width": 13,
+                  "height": 16
+                },
+                {
+                  "type": "rectangle",
+                  "id": "Sf36M",
+                  "x": -40,
+                  "y": 282,
+                  "name": "DentilShadow",
+                  "fill": "#1B2242",
+                  "width": 1520,
+                  "height": 5
+                },
+                {
+                  "type": "rectangle",
+                  "id": "lbLxr",
+                  "x": -40,
+                  "y": 250,
+                  "name": "Fascia",
+                  "fill": "#3D4886",
+                  "width": 1520,
+                  "height": 6
+                }
+              ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "eFKEU",
+          "x": 0,
+          "y": 0,
+          "name": "Steps",
+          "width": 1440,
+          "height": 900,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "O9TG5W",
+              "x": -40,
+              "y": 812,
+              "name": "Step1",
+              "fill": "#212A52",
+              "width": 1520,
+              "height": 24
+            },
+            {
+              "type": "rectangle",
+              "id": "qPV1X",
+              "x": -40,
+              "y": 812,
+              "name": "Step1Edge",
+              "fill": "#2C3663",
+              "width": 1520,
+              "height": 4
+            },
+            {
+              "type": "rectangle",
+              "id": "smeLN",
+              "x": -60,
+              "y": 836,
+              "name": "Step2",
+              "fill": "#1D2547",
+              "width": 1560,
+              "height": 26
+            },
+            {
+              "type": "rectangle",
+              "id": "HnL1x",
+              "x": -60,
+              "y": 836,
+              "name": "Step2Edge",
+              "fill": "#28315C",
+              "width": 1560,
+              "height": 4
+            },
+            {
+              "type": "rectangle",
+              "id": "c4mnIk",
+              "x": -80,
+              "y": 862,
+              "name": "Step3",
+              "fill": "#191F3D",
+              "width": 1600,
+              "height": 38
+            },
+            {
+              "type": "rectangle",
+              "id": "htUlR",
+              "x": -80,
+              "y": 862,
+              "name": "Step3Edge",
+              "fill": "#232B52",
+              "width": 1600,
+              "height": 4
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dxtb6",
+          "x": 0,
+          "y": 0,
+          "name": "Light",
+          "width": 1440,
+          "height": 900,
+          "layout": "none",
+          "children": [
+            {
+              "type": "path",
+              "id": "cTnXT",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft",
+              "geometry": "M353 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A2B",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B36812",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "BX6aZ",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft",
+              "geometry": "M511 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A2B",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B36812",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "A8ZxlW",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft",
+              "geometry": "M827 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A4D",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B3681F",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "KIjBO",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft",
+              "geometry": "M669 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A4D",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B3681F",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "i3ylr3",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft1",
+              "geometry": "M1143 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A4D",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B3681F",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "k8lWe",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft2",
+              "geometry": "M1301 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A4D",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B3681F",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "J3SrG",
+              "x": 0,
+              "y": 0,
+              "name": "LightShaft3",
+              "geometry": "M985 454l66 0 4 352-74 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F7C88A4D",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F5B3681F",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#F5B36800",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "rectangle",
+              "id": "KUP4j",
+              "x": 972,
+              "y": 300,
+              "name": "RimLight",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#E09A4C00",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F0AC5C7A",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#E09A4C00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 8,
+              "height": 400
+            },
+            {
+              "type": "rectangle",
+              "id": "O3srhk",
+              "x": 1058,
+              "y": 300,
+              "name": "RimLight",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#E09A4C00",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F0AC5C7A",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#E09A4C00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 8,
+              "height": 400
+            },
+            {
+              "type": "rectangle",
+              "id": "l3nT9k",
+              "x": 1288,
+              "y": 300,
+              "name": "RimLight",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#E09A4C00",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F0AC5C7A",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#E09A4C00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 8,
+              "height": 400
+            },
+            {
+              "type": "rectangle",
+              "id": "kyRDR",
+              "x": 1374,
+              "y": 300,
+              "name": "RimLight",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#E09A4C00",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F0AC5C7A",
+                    "position": 0.5
+                  },
+                  {
+                    "color": "#E09A4C00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 8,
+              "height": 400
+            },
+            {
+              "type": "rectangle",
+              "id": "dBkfS",
+              "x": 868,
+              "y": 437,
+              "name": "FlameGlow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F2A65099",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F2A6503D",
+                    "position": 0.42
+                  },
+                  {
+                    "color": "#F2A65000",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 300,
+              "height": 300
+            },
+            {
+              "type": "rectangle",
+              "id": "kUmKB",
+              "x": 960,
+              "y": 530,
+              "name": "FlameCore",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#FFE0AEE6",
+                    "position": 0
+                  },
+                  {
+                    "color": "#FFD79B00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 116,
+              "height": 116
+            },
+            {
+              "type": "rectangle",
+              "id": "MeYub",
+              "x": 1184,
+              "y": 437,
+              "name": "FlameGlow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F2A65099",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F2A6503D",
+                    "position": 0.42
+                  },
+                  {
+                    "color": "#F2A65000",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 300,
+              "height": 300
+            },
+            {
+              "type": "rectangle",
+              "id": "yfkdK",
+              "x": 1276,
+              "y": 530,
+              "name": "FlameCore",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#FFE0AEE6",
+                    "position": 0
+                  },
+                  {
+                    "color": "#FFD79B00",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 116,
+              "height": 116
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GzZ1I",
+          "x": 0,
+          "y": 0,
+          "name": "Braziers",
+          "width": 1440,
+          "height": 900,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "luLG5",
+              "x": 988,
+              "y": 780,
+              "name": "Foot",
+              "fill": "#3A4270",
+              "width": 60,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "gRZCe",
+              "x": 1009,
+              "y": 656,
+              "name": "Stem",
+              "fill": "#333C68",
+              "width": 18,
+              "height": 126
+            },
+            {
+              "type": "path",
+              "id": "RasQ4",
+              "x": 0,
+              "y": 0,
+              "name": "FlameOuter",
+              "geometry": "M1021 516c15 38 25 74 22 104-2 25-13 38-25 38-12 0-23-12-25-36-2-28 9-58 19-78-3 18 0 28 5 22-1-20 1-36 4-50z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#DE8F42",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "VohG1",
+              "x": 0,
+              "y": 0,
+              "name": "FlameInner",
+              "geometry": "M1023 562c9 28 13 51 11 70-2 15-9 22-15 22-7 0-13-7-14-22-1-17 6-42 18-70z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#F7D08A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "rectangle",
+              "id": "dEnj8",
+              "x": 1304,
+              "y": 780,
+              "name": "Foot",
+              "fill": "#3A4270",
+              "width": 60,
+              "height": 20
+            },
+            {
+              "type": "rectangle",
+              "id": "vVyqT",
+              "x": 1325,
+              "y": 656,
+              "name": "Stem",
+              "fill": "#333C68",
+              "width": 18,
+              "height": 126
+            },
+            {
+              "type": "path",
+              "id": "XIu6p",
+              "x": 0,
+              "y": 0,
+              "name": "FlameOuter",
+              "geometry": "M1331 536c-14 32-23 61-20 88 2 22 13 34 24 34 11 0 21-12 23-35 2-24-8-51-17-71 2 14-1 22-6 17 1-15-1-23-4-33z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#DE8F42",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "FIifC",
+              "x": 0,
+              "y": 0,
+              "name": "FlameInner",
+              "geometry": "M1330 578c-8 22-13 40-11 56 2 14 8 21 15 21 7 0 12-7 13-21 1-16-6-34-17-56z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#F7D08A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "qs4S7",
+              "x": 0,
+              "y": 0,
+              "name": "Bowl",
+              "geometry": "M980 618l76 0-17 42-42 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#454E80",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "Z1qOtg",
+              "x": 0,
+              "y": 0,
+              "name": "Bowl",
+              "geometry": "M1296 618l76 0-17 42-42 0z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#454E80",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "ellipse",
+              "id": "tY3E0",
+              "x": 998.6,
+              "y": 490.6,
+              "name": "Ember",
+              "fill": "#F5B368B8",
+              "width": 6.8,
+              "height": 6.8
+            },
+            {
+              "type": "ellipse",
+              "id": "lIXYV",
+              "x": 1024.4,
+              "y": 467.4,
+              "name": "Ember",
+              "fill": "#F3A85699",
+              "width": 5.2,
+              "height": 5.2
+            },
+            {
+              "type": "ellipse",
+              "id": "t0zUs",
+              "x": 1009.8,
+              "y": 439.8,
+              "name": "Ember",
+              "fill": "#F0A05070",
+              "width": 4.4,
+              "height": 4.4
+            },
+            {
+              "type": "ellipse",
+              "id": "drVXN",
+              "x": 1033.2,
+              "y": 412.2,
+              "name": "Ember",
+              "fill": "#EE9C4C4D",
+              "width": 3.6,
+              "height": 3.6
+            },
+            {
+              "type": "ellipse",
+              "id": "m6skww",
+              "x": 1343.8,
+              "y": 502.8,
+              "name": "Ember",
+              "fill": "#F5B368B0",
+              "width": 6.4,
+              "height": 6.4
+            },
+            {
+              "type": "ellipse",
+              "id": "meaTZ",
+              "x": 1320.5,
+              "y": 475.5,
+              "name": "Ember",
+              "fill": "#F3A85691",
+              "width": 5,
+              "height": 5
+            },
+            {
+              "type": "ellipse",
+              "id": "vLqAI",
+              "x": 1338,
+              "y": 448,
+              "name": "Ember",
+              "fill": "#F0A05066",
+              "width": 4,
+              "height": 4
+            },
+            {
+              "type": "ellipse",
+              "id": "Y3L3M",
+              "x": 1316.3,
+              "y": 422.3,
+              "name": "Ember",
+              "fill": "#EE9C4C45",
+              "width": 3.4,
+              "height": 3.4
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rGFAc",
+          "x": 0,
+          "y": 0,
+          "name": "HangingLamps",
+          "width": 1440,
+          "height": 900,
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "hhADV",
+              "x": 624,
+              "y": 292,
+              "name": "LampGlow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F2A65066",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F2A6501C",
+                    "position": 0.42
+                  },
+                  {
+                    "color": "#F2A65000",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 156,
+              "height": 156
+            },
+            {
+              "type": "rectangle",
+              "id": "M02SqT",
+              "x": 701,
+              "y": 234,
+              "name": "Chain",
+              "fill": "#39426F",
+              "width": 2,
+              "height": 120
+            },
+            {
+              "type": "rectangle",
+              "id": "UGoLA",
+              "x": 696,
+              "y": 348,
+              "name": "ChainRing",
+              "fill": "#4A5488",
+              "width": 12,
+              "height": 6
+            },
+            {
+              "type": "path",
+              "id": "uQtkd",
+              "x": 0,
+              "y": 0,
+              "name": "LampFlame",
+              "geometry": "M702 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#F7D08A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "rectangle",
+              "id": "a47Fe9",
+              "x": 782,
+              "y": 292,
+              "name": "LampGlow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F2A65066",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F2A6501C",
+                    "position": 0.42
+                  },
+                  {
+                    "color": "#F2A65000",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 156,
+              "height": 156
+            },
+            {
+              "type": "rectangle",
+              "id": "Csz15",
+              "x": 859,
+              "y": 234,
+              "name": "Chain",
+              "fill": "#39426F",
+              "width": 2,
+              "height": 120
+            },
+            {
+              "type": "rectangle",
+              "id": "FYAJu",
+              "x": 854,
+              "y": 348,
+              "name": "ChainRing",
+              "fill": "#4A5488",
+              "width": 12,
+              "height": 6
+            },
+            {
+              "type": "path",
+              "id": "h6u8kR",
+              "x": 0,
+              "y": 0,
+              "name": "LampFlame",
+              "geometry": "M860 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#F7D08A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "rectangle",
+              "id": "b13Nh",
+              "x": 1098,
+              "y": 292,
+              "name": "LampGlow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#F2A65066",
+                    "position": 0
+                  },
+                  {
+                    "color": "#F2A6501C",
+                    "position": 0.42
+                  },
+                  {
+                    "color": "#F2A65000",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 156,
+              "height": 156
+            },
+            {
+              "type": "rectangle",
+              "id": "faAbb",
+              "x": 1175,
+              "y": 234,
+              "name": "Chain",
+              "fill": "#39426F",
+              "width": 2,
+              "height": 120
+            },
+            {
+              "type": "rectangle",
+              "id": "xXREx",
+              "x": 1170,
+              "y": 348,
+              "name": "ChainRing",
+              "fill": "#4A5488",
+              "width": 12,
+              "height": 6
+            },
+            {
+              "type": "path",
+              "id": "Ezhmx",
+              "x": 0,
+              "y": 0,
+              "name": "LampFlame",
+              "geometry": "M1176 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#F7D08A",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "C9Yh9",
+              "x": 0,
+              "y": 0,
+              "name": "LampBowl",
+              "geometry": "M676 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#4A5488",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "VrwBj",
+              "x": 0,
+              "y": 0,
+              "name": "LampBowl",
+              "geometry": "M834 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#4A5488",
+              "width": 1440,
+              "height": 900
+            },
+            {
+              "type": "path",
+              "id": "UyUIB",
+              "x": 0,
+              "y": 0,
+              "name": "LampBowl",
+              "geometry": "M1150 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z",
+              "viewBox": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "fill": "#4A5488",
+              "width": 1440,
+              "height": 900
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "Ma68g",
+          "x": -300,
+          "y": -120,
+          "name": "LeftBlur",
+          "width": 1120,
+          "height": 1140,
+          "effect": {
+            "type": "background_blur",
+            "radius": 16
+          }
         },
         {
           "type": "rectangle",
@@ -3343,22 +6420,26 @@
             "type": "gradient",
             "gradientType": "linear",
             "enabled": true,
-            "rotation": 90,
+            "rotation": 270,
             "size": {
               "height": 1
             },
             "colors": [
               {
-                "color": "#1A2140FF",
+                "color": "#12172BC7",
                 "position": 0
               },
               {
-                "color": "#1A2140E6",
-                "position": 0.26
+                "color": "#12172B99",
+                "position": 0.3
               },
               {
-                "color": "#1A214000",
-                "position": 0.54
+                "color": "#12172B3D",
+                "position": 0.5
+              },
+              {
+                "color": "#12172B00",
+                "position": 0.66
               }
             ]
           },
@@ -3366,83 +6447,41 @@
           "height": 900
         },
         {
-          "type": "frame",
-          "id": "W7VFM0",
-          "x": 100,
-          "y": 66,
-          "name": "Lockup",
-          "gap": 13,
-          "alignItems": "center",
-          "children": [
-            {
-              "id": "d1oIQ",
-              "type": "ref",
-              "ref": "oNfWU",
-              "name": "Mark",
-              "width": 44,
-              "height": 44,
-              "cornerRadius": 10,
-              "descendants": {
-                "obm4J": {
-                  "width": 44,
-                  "height": 44
-                },
-                "a70lUO": {
-                  "width": 44,
-                  "height": 44
-                }
-              }
+          "type": "rectangle",
+          "id": "CscQL",
+          "x": -260,
+          "y": 150,
+          "name": "TextScrim",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "radial",
+            "enabled": true,
+            "rotation": 0,
+            "size": {
+              "width": 1,
+              "height": 1
             },
-            {
-              "type": "frame",
-              "id": "qNtHv",
-              "name": "TextCol",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "t0snxP",
-                  "name": "WordmarkRow",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "D8LzrO",
-                      "name": "R",
-                      "fill": "$accent",
-                      "content": "R",
-                      "fontFamily": "Fraunces",
-                      "fontSize": 21,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "zCx6P",
-                      "name": "HETOR",
-                      "fill": "#F7F1E5",
-                      "content": "HETOR",
-                      "fontFamily": "Fraunces",
-                      "fontSize": 21,
-                      "fontWeight": "700",
-                      "letterSpacing": 1.3
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "hfqzs",
-                  "name": "Tagline",
-                  "fill": "#B7AFC9",
-                  "content": "THE ART OF ARGUMENT",
-                  "fontFamily": "$font-primary",
-                  "fontSize": 9.5,
-                  "fontWeight": "600",
-                  "letterSpacing": 2.1
-                }
-              ]
-            }
-          ]
+            "colors": [
+              {
+                "color": "#0E1327F2",
+                "position": 0
+              },
+              {
+                "color": "#0E1327D9",
+                "position": 0.42
+              },
+              {
+                "color": "#0E132766",
+                "position": 0.72
+              },
+              {
+                "color": "#0E132700",
+                "position": 1
+              }
+            ]
+          },
+          "width": 1240,
+          "height": 700
         },
         {
           "type": "frame",
@@ -3454,7 +6493,7 @@
           "height": 900,
           "layout": "vertical",
           "padding": [
-            0,
+            88,
             0,
             0,
             100
@@ -3491,6 +6530,7 @@
                   "lineHeight": 1.55,
                   "fontFamily": "$font-secondary",
                   "fontSize": 19,
+                  "fontWeight": "normal",
                   "fontStyle": "italic"
                 },
                 {
@@ -3524,7 +6564,8 @@
                   "content": "Rhetor takes your motion and builds the case the way that master would have — drafting arguments, scoring them against the standard real adjudicators judge by, and ranking what survives.",
                   "lineHeight": 1.6,
                   "fontFamily": "$font-primary",
-                  "fontSize": 16
+                  "fontSize": 16,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -3567,7 +6608,8 @@
                           "fill": "#A79FC0",
                           "content": "Already have an account?",
                           "fontFamily": "$font-primary",
-                          "fontSize": 13.5
+                          "fontSize": 13.5,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "text",
@@ -3616,7 +6658,218 @@
               "lineHeight": 1.45,
               "fontFamily": "$font-secondary",
               "fontSize": 13.5,
+              "fontWeight": "normal",
               "fontStyle": "italic"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "kkoru",
+          "x": 0,
+          "y": 0,
+          "name": "NavScrim",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 180,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "#0B0F20E0",
+                "position": 0
+              },
+              {
+                "color": "#0B0F2099",
+                "position": 0.5
+              },
+              {
+                "color": "#0B0F2000",
+                "position": 1
+              }
+            ]
+          },
+          "width": 1440,
+          "height": 150
+        },
+        {
+          "type": "frame",
+          "id": "badjq",
+          "x": 0,
+          "y": 0,
+          "name": "NavBar",
+          "width": 1440,
+          "height": 88,
+          "fill": "#00000000",
+          "padding": [
+            0,
+            100
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "W7VFM0",
+              "name": "Lockup",
+              "gap": 13,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "d1oIQ",
+                  "type": "ref",
+                  "ref": "oNfWU",
+                  "name": "Mark",
+                  "width": 44,
+                  "height": 44,
+                  "cornerRadius": 10,
+                  "gap": 3.1,
+                  "descendants": {
+                    "lujPl": {
+                      "fontSize": 26.1
+                    },
+                    "uFaqf": {
+                      "width": 13.1,
+                      "height": 1
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "qNtHv",
+                  "name": "TextCol",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "t0snxP",
+                      "name": "WordmarkRow",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "D8LzrO",
+                          "name": "R",
+                          "fill": "$accent",
+                          "content": "R",
+                          "fontFamily": "Cinzel",
+                          "fontSize": 21,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "zCx6P",
+                          "name": "HETOR",
+                          "fill": "#F7F1E5",
+                          "content": "HETOR",
+                          "fontFamily": "Cinzel",
+                          "fontSize": 21,
+                          "fontWeight": "600",
+                          "letterSpacing": 2.2
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "hfqzs",
+                      "x": 0,
+                      "y": 30,
+                      "name": "Tagline",
+                      "enabled": false,
+                      "fill": "#B7AFC9",
+                      "content": "BEFORE THE ROUND",
+                      "fontFamily": "$font-primary",
+                      "fontSize": 9.5,
+                      "fontWeight": "600",
+                      "letterSpacing": 2.1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "G4KNi",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "M52aP1",
+              "name": "NavRight",
+              "gap": 32,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "avBkw",
+                  "name": "How It Works",
+                  "fill": "#C3BCD4",
+                  "content": "How It Works",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "JwZeV",
+                  "name": "The Method",
+                  "fill": "#C3BCD4",
+                  "content": "The Method",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "BcylC",
+                  "name": "The Rhetor",
+                  "fill": "#C3BCD4",
+                  "content": "The Rhetor",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "rectangle",
+                  "id": "gKYmX",
+                  "name": "NavDivider",
+                  "fill": "#3A3F5C",
+                  "width": 1,
+                  "height": 20
+                },
+                {
+                  "type": "text",
+                  "id": "WR6d3",
+                  "name": "Login",
+                  "fill": "#F7F1E5",
+                  "content": "Log in",
+                  "fontFamily": "$font-primary",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "WV2dz",
+                  "type": "ref",
+                  "ref": "ZVpm6",
+                  "name": "SignUpButton",
+                  "fill": "$accent",
+                  "descendants": {
+                    "Q4H6lj": {
+                      "enabled": false
+                    },
+                    "a2pqEZ": {
+                      "content": "Sign Up",
+                      "fill": "#FFF8EF",
+                      "fontSize": 14
+                    }
+                  }
+                }
+              ]
             }
           ]
         }
