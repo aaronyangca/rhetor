@@ -2239,30 +2239,36 @@
       "width": 128,
       "height": 128,
       "fill": "$primary",
-      "cornerRadius": 20,
-      "layout": "vertical",
-      "gap": 9,
-      "justifyContent": "center",
-      "alignItems": "center",
+      "cornerRadius": 28,
+      "layout": "none",
       "children": [
         {
           "type": "text",
-          "id": "lujPl",
-          "name": "Glyph",
-          "fill": "#F7F1E5",
+          "id": "SDlQM",
+          "x": 20,
+          "y": -2,
+          "name": "GlyphBack",
+          "rotation": -6.000000000000001,
+          "fill": "$accent",
           "content": "R",
-          "lineHeight": 0.76,
-          "fontFamily": "Cinzel",
-          "fontSize": 76,
-          "fontWeight": "600"
+          "fontFamily": "Fraunces",
+          "fontSize": 150,
+          "fontWeight": "900",
+          "fontStyle": "italic"
         },
         {
-          "type": "rectangle",
-          "id": "uFaqf",
-          "name": "Rule",
-          "fill": "$accent",
-          "width": 38,
-          "height": 3
+          "type": "text",
+          "id": "IlSGb",
+          "x": 6,
+          "y": -18,
+          "name": "GlyphFront",
+          "rotation": -6.000000000000001,
+          "fill": "#F7F1E5",
+          "content": "R",
+          "fontFamily": "Fraunces",
+          "fontSize": 150,
+          "fontWeight": "900",
+          "fontStyle": "italic"
         }
       ]
     },
@@ -2300,12 +2306,15 @@
               "cornerRadius": 22,
               "gap": 7,
               "descendants": {
-                "lujPl": {
-                  "fontSize": 59.4
+                "SDlQM": {
+                  "fontSize": 117.2,
+                  "x": 15.6,
+                  "y": -1.6
                 },
-                "uFaqf": {
-                  "width": 29.7,
-                  "height": 2.3
+                "IlSGb": {
+                  "fontSize": 117.2,
+                  "x": 4.7,
+                  "y": -14.1
                 }
               }
             }
@@ -2337,15 +2346,18 @@
                   "name": "Mark Small",
                   "width": 52,
                   "height": 52,
-                  "cornerRadius": 12,
+                  "cornerRadius": 11,
                   "gap": 3.7,
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 30.9
+                    "SDlQM": {
+                      "fontSize": 60.9,
+                      "x": 8.1,
+                      "y": -0.8
                     },
-                    "uFaqf": {
-                      "width": 15.4,
-                      "height": 1.2
+                    "IlSGb": {
+                      "fontSize": 60.9,
+                      "x": 2.4,
+                      "y": -7.3
                     }
                   }
                 },
@@ -2366,7 +2378,7 @@
                           "type": "text",
                           "id": "HYh6P",
                           "name": "R",
-                          "fill": "$accent",
+                          "fill": "$foreground",
                           "content": "R",
                           "fontFamily": "Cinzel",
                           "fontSize": 27,
@@ -2428,15 +2440,21 @@
                   "name": "Mark Small",
                   "width": 52,
                   "height": 52,
-                  "cornerRadius": 12,
+                  "cornerRadius": 11,
                   "gap": 3.7,
+                  "stroke": "#F7F1E5",
+                  "strokeWidth": 2,
+                  "strokeAlignment": "inner",
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 30.9
+                    "SDlQM": {
+                      "fontSize": 60.9,
+                      "x": 8.1,
+                      "y": -0.8
                     },
-                    "uFaqf": {
-                      "width": 15.4,
-                      "height": 1.2
+                    "IlSGb": {
+                      "fontSize": 60.9,
+                      "x": 2.4,
+                      "y": -7.3
                     }
                   }
                 },
@@ -2457,7 +2475,7 @@
                           "type": "text",
                           "id": "T48xZ",
                           "name": "R",
-                          "fill": "$accent",
+                          "fill": "#F7F1E5",
                           "content": "R",
                           "fontFamily": "Cinzel",
                           "fontSize": 27,
@@ -2519,15 +2537,18 @@
                   "name": "Mark 24",
                   "width": 24,
                   "height": 24,
-                  "cornerRadius": 4,
+                  "cornerRadius": 5,
                   "gap": 1.7,
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 14.3
+                    "SDlQM": {
+                      "fontSize": 28.1,
+                      "x": 3.8,
+                      "y": -0.4
                     },
-                    "uFaqf": {
-                      "width": 7.1,
-                      "height": 1
+                    "IlSGb": {
+                      "fontSize": 28.1,
+                      "x": 1.1,
+                      "y": -3.4
                     }
                   }
                 },
@@ -2538,15 +2559,18 @@
                   "name": "Mark 32",
                   "width": 32,
                   "height": 32,
-                  "cornerRadius": 6,
+                  "cornerRadius": 7,
                   "gap": 2.3,
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 19
+                    "SDlQM": {
+                      "fontSize": 37.5,
+                      "x": 5,
+                      "y": -0.5
                     },
-                    "uFaqf": {
-                      "width": 9.5,
-                      "height": 1
+                    "IlSGb": {
+                      "fontSize": 37.5,
+                      "x": 1.5,
+                      "y": -4.5
                     }
                   }
                 },
@@ -2557,15 +2581,18 @@
                   "name": "Mark 48",
                   "width": 48,
                   "height": 48,
-                  "cornerRadius": 8,
+                  "cornerRadius": 11,
                   "gap": 3.4,
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 28.5
+                    "SDlQM": {
+                      "fontSize": 56.3,
+                      "x": 7.5,
+                      "y": -0.7
                     },
-                    "uFaqf": {
-                      "width": 14.3,
-                      "height": 1.1
+                    "IlSGb": {
+                      "fontSize": 56.3,
+                      "x": 2.3,
+                      "y": -6.7
                     }
                   }
                 }
@@ -2678,15 +2705,18 @@
                   "name": "Mark",
                   "width": 52,
                   "height": 52,
-                  "cornerRadius": 12,
+                  "cornerRadius": 11,
                   "gap": 3.7,
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 30.9
+                    "SDlQM": {
+                      "fontSize": 60.9,
+                      "x": 8.1,
+                      "y": -0.8
                     },
-                    "uFaqf": {
-                      "width": 15.4,
-                      "height": 1.2
+                    "IlSGb": {
+                      "fontSize": 60.9,
+                      "x": 2.4,
+                      "y": -7.3
                     }
                   }
                 },
@@ -6726,13 +6756,19 @@
                   "height": 44,
                   "cornerRadius": 10,
                   "gap": 3.1,
+                  "stroke": "#F7F1E5",
+                  "strokeWidth": 1.5,
+                  "strokeAlignment": "inner",
                   "descendants": {
-                    "lujPl": {
-                      "fontSize": 26.1
+                    "SDlQM": {
+                      "fontSize": 51.6,
+                      "x": 6.9,
+                      "y": -0.7
                     },
-                    "uFaqf": {
-                      "width": 13.1,
-                      "height": 1
+                    "IlSGb": {
+                      "fontSize": 51.6,
+                      "x": 2.1,
+                      "y": -6.2
                     }
                   }
                 },
@@ -6753,7 +6789,7 @@
                           "type": "text",
                           "id": "D8LzrO",
                           "name": "R",
-                          "fill": "$accent",
+                          "fill": "#F7F1E5",
                           "content": "R",
                           "fontFamily": "Cinzel",
                           "fontSize": 21,
