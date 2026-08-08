@@ -497,10 +497,10 @@ export function Welcome() {
         style={{ background: 'linear-gradient(180deg, rgba(11,15,32,0.88) 0%, rgba(11,15,32,0.6) 50%, rgba(11,15,32,0) 100%)' }}
       />
 
-      <nav className="relative z-10 flex items-center px-[100px] py-6">
-        <Link to="/" className="flex items-center gap-3">
-          <LogoMark size={40} className="border-[1.5px] border-[#F7F1E5]" />
-          <span className="font-wordmark text-[21px] font-semibold text-[#F7F1E5]" style={{ letterSpacing: '1px' }}>
+      <nav className="relative z-10 flex h-[88px] items-center px-[100px]">
+        <Link to="/" className="flex items-center gap-[13px]">
+          <LogoMark size={44} className="border-[1.5px] border-[#F7F1E5]" />
+          <span className="font-wordmark text-[21px] font-semibold text-[#F7F1E5]">
             R<span style={{ letterSpacing: '2.2px' }}>HETOR</span>
           </span>
         </Link>
@@ -521,7 +521,7 @@ export function Welcome() {
         </div>
       </nav>
 
-      <div className="relative z-10 flex min-h-[calc(100vh-88px)] items-center px-[100px] pb-16">
+      <div className="relative z-10 flex min-h-[calc(100vh-88px)] items-center px-[100px]">
         <div className="flex max-w-[600px] flex-col gap-[26px]">
           <div className="text-[11px] font-bold text-accent" style={{ letterSpacing: '2.6px' }}>
             ANCIENT ROME · 1ST CENTURY BCE
@@ -541,7 +541,7 @@ export function Welcome() {
           </p>
           <div className="flex items-center gap-[22px]">
             <Link to="/signup">
-              <Button variant="accent">
+              <Button variant="accent" className="text-[15px]">
                 Start Your Case <ArrowRight size={16} />
               </Button>
             </Link>

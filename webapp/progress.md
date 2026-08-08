@@ -131,6 +131,25 @@ top to bottom before building, not just enough of it to get oriented.
   `Get(nodeId, visitor, {includePathGeometry: true})` for structured,
   authoritative x/y/w/h/fill/path data. That's what should have happened
   from the start of this file.
+  5. A follow-up pass specifically audited the **logo and nav/hero text**
+     against the source (`Get("oNfWU", {depth: 10})` for the Logo/Mark
+     component, `Get(..., n => n.name === "NavBar" / "CenterLayer" / ...)`
+     for the rest). Confirmed the logo is genuinely built from two
+     overlapping text glyphs (Fraunces 900 italic, rotated -6°) with no
+     vector/image asset behind it anywhere in the file — so there was
+     nothing to swap in, only positioning to correct. Found and fixed: the
+     glyph offsets in `LogoMark` were hand-approximated and wrong (back
+     glyph should sit at 15.7% from the left, not 5%; front glyph at +4.8%,
+     not -2% — it was offset in the wrong direction entirely); the nav's
+     logo instance should render at 44px, not 40px; an erroneous
+     `letterSpacing: 1px` on the nav wordmark's outer span that isn't in the
+     source (only "HETOR" itself has tracking, 2.2px); the nav Lockup gap
+     should be 13px not 12px; the nav bar should be a fixed 88px with no
+     vertical padding rather than padding that only approximately summed to
+     88px; the "Start Your Case" button label should be 15px, one size up
+     from the shared Button component's 14px default; and an extra
+     `pb-16` on the hero container that wasn't in the source and skewed
+     vertical centering off from true middle.
 - Markdown→PDF export just calls `window.print()` (no real server-side PDF
   rendering, since there's no server).
 - "Change Password" and "Replace [API key]" buttons in Account Settings are
