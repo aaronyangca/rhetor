@@ -1,47 +1,134 @@
+import { useState } from 'react'
 import { ArrowLeft, Lock, Plus } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../state/AppContext'
 import { Button } from '../components/Button'
+import { FormInput } from '../components/FormInput'
+import { ApiError } from '../lib/api'
+import { PROVIDERS, PROVIDER_KEY_HINT, PROVIDER_LABELS, type Provider } from '../lib/types'
 
-function KeyRow({
-  initials,
-  name,
-  status,
-  connected,
-  onConnect,
-}: {
-  initials: string
-  name: string
-  status: string
-  connected: boolean
-  onConnect: () => void
-}) {
+const PROVIDER_INITIALS: Record<Provider, string> = {
+  openai: 'AI',
+  anthropic: 'A',
+  gemini: 'G',
+}
+
+function KeyRow({ provider }: { provider: Provider }) {
+  const { apiKeys, saveKey, removeKey } = useApp()
+  const [editing, setEditing] = useState(false)
+  const [key, setKey] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
+
+  const state = apiKeys[provider]
+  const label = PROVIDER_LABELS[provider]
+
+  function open() {
+    setKey('')
+    setError(null)
+    setEditing(true)
+  }
+
+  async function save() {
+    if (!key.trim() || pending) return
+    setPending(true)
+    setError(null)
+    try {
+      await saveKey(provider, key.trim())
+      setEditing(false)
+      setKey('')
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not save that key.')
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function remove() {
+    setPending(true)
+    try {
+      await removeKey(provider)
+    } catch {
+      setError('Could not remove that key.')
+    } finally {
+      setPending(false)
+    }
+  }
+
   return (
-    <div className="flex items-center justify-between border-t border-border py-4 first:border-t-0">
-      <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[6px] bg-secondary text-xs font-bold text-primary">
-          {initials}
+    <div className="flex flex-col border-t border-border py-4 first:border-t-0">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[6px] bg-secondary text-xs font-bold text-primary">
+            {PROVIDER_INITIALS[provider]}
+          </div>
+          <div className="flex flex-col gap-[2px]">
+            <div className="text-sm font-semibold text-foreground">{label}</div>
+            <div className="text-[12.5px] text-muted-foreground">
+              {state.connected ? state.masked : 'Not connected'}
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-[2px]">
-          <div className="text-sm font-semibold text-foreground">{name}</div>
-          <div className="text-[12.5px] text-muted-foreground">{status}</div>
+
+        <div className="flex items-center gap-2">
+          {state.connected && !editing && (
+            <Button variant="ghost" onClick={remove} disabled={pending}>
+              Remove
+            </Button>
+          )}
+          {editing ? (
+            <Button variant="outline" onClick={() => setEditing(false)} disabled={pending}>
+              Cancel
+            </Button>
+          ) : (
+            <Button variant={state.connected ? 'outline' : 'primary'} onClick={open}>
+              {state.connected ? (
+                'Replace'
+              ) : (
+                <>
+                  <Plus size={16} /> Add Key
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
-      {connected ? (
-        <Button variant="outline" onClick={onConnect}>
-          Replace
-        </Button>
-      ) : (
-        <Button onClick={onConnect}>
-          <Plus size={16} /> Add Key
-        </Button>
+
+      {editing && (
+        <div className="flex flex-col gap-3 pt-4">
+          <FormInput
+            label={`${label} API key`}
+            type="password"
+            placeholder={PROVIDER_KEY_HINT[provider]}
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && save()}
+            autoFocus
+          />
+          {error && (
+            <p role="alert" className="text-[13px] text-destructive">
+              {error}
+            </p>
+          )}
+          <div className="flex gap-2">
+            <Button onClick={save} disabled={!key.trim() || pending}>
+              {pending ? 'Saving…' : 'Save Key'}
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   )
 }
 
 export function AccountSettings() {
-  const { user, apiKeys, connectKey } = useApp()
+  const { user, logout } = useApp()
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+    await logout()
+    navigate('/')
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -74,20 +161,9 @@ export function AccountSettings() {
               bills your usage.
             </p>
             <div className="flex flex-col pt-4">
-              <KeyRow
-                initials="AI"
-                name="OpenAI"
-                status={apiKeys.openai.connected ? apiKeys.openai.masked! : 'Not connected'}
-                connected={apiKeys.openai.connected}
-                onConnect={() => connectKey('openai')}
-              />
-              <KeyRow
-                initials="A"
-                name="Anthropic"
-                status={apiKeys.anthropic.connected ? apiKeys.anthropic.masked! : 'Not connected'}
-                connected={apiKeys.anthropic.connected}
-                onConnect={() => connectKey('anthropic')}
-              />
+              {PROVIDERS.map((provider) => (
+                <KeyRow key={provider} provider={provider} />
+              ))}
             </div>
             <div className="flex items-start gap-2 pt-[14px]">
               <Lock size={13} className="mt-[3px] shrink-0 text-muted-foreground" />
@@ -109,10 +185,14 @@ export function AccountSettings() {
               </div>
               <div className="flex items-center justify-between border-t border-border py-4">
                 <div className="flex flex-col gap-[2px]">
-                  <div className="text-[12.5px] text-muted-foreground">Password</div>
-                  <div className="text-sm font-medium text-foreground">••••••••••••</div>
+                  <div className="text-[12.5px] text-muted-foreground">Session</div>
+                  <div className="text-sm font-medium text-foreground">
+                    Signed in as {user?.email}
+                  </div>
                 </div>
-                <Button variant="outline">Change Password</Button>
+                <Button variant="outline" onClick={handleLogout}>
+                  Log Out
+                </Button>
               </div>
             </div>
           </div>

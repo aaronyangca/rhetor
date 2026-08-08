@@ -2,7 +2,7 @@
 
 ## Overview
 
-Rhetor becomes a web application that runs the argument-generation pipeline described in [`idea.md`](idea.md) as an interactive, chat-driven tool. A user gives the AI a British Parliamentary motion and position, works through three stages of argument development in conversation with the AI, and exports a final shortlist of arguments. Each user brings their own OpenAI or Anthropic API key — Rhetor orchestrates the pipeline, it does not pay for or proxy model usage on the user's behalf.
+Rhetor becomes a web application that runs the argument-generation pipeline described in [`idea.md`](idea.md) as an interactive, chat-driven tool. A user gives the AI a British Parliamentary motion and position, works through three stages of argument development in conversation with the AI, and exports a final shortlist of arguments. Each user brings their own OpenAI, Anthropic, or Google Gemini API key — Rhetor orchestrates the pipeline, it does not pay for or proxy model usage on the user's behalf.
 
 This document covers the product flow, architecture, data model, and the open questions still to resolve. It assumes `idea.md` as the source of truth for what the AI should actually produce at each stage — this document is about the system built around it.
 
@@ -10,7 +10,7 @@ This document covers the product flow, architecture, data model, and the open qu
 
 **In scope:**
 - Self-serve account signup (no invite gating)
-- BYOK support for OpenAI and Anthropic, one key per provider per account
+- BYOK support for OpenAI, Anthropic, and Google Gemini, one key per provider per account
 - Multiple "motions" per user, switchable like chat threads
 - Chat-driven progression through Stage 1 → Stage 2 → Stage 3 of `idea.md`
 - A live document panel showing the current stage's output, next to the chat
@@ -21,7 +21,7 @@ This document covers the product flow, architecture, data model, and the open qu
 **Explicitly deferred to a later version:**
 - Targeted (block-level) document edits — v1 regenerates the whole stage document each turn
 - Direct user editing of the generated document
-- User-selectable models within a provider (v1 fixes one model per provider)
+- ~~User-selectable models within a provider~~ — built; see "Provider & Model Selection"
 - Invite codes / approval gating for signup
 - Version history / snapshots of earlier stage documents
 - Hosting platform selection (see "Deployment" below)
@@ -30,7 +30,7 @@ This document covers the product flow, architecture, data model, and the open qu
 
 ### Account
 
-Standard email/password signup, no invite code or approval step required. On first login, the user is prompted to add at least one API key (OpenAI and/or Anthropic) under account settings before they can create a motion. Keys are stored encrypted and are never shown again after entry — the settings page shows a masked value (e.g. `sk-...a8f2`) with a "replace" action, never a "reveal" action.
+Standard email/password signup, no invite code or approval step required. On first login, the user is prompted to add at least one API key (OpenAI, Anthropic, and/or Google Gemini) under account settings before they can create a motion. Keys are stored encrypted and are never shown again after entry — the settings page shows a masked value (e.g. `sk-...a8f2`) with a "replace" action, never a "reveal" action.
 
 ### Motions List
 
@@ -108,7 +108,7 @@ requires: logged-in user, is_admin=True"]
     AdminRoute --> DB
 ```
 
-- **Backend:** Flask, one service, no separate service boundary between the user-facing API and the admin panel — just different routes in the same process. Streaming chat replies use Server-Sent Events.
+- **Backend:** Flask, one service, no separate service boundary between the user-facing API and the admin panel — just different routes in the same process. Streaming chat replies use Server-Sent Events, at `/api/motions/<id>/messages/stream` and `/advance/stream`. Structured output does not prevent this: the provider streams the JSON object, and the server walks it as it arrives, emitting the decoded contents of `reply` and then `document` as `delta` frames, followed by one `done` frame carrying the saved motion. Field order in the schema is what makes the chat answer land before the document starts. Searching stages cannot stream — Gemini runs research as a separate ungrounded pass and Anthropic cannot force its submit tool while search is available — so those turns return `409 no_streaming` and the client falls back to the buffered endpoint, which remains available for every turn.
 - **Frontend:** React, built separately (Vite or similar) and served by Flask as static files — one deploy, no separate frontend host.
 - **Admin:** Flask-Admin, mounted in the same app, generating its panel directly from the SQLAlchemy models — no separate hand-built admin UI codebase, aside from one custom template for the motion-detail view (chat transcript + rendered documents). Restricted to accounts with an `is_admin` flag.
 - **Database:** PostgreSQL (via SQLAlchemy), the single source of truth both the API and the admin panel read from.
@@ -120,6 +120,8 @@ requires: logged-in user, is_admin=True"]
 - id, email, password_hash
 - encrypted_openai_key (nullable)
 - encrypted_anthropic_key (nullable)
+- encrypted_gemini_key (nullable)
+- openai_key_masked, anthropic_key_masked, gemini_key_masked (nullable — the display form, stored so the settings page never decrypts just to render)
 - is_admin (bool)
 - created_at
 
@@ -127,7 +129,8 @@ requires: logged-in user, is_admin=True"]
 - id, user_id (FK)
 - title (auto-generated, user-editable)
 - motion_text, position (OG/OO/CG/CO)
-- provider (openai | anthropic)
+- provider (openai | anthropic | gemini) — fixed once the motion is created
+- model (nullable — the chosen model id; null falls back to the provider's default, so a retired id doesn't strand the motion)
 - current_stage (1, 2, or 3)
 - stage_1_document, stage_2_document, stage_3_document (nullable text — Markdown; null until that stage has been reached/regenerated)
 - created_at, updated_at
@@ -144,7 +147,7 @@ No separate tables for individual arguments/seeds/fields — stage documents are
 
 ### Decision Engine: no framework
 
-No LangChain or similar orchestration framework — the AI Agent Core calls the OpenAI and Anthropic SDKs directly, behind one thin adapter function: `generate(provider, system_prompt, history, schema) -> {reply, document}`. This stays small because the provider's hosted web search tool needs almost no orchestration code on our side (the provider executes the search itself; our code just enables the tool and handles the rare `pause_turn` resend), and there's no cyclic reasoning or multi-agent coordination for a framework to manage. Conversation history is never held in a framework's memory abstraction — it's read from and written to the `ChatMessage` table directly (see Data Model), converted into each provider's message format immediately before the call.
+No LangChain or similar orchestration framework — the AI Agent Core calls the OpenAI, Anthropic, and Google Gemini SDKs directly, behind one thin adapter function: `generate(provider, model, system_prompt, history, schema) -> {reply, document}`. This stays small because the provider's hosted web search tool needs almost no orchestration code on our side (the provider executes the search itself; our code just enables the tool and handles the rare `pause_turn` resend), and there's no cyclic reasoning or multi-agent coordination for a framework to manage. Conversation history is never held in a framework's memory abstraction — it's read from and written to the `ChatMessage` table directly (see Data Model), converted into each provider's message format immediately before the call.
 
 ### Prompt Construction
 
@@ -161,18 +164,22 @@ Every chat-turn call requests structured output:
 { "reply": "string — shown in the chat panel",
   "document": "string — full Markdown, replaces the stage document" }
 ```
-Both OpenAI and Anthropic support enforced structured/JSON output, so this is a schema passed to the API, not a parsing hack.
+All three providers support enforced structured/JSON output, so this is a schema passed to the API, not a parsing hack — though each expresses it differently: OpenAI uses the Responses API's strict `json_schema`, Anthropic a single `submit_turn` tool whose input schema *is* the contract, and Gemini `response_json_schema` (which additionally rejects `additionalProperties`, so it is stripped).
 
 ### Web Search
 
-Stage 2's Evidence field needs real-world facts, precedents, and examples — for that, the AI Agent Core enables each provider's **native, hosted web search tool** (OpenAI and Anthropic both offer one) on the API call, rather than building or integrating a separate search service. The provider runs the search server-side and returns results directly in the same response; there's no search API for Rhetor to call, no search provider account to manage, and no third credential to collect from users.
+Stage 2's Evidence field needs real-world facts, precedents, and examples — for that, the AI Agent Core enables each provider's **native, hosted web search tool** (all three providers offer one) on the API call, rather than building or integrating a separate search service. The provider runs the search server-side and returns results directly in the same response; there's no search API for Rhetor to call, no search provider account to manage, and no third credential to collect from users.
+
+**Gemini is the exception to the single-call shape.** Its JSON-schema response mode and the Google Search grounding tool are mutually exclusive — one request cannot ask for both. So a searching stage runs two calls on Gemini: one grounded and free-form to research, then one schema-constrained to write the document from those notes, fed back in as the model's own prior turn. Stages without search stay a single call, as on the other two providers.
 
 Billing follows the same BYOK model as everything else: web search is billed per-search plus the usual token cost, charged to whichever API key made the call — the user's own key. Rhetor never pays for search and never sees a separate bill for it.
 
 ### Provider & Model Selection
 
-- Provider (OpenAI or Anthropic) is chosen per motion, from whichever key(s) the user has configured.
-- v1 uses one fixed model per provider, chosen by testing which model follows `idea.md`'s dense instructions (OIV standard, jot-note formatting, label-accuracy rules) most reliably. Model choice is not user-exposed in v1.
+- Provider (OpenAI, Anthropic, or Google Gemini) is chosen per motion, from whichever key(s) the user has configured. A motion's provider is fixed once created.
+- **Model is chosen per motion and is user-facing**, from a catalogue defined in `backend/app/llm/catalogue.py`. Each provider offers a frontier tier, a balanced default, and a cheap/fast tier, so the same pipeline can run at whatever cost the user is willing to carry. The model can be switched mid-motion; it affects the next generation only.
+- Defaults are deliberately chosen to be reachable on a **free** API key. This reverses the original v1 decision to fix one model per provider and hide the choice: Gemini's Pro models are effectively unusable on a free key, so a user holding one had no working option at all. A default nobody can run is worse than a slightly weaker one everybody can.
+- Models flagged `freeTier: false` are labelled as needing a paid key in the picker, rather than being hidden — the user may well have one.
 
 ## Security
 
@@ -206,6 +213,5 @@ Whichever is chosen, the CI/CD requirement (auto-deploy on push to `main`) is sa
 
 - Should stage documents keep version history so re-advancing after going back doesn't discard prior generations outright?
 - Should targeted (block-level) document edits replace full-stage regeneration once the core loop is validated?
-- Should model choice become user-facing once multi-model behavior against `idea.md` has been tested?
 - Should signup gain an invite code or approval step if the user base grows past "people I know"?
 - Rate limiting / abuse guardrails on the server itself (independent of BYOK cost, to protect uptime) have not been designed yet.

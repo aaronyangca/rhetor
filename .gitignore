@@ -1,3 +1,10 @@
 .DS_Store
 .claude/settings.local.json
 rhetor-run-prompts/
+
+# Local environment — contains DB credentials and encryption keys
+.env
+.env.local
+
+# Local database dumps from `make db-dump`
+backups/

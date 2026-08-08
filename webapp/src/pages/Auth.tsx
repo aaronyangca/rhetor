@@ -4,18 +4,39 @@ import { LogoMark } from '../components/Logo'
 import { FormInput } from '../components/FormInput'
 import { Button } from '../components/Button'
 import { useApp } from '../state/AppContext'
+import { ApiError } from '../lib/api'
+
+const MIN_PASSWORD_LENGTH = 8
 
 export function Auth({ mode }: { mode: 'signup' | 'login' }) {
-  const { login } = useApp()
+  const { login, signup } = useApp()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
   const isSignup = mode === 'signup'
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    login(email || 'you@example.com')
-    navigate('/app')
+    if (pending) return
+
+    // Checked here as well as server-side, so the error lands before a round trip.
+    if (isSignup && password.length < MIN_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`)
+      return
+    }
+
+    setPending(true)
+    setError(null)
+    try {
+      if (isSignup) await signup(email, password)
+      else await login(email, password)
+      navigate('/app')
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Something went wrong. Try again.')
+      setPending(false)
+    }
   }
 
   return (
@@ -30,7 +51,9 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
               {isSignup ? 'Create your account' : 'Welcome back'}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {isSignup ? 'Start building your first case in minutes.' : 'Log in to continue your argument work.'}
+              {isSignup
+                ? 'Start building your first case in minutes.'
+                : 'Log in to continue your argument work.'}
             </p>
           </div>
 
@@ -41,6 +64,7 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               required
             />
             <FormInput
@@ -49,12 +73,28 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
               placeholder="••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete={isSignup ? 'new-password' : 'current-password'}
               required
             />
           </div>
 
-          <Button type="submit" className="w-full">
-            {isSignup ? 'Create Account' : 'Log In'}
+          {error && (
+            <p
+              role="alert"
+              className="rounded-[6px] border border-destructive/30 bg-destructive/5 px-3 py-2 text-[13px] text-destructive"
+            >
+              {error}
+            </p>
+          )}
+
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending
+              ? isSignup
+                ? 'Creating account…'
+                : 'Logging in…'
+              : isSignup
+                ? 'Create Account'
+                : 'Log In'}
           </Button>
 
           {isSignup && (

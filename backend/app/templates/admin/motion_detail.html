@@ -1,0 +1,75 @@
+{% extends 'admin/model/details.html' %}
+
+{# The one admin view that isn't free from Flask-Admin: a readable transcript
+   and rendered stage documents, rather than a flat field dump. #}
+
+{% block details_search %}{% endblock %}
+
+{% block details_table %}
+  {{ super() }}
+
+  <style>
+    .rh-section { margin-top: 32px; }
+    .rh-section > h3 { font-size: 16px; margin-bottom: 12px; }
+    .rh-tabs { margin-bottom: 12px; }
+    .rh-doc { background: #FFFDF9; border: 1px solid #E6DED2; border-radius: 8px;
+              padding: 20px 24px; }
+    .rh-doc h1, .rh-doc h2, .rh-doc h3 { margin-top: 20px; }
+    .rh-empty { color: #7A7266; font-style: italic; }
+    .rh-msg { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #eee; }
+    .rh-role { flex: 0 0 90px; font-size: 12px; text-transform: uppercase;
+               letter-spacing: .06em; color: #7A7266; }
+    .rh-role.user { color: #2C3968; font-weight: 600; }
+    .rh-role.assistant { color: #C1622B; font-weight: 600; }
+    .rh-content { white-space: pre-wrap; flex: 1; }
+    .rh-time { flex: 0 0 150px; font-size: 12px; color: #9a938a; text-align: right; }
+  </style>
+
+  <div class="rh-section">
+    <h3>Stage documents</h3>
+    <ul class="nav nav-tabs rh-tabs" role="tablist">
+      {% for stage in [1, 2, 3] %}
+        <li class="nav-item">
+          <a class="nav-link {% if stage == model.current_stage %}active{% endif %}"
+             data-toggle="tab" href="#stage-{{ stage }}" role="tab">
+            Stage {{ stage }}{% if not model.document(stage) %} (empty){% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="tab-content">
+      {% for stage in [1, 2, 3] %}
+        <div class="tab-pane {% if stage == model.current_stage %}active{% endif %}"
+             id="stage-{{ stage }}" role="tabpanel">
+          {% set doc = model.document(stage) %}
+          {% if doc %}
+            <div class="rh-doc">{{ doc | markdown }}</div>
+          {% else %}
+            <p class="rh-empty">No document for this stage yet.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="rh-section">
+    <h3>Chat transcript</h3>
+    {% if model.messages %}
+      {% for stage in [1, 2, 3] %}
+        {% set stage_messages = model.messages_for_stage(stage) %}
+        {% if stage_messages %}
+          <h4 style="font-size:14px;margin-top:20px;">Stage {{ stage }}</h4>
+          {% for message in stage_messages %}
+            <div class="rh-msg">
+              <div class="rh-role {{ message.role }}">{{ message.role }}</div>
+              <div class="rh-content">{{ message.content }}</div>
+              <div class="rh-time">{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <p class="rh-empty">No messages yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}

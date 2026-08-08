@@ -4,12 +4,44 @@ Tracks what's been built in `webapp/` against `../webapp-design.md` (product spe
 and `../ui-design.pen` (visual design). Update this file as work continues —
 it's the handoff doc for picking the build back up.
 
+## This session (Aug 2026) — full stack, end to end
+
+The project went from "designed UI on mock data" to a running full-stack app.
+In order:
+
+1. **Local Postgres in Docker** — `../docker-compose.yml` (Postgres 17-alpine,
+   healthcheck, named volume) plus `../docker/postgres/init/01-init.sh`, which
+   creates a separate `rhetor_test` database and enables `citext`/`pgcrypto` on
+   both. Config lives in `../.env` (gitignored; `.env.example` is the template).
+2. **A root `Makefile`** — one entry point for everything: `make dev` runs
+   database + API + frontend together, plus `db-*`, `api-*`, and `web-*`
+   targets. `make` alone lists them.
+3. **The Flask backend** — `../backend`, built from scratch against
+   `../webapp-design.md`. Models, migrations, session auth, Fernet-encrypted
+   BYOK keys, the motions loop, Flask-Admin, and the AI agent core. See
+   [`../backend/README.md`](../backend/README.md) for its architecture; it is
+   the authoritative doc for that side.
+4. **Google Gemini as a third provider** — alongside OpenAI and Anthropic.
+5. **This frontend, wired to that backend** — mock data deleted entirely.
+6. **User-facing model choice** — per motion, switchable, with free-tier-safe
+   defaults.
+
+Two design-doc decisions were overridden along the way, and
+`../webapp-design.md` has been updated to record both:
+
+- **"Model choice is not user-exposed in v1"** — reversed. Gemini's Pro models
+  are effectively unusable on a free API key, so a user holding one had no
+  working option at all under a fixed-model design. Model is now chosen per
+  motion from a catalogue, and every provider's default is reachable on a free
+  key (there's a test pinning that).
+- **"BYOK support for OpenAI and Anthropic"** — widened to include Gemini.
+
 ## Scope decision
 
-Built as **frontend only, mock data** — no backend, no database, no real auth,
-no real LLM calls. Chosen explicitly over building the full Flask + Postgres
-stack from `webapp-design.md`, to get the actual designed UI running and
-clickable first. See "Not built yet" below for what a full-stack pass adds.
+Originally built as **frontend only, mock data**, to get the designed UI
+running and clickable before standing up a backend. That mock layer is now
+**gone** — `src/lib/mockData.ts` was deleted and every screen talks to the
+Flask API in `../backend`. See "Now wired to the backend" below.
 
 ## Status: done
 
@@ -32,23 +64,21 @@ Logo (mark + wordmark), Button (primary/outline/ghost/accent variants),
 Badge, FormInput, ChatBubble, SidebarMotionItem, Stepper, DocumentView
 (Markdown renderer styled to match the design's jot-note field format).
 
-**State** (`src/state/AppContext.tsx`)
-Single React context holding auth, the motions list, and API key state.
-No backend calls — everything is local `useState`. Covers:
-- login/logout (any email "logs in", no real auth)
-- creating a motion → assistant asks for motion text + BP position → first
-  reply parses `OG|OO|CG|CO` out of the user's message and generates a title
-  + Stage 1 doc
-- sending a chat message → templated assistant reply + (for a brand-new
-  motion) Stage 1 document generation
-- advancing a stage → generates the next stage's document
-- renaming a motion, connecting a mock API key
+`Stepper` gained an optional `onSelect` + `isAvailable`, which is how "return
+to an earlier stage" from the design doc is actually reached — stages with a
+document are clickable, and advancing stays the explicit button.
 
-**Mock content** (`src/lib/mockData.ts`)
-Four seeded sample motions with hand-written Stage 1/2/3 documents using the
-real Claim/Mechanism/Evidence/Second-Order Effect/Impact field structure from
-`../idea.md` (not placeholder lorem ipsum) — plus generic templated generators
-for motions/stages the user creates during a session.
+**State** (`src/state/AppContext.tsx`)
+Single React context over the API client in `src/lib/api.ts`. Holds the
+session, the motion summary list, the one fully-loaded active motion, and the
+API key state — plus `sending` / `advancing` / `loadingMotion` flags and a
+shared `error` string. No mock data anywhere.
+
+**API client** (`src/lib/api.ts`)
+Typed wrapper over the `/api` endpoints. Session-cookie auth, so every call
+sends credentials and there are no tokens to manage. Throws `ApiError` carrying
+the backend's `{code, message}` so the UI can render the server's own wording.
+`make api-routes` prints the live route list to check against it.
 
 **Design tokens** (`src/index.css`)
 Tailwind v4 `@theme` block with the color/font values read directly out of
@@ -76,7 +106,7 @@ that something plausible-looking is present. For any illustration-heavy
 node going forward: read the complete `export_html` dump for that node
 top to bottom before building, not just enough of it to get oriented.
 
-## Known gaps
+## Known gaps (design fidelity vs the .pen file)
 
 - **Welcome page background**: now built from `.pen`'s exact node data rather
   than approximated. Two follow-up passes on top of the first (which had the
@@ -150,43 +180,89 @@ top to bottom before building, not just enough of it to get oriented.
      from the shared Button component's 14px default; and an extra
      `pb-16` on the hero container that wasn't in the source and skewed
      vertical centering off from true middle.
-- Markdown→PDF export just calls `window.print()` (no real server-side PDF
-  rendering, since there's no server).
-- "Change Password" and "Replace [API key]" buttons in Account Settings are
-  inert (no modal/flow wired up).
-- New-motion position parsing is a naive regex (`\b(OG|OO|CG|CO)\b`) — no
-  validation or error state if the user's first message doesn't include one.
+- Markdown→PDF export still calls `window.print()` — see "Known gaps in the
+  wiring" below; the backend returns 501 for `format=pdf`.
 
-## Not built yet (out of scope for this pass)
+(The other gaps listed here previously — inert Account Settings buttons, and
+regex parsing of the position out of the first message — are resolved. Key
+entry is a real form now, and the position and motion text come back from the
+model as structured output rather than being parsed client-side.)
 
-Everything in `../webapp-design.md`'s Architecture/Data Model/AI Agent Design
-sections:
-- Flask backend, PostgreSQL, SQLAlchemy models
-- Real email/password auth + session handling
-- Encrypted API key storage (Fernet)
-- Real OpenAI/Anthropic calls implementing the Stage 1→2→3 pipeline from
-  `../idea.md`, including hosted web search for Stage 2 Evidence
-- Flask-Admin backend (user list, motion list, chat/document detail view)
-- Server-rendered Markdown→PDF export
-- Deployment (Heroku/Render/DigitalOcean — still an open question in the
-  design doc itself)
+## Now wired to the backend
+
+Every screen calls the Flask API in `../backend`; there is no local mock state
+left.
+
+- **Auth** — real signup/login/logout against `/api/auth/*`. `App.tsx` gates
+  `/app` and `/app/settings` behind a session check, and waits for that check
+  before deciding, so a reload doesn't flash the login page at a signed-in
+  user. Server errors (duplicate email, bad password) render inline.
+- **API keys** — real encrypted storage via `/api/account/keys`. Each row has
+  an inline key form with Save / Cancel / Remove. The masked value shown is
+  the server's, not a local guess.
+- **Motions** — list, create, rename, delete, and per-stage chat all hit the
+  API. The sidebar holds summaries; the open motion is fetched in full.
+- **Provider and model choice** — a motion is pinned to one provider and the
+  backend rejects any the user has no key for, so "New Motion" opens a menu
+  grouped by connected provider, listing each of that provider's models with a
+  one-line blurb (and pointing at settings when no keys are connected). The
+  top bar has a switcher for changing model on an open motion; the provider
+  stays fixed. Models a free API key cannot reach carry a `PAID KEY` badge
+  rather than being hidden — the user may have a paid one. The catalogue comes
+  from `GET /api/account/models`.
+- **Stage navigation** — the stepper is clickable for stages that already have
+  a document, which is how "return to an earlier stage" from the design doc is
+  reached. Advancing is still the explicit button.
+- **Export** — Markdown downloads from `/api/motions/<id>/export`, so the
+  filename and content come from the stored document.
+
+## Known gaps in the wiring
+
+- **Streaming**: built. The chat reply and then the stage document fill in as
+  they are written, via SSE. Searching stages (Stage 2) still arrive in one
+  piece — neither Gemini nor Anthropic can stream a grounded turn — and fall
+  back to the buffered endpoint with the "Rhetor is working…" placeholder.
+- **PDF export** still calls `window.print()` — the backend returns 501 for
+  `format=pdf`.
+- **Change password** has no endpoint, so that row was replaced with Log Out
+  rather than left as an inert button.
+- **No optimistic assistant reply**: the user's own message appears instantly
+  and is rolled back if the call fails (matching the backend, which discards
+  the turn), but there's no partial-response affordance.
+
+## Not built yet
+
+- Deployment (Heroku/Render/DigitalOcean — still open in the design doc)
+- Frontend tests — there are none; the backend suite covers the API side
+- Rate limiting / abuse guardrails
 
 ## Running it
 
+From the repo root:
+
 ```
-cd webapp
-npm install
-npm run dev      # http://localhost:5173 (or next free port)
-npm run build    # production build + typecheck
+make setup         # .env, backend venv, frontend deps
+make secrets       # paste the generated keys into .env
+make db-up         # Postgres in Docker
+make api-migrate   # create the tables
+make dev           # API on :5001, frontend on :5173
 ```
+
+`make dev` runs both servers; Vite proxies `/api` to Flask so the browser sees
+one origin. `make web-dev` alone still works but the app will fail every call
+without the API running.
 
 ## Next steps (suggested order)
 
-1. Decide on backend framework/hosting (still an open question in
-   `webapp-design.md` itself).
-2. Stand up the Flask app + Postgres models from the Data Model section.
-3. Replace `AppContext`'s local state with real API calls, keeping the same
-   context shape so components don't need to change.
-4. Wire real BYOK key storage + the `generate(provider, system_prompt,
-   history, schema) -> {reply, document}` adapter described in the design doc.
-5. Build the Flask-Admin panel.
+1. Run the pipeline once with a real provider key — the provider adapters have
+   never made a *successful* live call. The error path is proven (a real
+   OpenAI key rejection flowed all the way to the UI banner and rolled back
+   the optimistic message), but no generation has ever come back.
+2. Eyeball the two model dropdowns. They were verified through the API and
+   type-check clean, but the browser session dropped before they could be
+   seen rendered.
+3. Server-side Markdown→PDF export.
+4. Frontend tests around `AppContext` (stage invalidation, optimistic
+   rollback, model switching, streaming fallback) — the logic most likely to
+   regress.
+5. Deployment.
