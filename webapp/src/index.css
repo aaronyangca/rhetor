@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", serif;
+  --font-display: "Fraunces", serif;
+  --font-wordmark: "Cinzel", serif;
+
+  --color-background: #faf7f2;
+  --color-foreground: #2b2620;
+  --color-muted-foreground: #7a7266;
+  --color-card: #ffffff;
+  --color-border: #e6ded2;
+  --color-primary: #2c3968;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #eaf1ee;
+  --color-secondary-foreground: #2c3968;
+  --color-accent: #c1622b;
+  --color-accent-soft: #fbeadd;
+  --color-success: #3f7d58;
+  --color-success-soft: #e6f0e9;
+  --color-destructive: #b23b3b;
+  --color-destructive-soft: #f3e3e1;
+  --color-sidebar-bg: #f2ece2;
+  --color-document-bg: #fffdf9;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.doc-prose {
+  --tw-prose-body: var(--color-foreground);
+  --tw-prose-headings: var(--color-foreground);
+  --tw-prose-bold: var(--color-foreground);
+  --tw-prose-bullets: var(--color-muted-foreground);
+  --tw-prose-hr: var(--color-border);
+  font-family: var(--font-serif);
+}
+
+.doc-prose p:first-child {
+  font-family: var(--font-sans);
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.doc-prose p:first-child + p {
+  font-family: var(--font-sans);
+  color: var(--color-muted-foreground);
+  font-size: 13px;
+  margin-top: 0;
+}
+
+.doc-prose h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 19px;
+  margin-top: 1.4em;
+}
+
+.doc-prose hr {
+  margin: 1.25em 0;
+}
+
+.doc-prose code {
+  font-family: var(--font-sans);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.doc-prose strong {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10.5px;
+  letter-spacing: 0.5px;
+  color: var(--color-muted-foreground);
+  display: inline-block;
+  margin-top: 0.9em;
+}
+
+.doc-prose em {
+  color: var(--color-muted-foreground);
+  font-style: italic;
+}
