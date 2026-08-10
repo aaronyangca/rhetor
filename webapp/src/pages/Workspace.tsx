@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AlertCircle,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { useApp } from '../state/AppContext'
 import { api } from '../lib/api'
+import { useStickToBottom } from '../lib/useStickToBottom'
 import { LogoMark } from '../components/Logo'
 import { SidebarMotionItem } from '../components/SidebarMotionItem'
 import { GhostIconButton, Button } from '../components/Button'
@@ -330,17 +331,16 @@ function TopBar({ motion }: { motion: Motion }) {
 function ChatColumn({ motion }: { motion: Motion }) {
   const { sendMessage, sending, streaming } = useApp()
   const [draft, setDraft] = useState('')
-  const bottomRef = useRef<HTMLDivElement>(null)
 
   const messages = motion.messages.filter((m) => m.stage === motion.currentStage)
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages.length, sending])
+  // Follows the reply as it streams in, not just completed messages.
+  const scroll = useStickToBottom<HTMLDivElement>([messages.length, sending, streaming?.reply])
 
   async function handleSend() {
     const content = draft.trim()
     if (!content || sending) return
+    scroll.stick()
     setDraft('')
     // Hand the text back if it never reached the server, rather than making
     // the user retype it.
@@ -350,7 +350,11 @@ function ChatColumn({ motion }: { motion: Motion }) {
 
   return (
     <div className="flex h-full flex-1 flex-col border-r border-border">
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-7 pb-4">
+      <div
+        ref={scroll.ref}
+        onScroll={scroll.onScroll}
+        className="flex flex-1 flex-col gap-4 overflow-y-auto p-7 pb-4"
+      >
         {messages.map((m) => (
           <ChatBubble key={m.id} role={m.role} content={m.content} />
         ))}
@@ -360,7 +364,6 @@ function ChatColumn({ motion }: { motion: Motion }) {
         {sending && !streaming?.reply && (
           <div className="px-1 text-[13px] italic text-muted-foreground">Rhetor is working…</div>
         )}
-        <div ref={bottomRef} />
       </div>
       <div className="flex flex-col gap-0 p-5 pt-0">
         <div className="flex items-center gap-[10px] rounded-[10px] border border-border bg-card p-[12px_14px]">
@@ -437,9 +440,14 @@ function DocumentColumn({ motion }: { motion: Motion }) {
   const doc = live || stored
   const isStreaming = Boolean(live)
 
+  // Only while writing. A stored document opens at the top, where it is read
+  // from — being dropped at the end of a finished 13k-character document is
+  // disorienting rather than helpful.
+  const scroll = useStickToBottom<HTMLDivElement>([live], isStreaming)
+
   return (
     <div className="flex h-full flex-1 flex-col bg-document-bg">
-      <div className="flex-1 overflow-y-auto p-8">
+      <div ref={scroll.ref} onScroll={scroll.onScroll} className="flex-1 overflow-y-auto p-8">
         {doc ? (
           <>
             <DocumentView markdown={doc} />
