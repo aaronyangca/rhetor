@@ -6,6 +6,42 @@ You are currently working in Stage 1. These rules apply now.
 
 *For argument seed to enter the candidate pool, must: be relevant to the motion, have at least sketched mechanism, identified impact area. Beyond this threshold, all candidates proceed — selecting the BEST arguments is Stage 2's job, not this stage's.*
 
+*That threshold governs the AI's **thinking**, not its **output**. A seed must have a plausible mechanism and impact behind it so that ideation cannot produce slogans with nothing underneath — not so that they get written out for the user. Which seeds are worth developing, and what their mechanisms actually are, is decided by the human and the AI together in Stage 2. Stage 1 hands the human a wide menu, not a set of finished dishes.*
+
+---
+
+### Stage 1 Output Format
+
+The Stage 1 document is jot notes. Every seed is **one line**.
+
+```
+1. *Harm premise / status-quo-flaws*: Freezing preserves today's specific AI flaws (hallucination, jailbreak vulnerability, unsafe child-directed chatbot design) permanently, since fixing them is itself an "advancement" the motion forecloses `Pragmatic`
+2. *Distributive justice / power concentration*: Freezing locks in today's concentration of AI capability among current leaders (a few firms/states) permanently `Principled/Pragmatic`
+```
+
+A seed line carries four fields, separated by formatting rather than punctuation — the seed sentence uses commas, semicolons and dashes freely, so no character is safe as a delimiter:
+
+- **Number** — a running number, continuous across all four rounds; every later stage refers to seeds by it. Written as a Markdown ordered list whose first item is the next number, not a restart at 1.
+- **Frame / Domain** — italic, ending at the colon. What produced the seed. Round 1: the normative frame. Round 2: the domain and the affected group (`Health — rural/low-income/uninsured populations`). Round 3: the crossed pair, named by number (`Power concentration (3) × Development rights (4)`). **The impact area lives here**, which is why the seed sentence does not have to name it.
+- **Seed** — one sentence, roughly 15-40 words, no closing full stop.
+- **Type** — a Markdown code span, last thing on the line: `Pragmatic`, `Principled`, or `Principled/Pragmatic`. Qualify where warranted: `Pragmatic (low-confidence)`. One backtick either side, never two.
+
+Flag obvious seeds with `(STANDARD)` inside the sentence. A Round 3 cross that was attempted but produced nothing workable still gets its line — prefix the sentence with *Attempted*: and give it no type. A failed cross is information for Stage 2, not waste.
+
+**On the mechanism.** A seed may carry a clause that shows why the claim would be true — "…, since fixing them is itself an advancement the motion forecloses" — but this is a *permission, not a requirement*. Many good seeds carry none at all: "Freezing locks in today's balance between attack and defense capability" is a complete seed. Add the clause only where the claim does not land without it. Never as a second sentence.
+
+**`Claim:`, `Mechanism:` and `Impact Area:` must never appear in Stage 1.** They belong to the developed-level Argument Format, from Stage 2 onward. A seed written in labeled fields has been developed rather than generated, and the pool it sits in will be a fraction of the size it should be — the fields create room, the room gets filled, and twenty-five seeds become eight essays.
+
+**Pass/fail test, applied to every line before moving on:** does it fit on one line at a comfortable reading width? Does it contain exactly one sentence, no colon-labeled field, and no second full stop? If not, it has been developed — cut it back and spend the effort on another seed instead. If a round takes more than about a minute to scan, the seeds are too long, not too many.
+
+**Document structure:**
+
+1. `## Motion Classification` — bullets: structural type and the burden it sets, fiat scope, primary and secondary topic domains. Where the ideation approach for that motion type calls for groundwork before seeds (e.g. THP's comparison dimensions), it goes here as a short italic note.
+2. A line stating the count — *"20 seeds generated across four rounds."*
+3. One `### Round N — [name]` heading per round, each followed by its seed lines.
+4. `### Round 4 — Coverage Check` — bullets rather than seed lines: zero-candidate domains, forced attempts, frames not used and why, seeds flagged STANDARD, and duplicates or overlaps noted for the Stage 2 audit but deliberately left unresolved here. Any seed forced in at this stage follows as an ordinary seed line.
+5. A closing line: `**N seeds cleared the Stage 1 entry threshold.**`
+
 ---
 
 ### Motion Classification

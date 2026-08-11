@@ -119,8 +119,20 @@ Two constraints worth knowing:
 
 `idea.md` is split into `app/prompts/{shared,stage1,stage2,stage3}.md` by
 `scripts/split_prompts.py`, keyed off its `##` headings. A turn sends `shared`
-plus its own stage — roughly 15k of 71k characters, instead of the whole
-document every time.
+plus its own stage: ~40k characters at Stage 1, ~17k at Stage 3.
+
+**The split is lossless, and that is the only rule it has.** Only the three
+stage sections are named in the script; everything else in `idea.md` goes to
+`shared.md` in document order, so a new section added to `idea.md` is carried
+without touching this code. The script fails if any heading reaches no file,
+and `tests/test_prompts.py` re-checks it line by line.
+
+An earlier version listed the shared sections explicitly and dropped the rest
+as "human-facing". That withheld the architecture summary — the one place
+`idea.md` says *"No filtering or in-depth development... Prioritize numbers
+over quality"* — so Stage 1 was being asked to follow a document it had never
+been shown in full, and it over-developed a small pool of seeds instead of
+generating a wide rough one. Do not reintroduce an allowlist here.
 
 Regenerate after editing `idea.md`:
 
