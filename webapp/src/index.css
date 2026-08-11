@@ -26,6 +26,59 @@
   --color-document-bg: #fffdf9;
 }
 
+/* Dark theme.
+ *
+ * Only the token values change — every component keeps referring to
+ * --color-card, --color-border and so on, so nothing needs a dark: variant.
+ * The palette stays warm rather than going blue-grey: the light theme is a
+ * paper-and-ink look, and a cold dark mode would read as a different product.
+ *
+ * The toggle writes data-theme on <html>, so an explicit choice wins over the
+ * OS setting in both directions; the media query only applies when no choice
+ * has been made.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-background: #17140f;
+    --color-foreground: #ece4d8;
+    --color-muted-foreground: #9b9184;
+    --color-card: #211d17;
+    --color-border: #3a332a;
+    --color-primary: #8496d6;
+    --color-primary-foreground: #14161f;
+    --color-secondary: #26302b;
+    --color-secondary-foreground: #cfdcd5;
+    --color-accent: #e08c55;
+    --color-accent-soft: #3b2517;
+    --color-success: #74ab88;
+    --color-success-soft: #1f2e24;
+    --color-destructive: #e08079;
+    --color-destructive-soft: #3a1f1d;
+    --color-sidebar-bg: #1d1913;
+    --color-document-bg: #1b1712;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-background: #17140f;
+  --color-foreground: #ece4d8;
+  --color-muted-foreground: #9b9184;
+  --color-card: #211d17;
+  --color-border: #3a332a;
+  --color-primary: #8496d6;
+  --color-primary-foreground: #14161f;
+  --color-secondary: #26302b;
+  --color-secondary-foreground: #cfdcd5;
+  --color-accent: #e08c55;
+  --color-accent-soft: #3b2517;
+  --color-success: #74ab88;
+  --color-success-soft: #1f2e24;
+  --color-destructive: #e08079;
+  --color-destructive-soft: #3a1f1d;
+  --color-sidebar-bg: #1d1913;
+  --color-document-bg: #1b1712;
+}
+
 body {
   margin: 0;
   background: var(--color-background);
@@ -72,6 +125,16 @@ body {
 
 .doc-prose hr {
   margin: 1.25em 0;
+}
+
+/* The typography plugin renders inline code as `like this`, adding literal
+ * backtick characters through ::before/::after. That is a sensible default for
+ * an article about code; here the code span is a pill-shaped tag (an argument
+ * type, a stage marker), and the backticks read as stray punctuation the model
+ * emitted. */
+.doc-prose code::before,
+.doc-prose code::after {
+  content: none;
 }
 
 .doc-prose code {

@@ -18,6 +18,7 @@ import type {
   User,
 } from '../lib/types'
 import { PROVIDERS } from '../lib/types'
+import { writeLastModel } from '../lib/lastModel'
 
 const EMPTY_KEYS: ApiKeys = {
   openai: { connected: false, masked: null },
@@ -248,6 +249,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async (provider: Provider, model?: string) => {
       try {
         const motion = await api.createMotion(provider, model)
+        // Remember what the server actually pinned, not what was asked for —
+        // an unknown model falls back to the provider default.
+        writeLastModel({ provider: motion.provider, model: motion.model })
         applyMotion(motion)
         setActiveMotionId(motion.id)
         return motion.id
@@ -450,6 +454,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
               : m,
           ),
         )
+        // Switching mid-motion is a preference statement too, so the next new
+        // motion starts here rather than back at the catalogue default.
+        writeLastModel({ provider: previous.provider, model: updated.model })
       } catch (err) {
         setActiveMotion(previous)
         if (err instanceof ApiError) setError(err.message)

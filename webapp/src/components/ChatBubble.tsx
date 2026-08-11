@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export function ChatBubble({ role, content }: { role: 'user' | 'assistant'; content: string }) {
   const isUser = role === 'user'
@@ -22,6 +23,9 @@ export function ChatBubble({ role, content }: { role: 'user' | 'assistant'; cont
           badly squeezed into the same width as a one-line question. */}
       <div className="chat-prose max-w-[560px] rounded-[10px] border border-border bg-card px-4 py-3 text-foreground">
         <ReactMarkdown
+          // Mainly for strikethrough: a cut argument is struck through rather
+          // than deleted, so the record of why it left the pool stays visible.
+          remarkPlugins={[remarkGfm]}
           components={{
             // Model-generated links, including citations from web search, so
             // they open away from the app and carry no referrer.

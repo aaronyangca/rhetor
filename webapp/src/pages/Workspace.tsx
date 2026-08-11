@@ -9,14 +9,21 @@ import {
   Clipboard,
   Download,
   FileText,
+  Monitor,
+  Moon,
+  PanelLeftClose,
+  PanelLeftOpen,
   Pencil,
   Plus,
   Settings,
+  Sun,
   Trash2,
   X,
 } from 'lucide-react'
 import { useApp } from '../state/AppContext'
 import { api } from '../lib/api'
+import { readLastModel } from '../lib/lastModel'
+import { useTheme, type Theme } from '../lib/theme'
 import { useStickToBottom } from '../lib/useStickToBottom'
 import { LogoMark } from '../components/Logo'
 import { SidebarMotionItem } from '../components/SidebarMotionItem'
@@ -101,6 +108,19 @@ function NewMotionButton() {
     }
   }
 
+  // Whatever was used last, as long as that provider still has a key. Only
+  // when there is no usable memory does the picker have to open — otherwise
+  // starting a motion is one click and the model can still be changed from
+  // the composer afterwards.
+  const remembered = readLastModel()
+  const preset =
+    remembered && connectedProviders.includes(remembered.provider) ? remembered : null
+
+  function start() {
+    if (preset) void create(preset.provider, preset.model)
+    else setOpen((v) => !v)
+  }
+
   if (connectedProviders.length === 0) {
     return (
       <Link
@@ -114,13 +134,27 @@ function NewMotionButton() {
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        disabled={creating || !catalogue}
-        className="flex w-full items-center justify-center gap-2 rounded-[6px] border border-border bg-card px-[18px] py-[10px] text-sm font-semibold text-foreground hover:bg-background disabled:opacity-50"
-      >
-        <Plus size={16} /> {creating ? 'Creating…' : 'New Motion'}
-      </button>
+      <div className="flex items-stretch gap-1">
+        <button
+          onClick={start}
+          disabled={creating || !catalogue}
+          className="flex flex-1 items-center justify-center gap-2 rounded-[6px] border border-border bg-card px-[18px] py-[10px] text-sm font-semibold text-foreground hover:bg-background disabled:opacity-50"
+        >
+          <Plus size={16} /> {creating ? 'Creating…' : 'New Motion'}
+        </button>
+        {/* Still reachable when a preset short-circuits the menu. */}
+        {preset && (
+          <button
+            onClick={() => setOpen((v) => !v)}
+            disabled={creating || !catalogue}
+            aria-label="Start with a different model"
+            title="Start with a different model"
+            className="flex items-center rounded-[6px] border border-border bg-card px-2 text-muted-foreground hover:bg-background disabled:opacity-50"
+          >
+            <ChevronDown size={15} />
+          </button>
+        )}
+      </div>
 
       {open && catalogue && (
         <>
@@ -135,7 +169,11 @@ function NewMotionButton() {
                   <ModelOptionRow
                     key={model.id}
                     model={model}
-                    selected={model.id === catalogue[provider].default}
+                    selected={
+                      preset
+                        ? provider === preset.provider && model.id === preset.model
+                        : model.id === catalogue[provider].default
+                    }
                     onClick={() => create(provider, model.id)}
                   />
                 ))}
@@ -148,7 +186,13 @@ function NewMotionButton() {
   )
 }
 
-/** Switches the model an open motion generates with. */
+/**
+ * Switches the model an open motion generates with.
+ *
+ * Lives in the composer, next to Send, where Gemini and Claude put it — it is
+ * a property of the message you are about to send, not of the document. Opens
+ * upward for the same reason.
+ */
 function ModelSwitcher({ motion }: { motion: Motion }) {
   const { catalogue, setModel } = useApp()
   const [open, setOpen] = useState(false)
@@ -161,16 +205,18 @@ function ModelSwitcher({ motion }: { motion: Motion }) {
       <button
         onClick={() => setOpen((v) => !v)}
         title={`${PROVIDER_LABELS[motion.provider]} · ${motion.modelLabel}`}
-        className="flex items-center gap-1 rounded-[6px] border border-border px-2 py-[5px] text-[12px] font-medium text-muted-foreground hover:bg-background"
+        className="flex max-w-[160px] shrink-0 items-center gap-1 rounded-[6px] px-2 py-[5px] text-[12px] font-medium text-muted-foreground hover:bg-secondary"
       >
-        {motion.modelLabel}
-        <ChevronDown size={13} />
+        <span className="truncate">{motion.modelLabel}</span>
+        <ChevronDown size={13} className="shrink-0" />
       </button>
 
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full z-20 mt-1 flex w-[280px] flex-col rounded-[6px] border border-border bg-card p-1 shadow-lg">
+          {/* Anchored right: the trigger sits beside Send at the far edge of
+              the composer, so a left-anchored menu would run off-panel. */}
+          <div className="absolute bottom-full right-0 z-20 mb-1 flex w-[280px] flex-col rounded-[6px] border border-border bg-card p-1 shadow-lg">
             <div className="px-2 pb-1 pt-2 text-[11px] font-semibold tracking-[0.4px] text-muted-foreground">
               {PROVIDER_LABELS[motion.provider].toUpperCase()}
             </div>
@@ -196,14 +242,36 @@ function ModelSwitcher({ motion }: { motion: Motion }) {
   )
 }
 
-function Sidebar() {
+/** Light / dark / follow-the-OS, cycled from one button. */
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+  const next: Record<Theme, Theme> = { system: 'light', light: 'dark', dark: 'system' }
+  const Icon = theme === 'dark' ? Moon : theme === 'light' ? Sun : Monitor
+
+  return (
+    <GhostIconButton
+      onClick={() => setTheme(next[theme])}
+      aria-label={`Theme: ${theme}. Switch to ${next[theme]}.`}
+      title={`Theme: ${theme} — click for ${next[theme]}`}
+    >
+      <Icon size={17} />
+    </GhostIconButton>
+  )
+}
+
+function Sidebar({ onCollapse }: { onCollapse: () => void }) {
   const { motions, activeMotionId, selectMotion, deleteMotion, user } = useApp()
 
   return (
     <div className="flex h-full w-[272px] shrink-0 flex-col gap-5 border-r border-border bg-sidebar-bg p-4">
-      <div className="flex flex-col gap-[2px]">
-        <div className="text-xl font-bold tracking-tight text-foreground">Rhetor</div>
-        <div className="text-xs text-muted-foreground">BP Argument Studio</div>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-[2px]">
+          <div className="text-xl font-bold tracking-tight text-foreground">Rhetor</div>
+          <div className="text-xs text-muted-foreground">BP Argument Studio</div>
+        </div>
+        <GhostIconButton onClick={onCollapse} aria-label="Collapse sidebar" title="Collapse sidebar">
+          <PanelLeftClose size={18} />
+        </GhostIconButton>
       </div>
 
       <div className="flex flex-1 flex-col gap-3 overflow-hidden">
@@ -246,6 +314,7 @@ function Sidebar() {
           </div>
           <div className="truncate text-xs text-muted-foreground">{user?.email}</div>
         </div>
+        <ThemeToggle />
         <Link to="/app/settings">
           <GhostIconButton>
             <Settings size={18} />
@@ -300,7 +369,6 @@ function TopBar({ motion }: { motion: Motion }) {
           </button>
         </div>
         {motion.position && <Badge tone="accent">{POSITION_LABELS[motion.position]}</Badge>}
-        <ModelSwitcher motion={motion} />
       </div>
 
       <Stepper
@@ -375,8 +443,9 @@ function ChatColumn({ motion }: { motion: Motion }) {
             placeholder={
               sending ? 'Waiting for a reply…' : 'Message Rhetor about this stage...'
             }
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
+            className="min-w-0 flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
           />
+          <ModelSwitcher motion={motion} />
           <button
             onClick={handleSend}
             aria-label="Send"
@@ -472,6 +541,14 @@ function DocumentColumn({ motion }: { motion: Motion }) {
 
 export function Workspace() {
   const { activeMotion, activeMotionId, loadingMotion } = useApp()
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => localStorage.getItem('rhetor.sidebar') !== 'closed',
+  )
+
+  function toggleSidebar(open: boolean) {
+    setSidebarOpen(open)
+    localStorage.setItem('rhetor.sidebar', open ? 'open' : 'closed')
+  }
 
   // Three distinct states, deliberately not collapsed into "no motion". A
   // motion that is merely still loading must not render the big empty-state
@@ -480,7 +557,22 @@ export function Workspace() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
+      {sidebarOpen ? (
+        <Sidebar onCollapse={() => toggleSidebar(false)} />
+      ) : (
+        // A rail rather than nothing: the reopen control has to live
+        // somewhere, and the top bar is already full at narrow widths.
+        <div className="flex h-full w-[52px] shrink-0 flex-col items-center gap-3 border-r border-border bg-sidebar-bg py-4">
+          <GhostIconButton
+            onClick={() => toggleSidebar(true)}
+            aria-label="Expand sidebar"
+            title="Expand sidebar"
+          >
+            <PanelLeftOpen size={18} />
+          </GhostIconButton>
+          <ThemeToggle />
+        </div>
+      )}
       <div className="flex h-full flex-1 flex-col bg-background">
         {activeMotion ? (
           <>
