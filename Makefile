@@ -7,6 +7,15 @@ VENV    := $(API)/.venv
 PY      := $(VENV)/bin/python
 FLASK   := $(VENV)/bin/flask --app wsgi
 API_PORT ?= 5001
+
+# The reloader watches .py files only, and prompts.py holds each prompt file in
+# an lru_cache for the life of the process — so `make api-prompts` had no effect
+# until the API was restarted by hand, silently serving the old prompt. Watching
+# the generated files makes regenerating them restart the server. Paths are
+# relative to $(API), which is where the server is launched from.
+PROMPT_FILES := $(shell ls $(API)/app/prompts/*.md 2>/dev/null | sed 's|^$(API)/||' | paste -sd: -)
+API_RUN  = ../$(VENV)/bin/flask --app wsgi run --debug --port $(API_PORT) \
+	$(if $(PROMPT_FILES),--extra-files $(PROMPT_FILES))
 DB_USER := $(shell grep -E '^POSTGRES_USER=' .env 2>/dev/null | cut -d= -f2)
 DB_USER := $(if $(DB_USER),$(DB_USER),rhetor)
 DB_NAME := $(shell grep -E '^POSTGRES_DB=' .env 2>/dev/null | cut -d= -f2)
@@ -63,7 +72,7 @@ dev: db-up ## Run everything: database, API, and frontend dev server
 	@echo "Ctrl-C stops both servers."
 	@echo ""
 	@trap 'kill 0' EXIT INT TERM; \
-		( cd $(API) && ../$(VENV)/bin/flask --app wsgi run --debug --port $(API_PORT) ) & \
+		( cd $(API) && $(API_RUN) ) & \
 		( cd $(WEB) && npm run dev ) & \
 		wait
 
@@ -146,7 +155,7 @@ api-install: ## Create the backend virtualenv and install dependencies
 
 .PHONY: api-dev
 api-dev: db-up ## Run the Flask API alone, with the reloader
-	@cd $(API) && ../$(VENV)/bin/flask --app wsgi run --debug --port $(API_PORT)
+	@cd $(API) && $(API_RUN)
 
 .PHONY: api-migrate
 api-migrate: db-up ## Apply database migrations

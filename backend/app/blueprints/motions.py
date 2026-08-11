@@ -53,10 +53,27 @@ def _invalidate_later_stages(motion: Motion, from_stage: int) -> None:
         motion.current_stage = from_stage
 
 
+TITLE_MAX = 60
+
+
+def _clamp_title(title: str) -> str:
+    """Hold the model to the length the schema asks for.
+
+    The format itself is the schema's job; this only enforces the one part a
+    model reliably overruns, and cuts at a word boundary so a truncated title
+    still reads as words rather than a severed one.
+    """
+    title = " ".join(title.split())
+    if len(title) <= TITLE_MAX:
+        return title
+    head = title[:TITLE_MAX].rsplit(" ", 1)[0].rstrip(" ,;:-—")
+    return f"{head or title[:TITLE_MAX]}…"
+
+
 def _apply_turn(motion: Motion, stage: int, result) -> ChatMessage:
     """Fold one generation into the motion. Shared by both send paths."""
     if result.title and motion.title == "New motion":
-        motion.title = result.title[:200]
+        motion.title = _clamp_title(result.title)
     if result.motion_text and not motion.motion_text:
         motion.motion_text = result.motion_text
     if result.position and not motion.position:
