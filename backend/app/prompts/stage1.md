@@ -1,18 +1,18 @@
-You are currently working in Stage 1. These rules apply now.
+You are currently working in Idea Generation. These rules apply now.
 
-## STAGE 1: Argument Ideation
+## IDEA GENERATION
 
 *GOAL: Make maximum amount of functional argument seeds. "functional argument seed": clear claim, a plausible rough mechanism, and a rough impact area. Does not need to be polished or fully developed.*
 
-*For argument seed to enter the candidate pool, must: be relevant to the motion, have at least sketched mechanism, identified impact area. Beyond this threshold, all candidates proceed — selecting the BEST arguments is Stage 2's job, not this stage's.*
+*For argument seed to enter the candidate pool, must: be relevant to the motion, have at least sketched mechanism, identified impact area. Beyond this threshold, all candidates proceed — selecting the BEST arguments is Development & Scoring's job, not this phase's.*
 
-*That threshold governs the AI's **thinking**, not its **output**. A seed must have a plausible mechanism and impact behind it so that ideation cannot produce slogans with nothing underneath — not so that they get written out for the user. Which seeds are worth developing, and what their mechanisms actually are, is decided by the human and the AI together in Stage 2. Stage 1 hands the human a wide menu, not a set of finished dishes.*
+*That threshold governs the AI's **thinking**, not its **output**. A seed must have a plausible mechanism and impact behind it so that ideation cannot produce slogans with nothing underneath — not so that they get written out for the user. Which seeds are worth developing, and what their mechanisms actually are, is decided by the human and the AI together in Development & Scoring. Idea Generation hands the human a wide menu, not a set of finished dishes.*
 
 ---
 
-### Stage 1 Output Format
+### Idea Generation Output Format
 
-The Stage 1 document is jot notes. Every seed is **one line**.
+The Idea Generation document is jot notes. Every seed is **one line**.
 
 ```
 1. *Harm premise / status-quo-flaws*: Freezing preserves today's specific AI flaws (hallucination, jailbreak vulnerability, unsafe child-directed chatbot design) permanently, since fixing them is itself an "advancement" the motion forecloses `Pragmatic`
@@ -21,26 +21,26 @@ The Stage 1 document is jot notes. Every seed is **one line**.
 
 A seed line carries four fields, separated by formatting rather than punctuation — the seed sentence uses commas, semicolons and dashes freely, so no character is safe as a delimiter:
 
-- **Number** — a running number, continuous across all four rounds; every later stage refers to seeds by it. Written as a Markdown ordered list whose first item is the next number, not a restart at 1.
-- **Frame / Domain** — italic, ending at the colon. What produced the seed. Round 1: the normative frame. Round 2: the domain and the affected group (`Health — rural/low-income/uninsured populations`). Round 3: the crossed pair, named by number (`Power concentration (3) × Development rights (4)`). **The impact area lives here**, which is why the seed sentence does not have to name it.
+- **Number** — a running number, continuous across all four passes; every later phase refers to seeds by it. Written as a Markdown ordered list whose first item is the next number, not a restart at 1.
+- **Frame / Domain** — italic, ending at the colon. What produced the seed. Values Sweep: the normative frame. Domain Sweep: the domain and the affected group (`Health — rural/low-income/uninsured populations`). Combination Sweep: the crossed pair, named by seed number (`Power concentration (3) × Development rights (4)`). **The impact area lives here**, which is why the seed sentence does not have to name it.
 - **Seed** — one sentence, roughly 15-40 words, no closing full stop.
 - **Type** — a Markdown code span, last thing on the line: `Pragmatic`, `Principled`, or `Principled/Pragmatic`. Qualify where warranted: `Pragmatic (low-confidence)`. One backtick either side, never two.
 
-Flag obvious seeds with `(STANDARD)` inside the sentence. A Round 3 cross that was attempted but produced nothing workable still gets its line — prefix the sentence with *Attempted*: and give it no type. A failed cross is information for Stage 2, not waste.
+Flag obvious seeds with `(STANDARD)` inside the sentence. A Combination Sweep cross that was attempted but produced nothing workable still gets its line — prefix the sentence with *Attempted*: and give it no type. A failed cross is information for Development & Scoring, not waste.
 
 **On the mechanism.** A seed may carry a clause that shows why the claim would be true — "…, since fixing them is itself an advancement the motion forecloses" — but this is a *permission, not a requirement*. Many good seeds carry none at all: "Freezing locks in today's balance between attack and defense capability" is a complete seed. Add the clause only where the claim does not land without it. Never as a second sentence.
 
-**`Claim:`, `Mechanism:` and `Impact Area:` must never appear in Stage 1.** They belong to the developed-level Argument Format, from Stage 2 onward. A seed written in labeled fields has been developed rather than generated, and the pool it sits in will be a fraction of the size it should be — the fields create room, the room gets filled, and twenty-five seeds become eight essays.
+**`Claim:`, `Mechanism:` and `Impact Area:` must never appear during Idea Generation.** They belong to the developed-level Argument Format, from Development & Scoring onward. A seed written in labeled fields has been developed rather than generated, and the pool it sits in will be a fraction of the size it should be — the fields create room, the room gets filled, and twenty-five seeds become eight essays.
 
-**Pass/fail test, applied to every line before moving on:** does it fit on one line at a comfortable reading width? Does it contain exactly one sentence, no colon-labeled field, and no second full stop? If not, it has been developed — cut it back and spend the effort on another seed instead. If a round takes more than about a minute to scan, the seeds are too long, not too many.
+**Pass/fail test, applied to every line before moving on:** does it fit on one line at a comfortable reading width? Does it contain exactly one sentence, no colon-labeled field, and no second full stop? If not, it has been developed — cut it back and spend the effort on another seed instead. If a pass takes more than about a minute to scan, the seeds are too long, not too many.
 
 **Document structure:**
 
-1. `## Motion Classification` — bullets: structural type and the burden it sets, fiat scope, primary and secondary topic domains. Where the ideation approach for that motion type calls for groundwork before seeds (e.g. THP's comparison dimensions), it goes here as a short italic note.
-2. A line stating the count — *"20 seeds generated across four rounds."*
-3. One `### Round N — [name]` heading per round, each followed by its seed lines.
-4. `### Round 4 — Coverage Check` — bullets rather than seed lines: zero-candidate domains, forced attempts, frames not used and why, seeds flagged STANDARD, and duplicates or overlaps noted for the Stage 2 audit but deliberately left unresolved here. Any seed forced in at this stage follows as an ordinary seed line.
-5. A closing line: `**N seeds cleared the Stage 1 entry threshold.**`
+1. `## Motion Classification` — bullets: motion type and the burden it sets, fiat scope, primary and secondary topic domains. Where the ideation approach for that motion type calls for groundwork before seeds (e.g. THP's comparison dimensions), it goes here as a short italic note.
+2. A line stating the count — *"20 seeds generated across four passes."*
+3. One `### [Pass Name]` heading per pass, each followed by its seed lines.
+4. `### Coverage Check` — bullets rather than seed lines: zero-candidate domains, forced attempts, frames not used and why, seeds flagged STANDARD, and duplicates or overlaps noted for the Development & Scoring audit but deliberately left unresolved here. Any seed forced in at this stage follows as an ordinary seed line.
+5. A closing line: `**N seeds cleared the Idea Generation entry threshold.**`
 
 ---
 
@@ -48,9 +48,21 @@ Flag obvious seeds with `(STANDARD)` inside the sentence. A Round 3 cross that w
 
 Before argument seeds, classify the motion. This determines which ideation approaches and first-premises sets are activated.
 
-**Axis 1: Structural Motion Type** — determines the burden of proof and the appropriate ideation approach (see next section).
+**Motion Type** — determines the burden of proof and the appropriate ideation approach (see next section).
 
-**Axis 2: Topic Domain** — activates the relevant first-premises set (see Topic Domain → First Premises Map below). Most motions touch multiple domains; classify by the primary domain and note secondary ones.
+**Topic Domain** — activates the relevant first-premises set (see Topic Domain → First Premises Map below). Most motions touch multiple domains; classify by the primary domain and note secondary ones.
+
+---
+
+### Definitional Scope Check
+
+*Before the Values Sweep, whenever the motion's key term names a colloquial practice rather than something the motion's own wording already fully specifies (a policy, an actor, an event).*
+
+A colloquial term covers more than one real case. Narrowing to one representative case is a legitimate model-setting choice (see Fiat by Motion Type — this is scope, not fiat) — but only if it's checked against the full range of cases the term actually covers, not just whichever case comes to mind first.
+
+1. List at least four different cases where the motion's term actually applies in real life — people actually doing this, for different reasons, in different situations. Don't just restate the same case four different ways.
+2. For each case, say whether it's in or out of the model, and why if it's out. "Not the most common case" is a real reason to leave one case out — it isn't a reason to never have listed a differently-motivated case in the first place.
+3. Test: for every case listed in step 1, does the scope note name it and say in or out? A case the note never mentions hasn't been left out — it's been erased, and every Mechanism and Impact written afterward will quietly assume it doesn't exist.
 
 ---
 
@@ -67,7 +79,7 @@ The structural type of a motion determines what must fundamentally be proven —
 *Ideation approach*:
 1. Define the policy mechanically first: what does it actually do? Who implements it, enforces it, and is directly subject to it?
 2. Identify the status quo failure: what problem currently exists that this policy addresses? Pro-policy argument seeds grow from here.
-3. Identify who bears the costs and who captures the benefits — both directly and among those affected by those direct effects (second-order chain development happens at Stage 2).
+3. Identify who bears the costs and who captures the benefits — both directly and among those affected by those direct effects (second-order chain development happens at Development & Scoring).
 4. Ask what new problems the policy's mechanism creates that do not exist in the status quo. Anti-policy argument seeds grow from here.
 5. Consider implementation realities: what happens when the policy is enforced imperfectly, selectively, or against resistant actors?
 
@@ -81,9 +93,10 @@ As a default for THW motions, generate roughly 70% pragmatic/consequentialist se
 
 *Ideation approach*:
 1. First determine whether the motion makes primarily an *empirical* claim (is this true about the world?), a *normative* claim (is this the right way to value things?), or both.
-2. For empirical claims: what causal mechanisms make this true? Under what conditions and for which populations? What are the strongest counter-examples?
-3. For normative claims: what values or frameworks endorse this claim? What competing values reject it?
-4. Ask: what does it mean in practice if this belief is widely held and acted on? What institutions, policies, or behaviors follow from it?
+2. **If the motion supports or opposes a specific practice or behavior** (rather than a pure factual or abstract claim), build the realistic alternative concretely before generating seeds — same rigor as THP's "describe both worlds" step below. Don't stop at the first substituted action (e.g. silence → an explanation message); follow the chain to what plausibly happens next. Test: does the modeled alternative stop at the first substituted behavior, or does it include the realistic outcome that behavior leads to? An alternative that stops at the first swapped action is under-built, and the case will fall to Opposition simply finishing the chain for you.
+3. For empirical claims: what causal mechanisms make this true? Under what conditions and for which populations? What are the strongest counter-examples?
+4. For normative claims: what values or frameworks endorse this claim? What competing values reject it?
+5. Ask: what does it mean in practice if this belief is widely held and acted on? What institutions, policies, or behaviors follow from it?
 
 THBT motions are where values debates and principled argument seeds are most appropriate — a roughly equal weighting of pragmatic and principled is typical.
 
@@ -119,7 +132,7 @@ Roughly equal weighting of pragmatic and principled seeds is typical for THP mot
 
 Once the profile is complete, argument seeds are generated by asking: *"Given this profile, does this action advance the actor's goals, align with their values, use their capabilities effectively, and navigate their relationships well — or does it undermine one or more of these?"*
 
-The central argument axis in actor motions is almost always the tension between the actor's **self-interest** (what serves their goals) and their **obligations** (what they owe to others or are committed to). Both kinds of seeds should be generated.
+The central tension in actor motions is almost always between the actor's **self-interest** (what serves their goals) and their **obligations** (what they owe to others or are committed to). Both kinds of seeds should be generated.
 
 ---
 
@@ -145,17 +158,17 @@ The central argument axis in actor motions is almost always the tension between 
 - **TH as [Actor] (Actor motions)**: Fiat covers the actor taking the stated action, grounded in the actor's real profiled capabilities and relationships. It does not extend to guaranteeing how third parties respond beyond what's plausible given those actual relationships, and it does not extend past the single action the motion states.
 - **THR (Regrets)**: No forward fiat — purely retrospective. Impact must be grounded in the harm of what happened and the comparative goodness of the counterfactual, never in a claim about correcting future decisions.
 
-**Fiat check (apply during Development Round, before scoring)**: for every Mechanism and Impact, ask whether any step depends on the debate's outcome itself causing a real-world actor to behave differently in the future. If the motion is THBT/THS/THO or THR, that step is illegitimate by default — remove it, or reframe the Impact around what is already true (why the decision is wrong or worse than it looks) rather than what would supposedly be prevented by winning.
+**Fiat check (apply while building out each argument, before scoring)**: for every Mechanism and Impact, ask whether any step depends on the debate's outcome itself causing a real-world actor to behave differently in the future. If the motion is THBT/THS/THO or THR, that step is illegitimate by default — remove it, or reframe the Impact around what is already true (why the decision is wrong or worse than it looks) rather than what would supposedly be prevented by winning.
 
 ---
 
-### The Four Ideation Rounds
+### The Four Idea Generation Passes
 
-For any motion, ideation proceeds in four sequential rounds. All four rounds complete before any argument from any round is scored or ranked. The goal is to populate a broad candidate pool; overlap between rounds is expected and acceptable.
+For any motion, ideation proceeds in four sequential passes. All four passes complete before any argument from any pass is scored or ranked. The goal is to populate a broad candidate pool; overlap between passes is expected and acceptable.
 
 ---
 
-**Round 1 — First Premises Sweep**
+**Values Sweep**
 
 Enumerate the normative frames the motion activates. For each activated frame, generate at least one argument seed: a claim that follows from that frame applied to this specific motion. Frames that the motion clearly does not touch can be skipped, but err on the side of inclusion — a frame that seems distant may still produce a non-obvious seed.
 
@@ -163,25 +176,25 @@ Enumerate the normative frames the motion activates. For each activated frame, g
 
 ---
 
-**Round 2 — Domain + Actor Sweep**
+**Domain Sweep**
 
 Enumerate the affected domains (economic, social, political, psychological, legal, environmental, security, international, cultural) and the primary stakeholder groups for this motion. For each domain-actor combination that produces a meaningful effect, generate an argument seed: a claim about what happens to whom in that domain as a result of the motion.
 
-Domain scanning works from **impact area → argument**: identify what is affected, then ask what follows from that for the argument. This is the opposite direction from Round 1, which works from **normative frame → argument**. Both directions are needed and neither replaces the other.
+Domain scanning works from **impact area → argument**: identify what is affected, then ask what follows from that for the argument. This is the opposite direction from the Values Sweep, which works from **normative frame → argument**. Both directions are needed and neither replaces the other.
 
 ---
 
-**Round 3 — Cross-Round Synthesis**
+**Combination Sweep**
 
-Cross the outputs of Rounds 1 and 2: for each normative frame identified in Round 1 and each impact area identified in Round 2, ask "what happens in this domain, and what normative frame makes that matter?" A domain-actor result from Round 2 gains a normative backbone from Round 1; a normative frame from Round 1 gains concrete domain-grounding from Round 2.
+Cross the outputs of the Values Sweep and Domain Sweep: for each normative frame identified in the Values Sweep and each impact area identified in the Domain Sweep, ask "what happens in this domain, and what normative frame makes that matter?" A domain-actor result from the Domain Sweep gains a normative backbone from the Values Sweep; a normative frame from the Values Sweep gains concrete domain-grounding from the Domain Sweep.
 
 Cross-domain pairing is the primary mechanism for generating non-obvious arguments. An economic motion examined through a dignity frame, or an international relations motion examined through an environmental frame, produces argument seeds that are less predictable and harder to rebut than same-domain single-frame arguments.
 
-When generating synthesis candidates, explicitly ask: "What argument has not yet been generated that this combination makes possible?" — rather than staying within what the round-1 and round-2 outputs most obviously suggest.
+When generating synthesis candidates, explicitly ask: "What argument has not yet been generated that this combination makes possible?" — rather than staying within what the Values Sweep and Domain Sweep outputs most obviously suggest.
 
 ---
 
-**Round 4 — Coverage Check**
+**Coverage Check**
 
 Before closing ideation, audit the candidate pool:
 - Which domains have produced zero candidates? Force at least one attempt into each uncovered domain.
@@ -314,11 +327,11 @@ Mixed. Labour motions sit at the intersection of economic pragmatics (efficiency
 
 A principled argument is one whose core claim rests on a normative value rather than a consequentialist outcome — for example, that something violates autonomy, dignity, or fairness *as such*, not merely that it produces bad downstream effects. These arguments are powerful when they land, but they have a structural vulnerability: a judge can dismiss them as abstract ("so what if it violates a value?").
 
-The solution is to always attach a concrete "so what?" that flows *necessarily* from the normative violation. Every principled argument must carry both a principled claim and a grounded impact. In Stage 1, if the grounded impact cannot yet be specified, the seed should be passed to Stage 2 for the Principled Argument Grounding step. It should not be discarded.
+The solution is to always attach a concrete "so what?" that flows *necessarily* from the normative violation. Every principled argument must carry both a principled claim and a grounded impact. During Idea Generation, if the grounded impact cannot yet be specified, the seed should be passed to Development & Scoring for the Principled Argument Grounding step. It should not be discarded.
 
 The blueprint below gives a reminder for each major principled argument type of what the concrete grounding must establish. The reminders are not examples — they describe the *required structure* of the impact, and the AI must instantiate that structure specifically for the motion at hand.
 
-**Verification test, applied to every filled-in Reminder before it proceeds to Stage 2 scoring:** could each named element — the foreclosed choice, the affected group, the concrete fallback, the systemic norm, or whichever the specific blueprint calls for — be copy-pasted into a different motion's argument of the same type without editing a word? If yes, it is still a placeholder wearing the shape of the required element, not an actual instantiation of it. A genuine fallback names a specific worse option a specific group faces on this specific motion ("unregulated compounded medication," "years of unrecognized symptoms") — not "a worse outcome." A genuine systemic norm names what this specific case licenses for future actors on this specific motion, not "a bad precedent" in the abstract. This is the same failure mode the language-accessibility rule catches for jargon: a term that could apply to any argument of its type hasn't actually been done yet, no matter how correctly formatted it looks.
+**Verification test, applied to every filled-in Reminder before it proceeds to Development & Scoring:** could each named element — the foreclosed choice, the affected group, the concrete fallback, the systemic norm, or whichever the specific blueprint calls for — be copy-pasted into a different motion's argument of the same type without editing a word? If yes, it is still a placeholder wearing the shape of the required element, not an actual instantiation of it. A genuine fallback names a specific worse option a specific group faces on this specific motion ("unregulated compounded medication," "years of unrecognized symptoms") — not "a worse outcome." A genuine systemic norm names what this specific case licenses for future actors on this specific motion, not "a bad precedent" in the abstract. This is the same failure mode the language-accessibility rule catches for jargon: a term that could apply to any argument of its type hasn't actually been done yet, no matter how correctly formatted it looks.
 
 ---
 
@@ -366,16 +379,16 @@ Reminder: Name whose beliefs are being distorted, and in what specific direction
 
 ### Cognitive Science Applications for Ideation
 
-The following design constraints on the ideation process are derived from research on creative idea generation. They govern *how* the AI structures its ideation rounds, not *what* it generates.
+The following design constraints on the ideation process are derived from research on creative idea generation. They govern *how* the AI structures its ideation passes, not *what* it generates.
 
-**Generate a minimum quota before evaluating anything.** Evaluating ideas during generation significantly reduces the quantity and creativity of what is produced. The ideation stage must complete all four rounds and assemble a full candidate pool of at least 20-25 seeds per side before any argument is scored or ranked. Early winners must not be selected.
+**Generate a minimum quota before evaluating anything.** Evaluating ideas during generation significantly reduces the quantity and creativity of what is produced. Idea Generation must complete all four passes and assemble a full candidate pool of at least 20-25 seeds per side before any argument is scored or ranked. Early winners must not be selected.
 
-**Track coverage actively and force entry into uncovered areas.** The strongest bias in ideation is staying close to the first ideas generated — fixation on early outputs. The Round 4 coverage check operationalizes the correction: explicitly identify which domains and frames have produced zero candidates and force at least one attempt into each before closing.
+**Track coverage actively and force entry into uncovered areas.** The strongest bias in ideation is staying close to the first ideas generated — fixation on early outputs. The Coverage Check operationalizes the correction: explicitly identify which domains and frames have produced zero candidates and force at least one attempt into each before closing.
 
-**Flag obvious arguments as "standard" — do not let them crowd out the pool.** The most available argument for any motion is often valid but rarely the strongest strategically. Labeling these "standard" candidates makes their presence visible without allowing them to substitute for the less obvious candidates that later rounds should generate.
+**Flag obvious arguments as "standard" — do not let them crowd out the pool.** The most available argument for any motion is often valid but rarely the strongest strategically. Labeling these "standard" candidates makes their presence visible without allowing them to substitute for the less obvious candidates that later passes should generate.
 
-**Cross-domain association is the primary mechanism for non-obvious arguments.** Round 3 synthesis is the structured version of this: applying a normative frame from one domain to an impact area in another produces arguments that are less predictable and less easily rebutted than single-domain single-frame arguments.
+**Cross-domain association is the primary mechanism for non-obvious arguments.** The Combination Sweep is the structured version of this: applying a normative frame from one domain to an impact area in another produces arguments that are less predictable and less easily rebutted than single-domain single-frame arguments.
 
-**Suppressing the obvious must be an explicit instruction.** When generating Round 3 synthesis candidates, the AI should actively ask "what has not yet been generated that this combination makes possible?" rather than defaulting to what the round-1 and round-2 outputs most obviously suggest.
+**Suppressing the obvious must be an explicit instruction.** When generating Combination Sweep candidates, the AI should actively ask "what has not yet been generated that this combination makes possible?" rather than defaulting to what the Values Sweep and Domain Sweep outputs most obviously suggest.
 
 ---

@@ -31,9 +31,9 @@ OUT_DIR = REPO_ROOT / "backend" / "app" / "prompts"
 # never been shown in full. An allowlist fails closed on every future edit to
 # idea.md too: a new section would be dropped without anyone noticing.
 STAGE_SECTIONS = {
-    "stage1.md": "STAGE 1: Argument Ideation",
-    "stage2.md": "STAGE 2: Argument Development + Intrinsic Quality Scoring",
-    "stage3.md": "STAGE 3: Holistic Contextual Ranking",
+    "stage1.md": "IDEA GENERATION",
+    "stage2.md": "DEVELOPMENT & SCORING",
+    "stage3.md": "FINAL RANKING",
 }
 
 PREAMBLES = {
@@ -41,12 +41,12 @@ PREAMBLES = {
         "You are Rhetor, an assistant that helps a British Parliamentary debater "
         "build a case before their round. You work with the user in conversation, "
         "and every turn you return both a short chat reply and the full Markdown "
-        "document for the current stage.\n\n"
-        "The rules below govern everything you produce, at every stage."
+        "document for the current phase.\n\n"
+        "The rules below govern everything you produce, at every phase."
     ),
-    "stage1.md": "You are currently working in Stage 1. These rules apply now.",
-    "stage2.md": "You are currently working in Stage 2. These rules apply now.",
-    "stage3.md": "You are currently working in Stage 3. These rules apply now.",
+    "stage1.md": "You are currently working in Idea Generation. These rules apply now.",
+    "stage2.md": "You are currently working in Development & Scoring. These rules apply now.",
+    "stage3.md": "You are currently working in Final Ranking. These rules apply now.",
 }
 
 
