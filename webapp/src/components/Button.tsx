@@ -1,15 +1,23 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-type Variant = 'primary' | 'outline' | 'ghost' | 'accent'
+/**
+ * Rule 1 of the design system: the primary action is an ACCENT OUTLINE on
+ * transparent, tinted on hover, one ramp step deeper on press — never a solid
+ * fill. `solid` is an escape hatch, against the grain, use sparingly.
+ */
+type Variant = 'primary' | 'secondary' | 'ghost' | 'link' | 'solid'
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-[6px] px-[18px] py-[10px] text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap'
+  'inline-flex items-center justify-center gap-2 rounded-md px-[18px] py-[9px] text-sm font-medium transition-colors whitespace-nowrap disabled:opacity-45 disabled:pointer-events-none'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-  accent: 'bg-accent text-[#FFF8EF] hover:bg-accent/90',
-  outline: 'bg-card text-foreground border border-border hover:bg-background',
-  ghost: 'text-foreground hover:bg-black/5',
+  primary:
+    'border border-accent-500 bg-transparent text-accent-800 hover:bg-accent-100 active:bg-accent-200 active:border-accent-600',
+  secondary:
+    'border border-border bg-transparent text-foreground hover:bg-accent-100/60 active:bg-accent-200/70',
+  ghost: 'bg-transparent text-accent-800 hover:bg-accent-100 active:bg-accent-200',
+  link: 'px-0 py-0 text-accent-700 underline-offset-4 hover:text-accent-800 hover:underline',
+  solid: 'bg-accent-700 text-[#fffaf3] hover:bg-accent-800',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -32,7 +40,7 @@ export function GhostIconButton({
 }: ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
   return (
     <button
-      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[6px] text-muted-foreground hover:bg-black/5 ${className}`}
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent-100 hover:text-accent-800 ${className}`}
       {...rest}
     >
       {children}

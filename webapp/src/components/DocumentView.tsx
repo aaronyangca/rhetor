@@ -12,7 +12,7 @@ import remarkGfm from 'remark-gfm'
  */
 export function DocumentView({ markdown }: { markdown: string }) {
   return (
-    <div className="doc-prose prose prose-sm max-w-none">
+    <div className="doc-prose max-w-none">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
     </div>
   )

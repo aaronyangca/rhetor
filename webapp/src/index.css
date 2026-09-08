@@ -1,176 +1,303 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-serif: "Source Serif 4", serif;
-  --font-display: "Fraunces", serif;
-  --font-wordmark: "Cinzel", serif;
-
-  --color-background: #faf7f2;
-  --color-foreground: #2b2620;
-  --color-muted-foreground: #7a7266;
-  --color-card: #ffffff;
-  --color-border: #e6ded2;
-  --color-primary: #2c3968;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #eaf1ee;
-  --color-secondary-foreground: #2c3968;
-  --color-accent: #c1622b;
-  --color-accent-soft: #fbeadd;
-  --color-success: #3f7d58;
-  --color-success-soft: #e6f0e9;
-  --color-destructive: #b23b3b;
-  --color-destructive-soft: #f3e3e1;
-  --color-sidebar-bg: #f2ece2;
-  --color-document-bg: #fffdf9;
-}
-
-/* Dark theme.
+/* Rhetor — "Classical" terracotta-and-cream system.
+ * Ported from design/README.md + design/shadcn/globals.css. Light-only by
+ * design: there is no dark theme. Values are literal (hex / rgba / color-mix),
+ * which Tailwind v4 emits as :root custom properties.
  *
- * Only the token values change — every component keeps referring to
- * --color-card, --color-border and so on, so nothing needs a dark: variant.
- * The palette stays warm rather than going blue-grey: the light theme is a
- * paper-and-ink look, and a cold dark mode would read as a different product.
- *
- * The toggle writes data-theme on <html>, so an explicit choice wins over the
- * OS setting in both directions; the media query only applies when no choice
- * has been made.
+ * Four rules that make it read as Rhetor (design/README.md):
+ *   1. Buttons are outlined, not filled.
+ *   2. Bold is retired — headings cap at 500/600, body strong sets plain.
+ *   3. Hairlines, not cards — structure from 1px rules and whitespace.
+ *   4. No coloured pills/badges for metadata — plain muted text.
  */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-background: #17140f;
-    --color-foreground: #ece4d8;
-    --color-muted-foreground: #9b9184;
-    --color-card: #211d17;
-    --color-border: #3a332a;
-    --color-primary: #8496d6;
-    --color-primary-foreground: #14161f;
-    --color-secondary: #26302b;
-    --color-secondary-foreground: #cfdcd5;
-    --color-accent: #e08c55;
-    --color-accent-soft: #3b2517;
-    --color-success: #74ab88;
-    --color-success-soft: #1f2e24;
-    --color-destructive: #e08079;
-    --color-destructive-soft: #3a1f1d;
-    --color-sidebar-bg: #1d1913;
-    --color-document-bg: #1b1712;
-  }
-}
+@theme {
+  /* Typography — the two faces are the whole identity (SPEC.md 1.2). */
+  --font-heading: "Cormorant Garamond", Georgia, serif; /* landing display only */
+  --font-body: "Lora", Georgia, serif;                   /* body + ALL app chrome */
+  --font-sans: "Lora", Georgia, serif;                   /* nothing should fall to a system sans */
+  --font-serif: "Lora", Georgia, serif;
 
-:root[data-theme="dark"] {
-  --color-background: #17140f;
-  --color-foreground: #ece4d8;
-  --color-muted-foreground: #9b9184;
-  --color-card: #211d17;
-  --color-border: #3a332a;
-  --color-primary: #8496d6;
-  --color-primary-foreground: #14161f;
-  --color-secondary: #26302b;
-  --color-secondary-foreground: #cfdcd5;
-  --color-accent: #e08c55;
-  --color-accent-soft: #3b2517;
-  --color-success: #74ab88;
-  --color-success-soft: #1f2e24;
-  --color-destructive: #e08079;
-  --color-destructive-soft: #3a1f1d;
-  --color-sidebar-bg: #1d1913;
-  --color-document-bg: #1b1712;
+  /* Terracotta accent ramp (SPEC.md 1.1). 400/500 are interpolated — the spec
+     ramp is 100/200/300/600/700/800/900; 500 == the base accent. */
+  --color-accent-100: #f8e7d8;
+  --color-accent-200: #f1cfb4;
+  --color-accent-300: #e5b48d;
+  --color-accent-400: #d68f5f;
+  --color-accent-500: #c67139;
+  --color-accent-600: #b0602e;
+  --color-accent-700: #96501f; /* accent text at paragraph size — 4.5:1 on cream */
+  --color-accent-800: #7a3f18; /* active stage label, link hover */
+  --color-accent-900: #5b2d10; /* closing band field */
+
+  /* Surface roles. */
+  --color-background: #f5ead8;      /* cream page ground (SPEC --color-bg) */
+  --color-foreground: #201f1d;      /* body ink (SPEC --color-text) */
+  --color-card: #fffaf3;            /* raised surfaces (SPEC --color-surface) */
+  --color-border: #e5b48d;          /* accent-300 — used only where an opaque line is wanted */
+  --color-divider: rgba(90, 45, 16, 0.2); /* THE hairline — nav chrome, headers, rules */
+  --color-muted-foreground: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+
+  --color-accent: #c67139;
+  --color-accent-soft: #f8e7d8;
+
+  /* Hierarchy comes from color-mix against the ink, in srgb, at exact steps
+     (SPEC.md 1.1 "Derived colours"). Not a grey ramp, not oklab opacity. */
+  --color-ink-90: color-mix(in srgb, var(--color-foreground) 90%, transparent);
+  --color-ink-82: color-mix(in srgb, var(--color-foreground) 82%, transparent);
+  --color-ink-76: color-mix(in srgb, var(--color-foreground) 76%, transparent);
+  --color-ink-72: color-mix(in srgb, var(--color-foreground) 72%, transparent);
+  --color-ink-70: color-mix(in srgb, var(--color-foreground) 70%, transparent);
+  --color-ink-68: color-mix(in srgb, var(--color-foreground) 68%, transparent);
+  --color-ink-64: color-mix(in srgb, var(--color-foreground) 64%, transparent);
+  --color-ink-62: color-mix(in srgb, var(--color-foreground) 62%, transparent);
+  --color-ink-60: color-mix(in srgb, var(--color-foreground) 60%, transparent);
+  --color-ink-58: color-mix(in srgb, var(--color-foreground) 58%, transparent);
+  --color-ink-48: color-mix(in srgb, var(--color-foreground) 48%, transparent);
+  --color-ink-40: color-mix(in srgb, var(--color-foreground) 40%, transparent);
+  --color-ink-20: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+  --color-ink-16: color-mix(in srgb, var(--color-foreground) 16%, transparent);
+  --color-ink-15: color-mix(in srgb, var(--color-foreground) 15%, transparent);
+  --color-ink-12: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+  --color-ink-10: color-mix(in srgb, var(--color-foreground) 10%, transparent);
+
+  /* "primary" in this system is the accent — the primary action is an accent
+     outline, never a solid fill (SPEC.md 1.4). */
+  --color-primary: #96501f;
+  --color-primary-foreground: #fffaf3;
+  --color-secondary: #f8e7d8;
+  --color-secondary-foreground: #7a3f18;
+
+  /* Landing hero literals — sit over photography, not tokens (SPEC.md 1.1). */
+  --color-hero-ink: #1a1512;   /* headline */
+  --color-hero-sub: #4b423a;   /* sub-meta */
+
+  --color-success: #5f7a4e;
+  --color-success-soft: #e6ecdd;
+  --color-destructive: #a83b2f;
+  --color-destructive-soft: #f3e0da;
+
+  /* Panel grounds (SPEC.md 1.1). Percentages were lowered three times on client
+     feedback — do not raise them. */
+  --color-sidebar-bg: color-mix(in srgb, var(--color-accent-100) 10%, var(--color-background));
+  --color-document-bg: color-mix(in srgb, var(--color-card) 55%, var(--color-background));
+  --color-selected-row: color-mix(in srgb, var(--color-accent-200) 30%, transparent);
+
+  --radius-md: 4px;   /* Classical radius */
+  --radius-lg: 8px;   /* composer + message surfaces */
+
+  --shadow-sm: 0 1px 2px rgb(45 43 43 / 0.14);
+  --shadow-lg: 0 12px 32px rgb(45 43 43 / 0.22); /* hero product panel only */
 }
 
 body {
   margin: 0;
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-body);
+  text-wrap: pretty;
+  /* Left at the platform default (subpixel on macOS) — `antialiased` renders
+     the serif faces too light. */
 }
 
 * {
   box-sizing: border-box;
 }
 
+/* Never the browser default (design/README.md interactions table). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-accent-200);
+  color: var(--color-foreground);
+}
+
+/* Landing hero — the rotating verb rises 6px and fades in on entry. */
+@keyframes rh-verb-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * The stage document (right column of the workspace).
+ *
+ * One continuous document, not a card plus a list. Self-contained rather than
+ * layered on the typography plugin — the design wants plain document rhythm
+ * (paragraph margins, hairline rules), not the plugin's decoration.
+ *
+ * The model emits argument fields as a bulleted list with bold labels
+ * (`- **Claim:** …`); "bold is retired" so `strong` sets plain, and the
+ * top-level list renders as prose paragraphs rather than bullets. Nested lists
+ * (mechanism steps) keep their markers.
+ * ---------------------------------------------------------------------- */
 .doc-prose {
-  --tw-prose-body: var(--color-foreground);
-  --tw-prose-headings: var(--color-foreground);
-  --tw-prose-bold: var(--color-foreground);
-  --tw-prose-bullets: var(--color-muted-foreground);
-  --tw-prose-hr: var(--color-border);
-  font-family: var(--font-serif);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.72;
+  color: var(--color-foreground);
 }
 
-.doc-prose p:first-child {
-  font-family: var(--font-sans);
-  color: var(--color-accent);
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
-
-.doc-prose p:first-child + p {
-  font-family: var(--font-sans);
-  color: var(--color-muted-foreground);
-  font-size: 13px;
+.doc-prose > :first-child {
   margin-top: 0;
 }
 
-.doc-prose h3 {
-  font-family: var(--font-serif);
+.doc-prose h1,
+.doc-prose h2,
+.doc-prose h3,
+.doc-prose h4 {
+  font-family: var(--font-body);
+  font-weight: 400; /* SPEC.md 3.6 — argument titles are Lora 400, never bold */
+  font-size: 21px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--color-foreground);
+  /* Spec is margin:0 0 4px between title and its status line; the top margin
+     gives breathing room when the model omits an <hr> between arguments. */
+  margin: 1.6em 0 4px;
+}
+
+/* The status sentence directly under an argument heading: 15.5/1.7, 70% ink. */
+.doc-prose :is(h1, h2, h3, h4) + p {
+  line-height: 1.7;
+  color: var(--color-ink-70);
+}
+
+.doc-prose p {
+  margin: 0 0 1em;
+}
+
+/* Bold is retired at 700, but inline emphasis and scoring-table cells still
+   need weight to carry structure. */
+.doc-prose strong {
   font-weight: 600;
-  font-size: 19px;
-  margin-top: 1.4em;
 }
 
+/* The C/M/E/I field labels the model emits as `- **Claim:** …` read as plain
+   text, per the design. */
+.doc-prose > ul > li > strong:first-child,
+.doc-prose > ul > li > p:first-child > strong:first-child {
+  font-weight: 400;
+}
+
+.doc-prose em {
+  font-style: italic;
+  color: var(--color-muted-foreground);
+}
+
+/* Top-level field list → document prose. */
+.doc-prose > ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 1em;
+}
+
+.doc-prose > ul > li {
+  margin: 0 0 1em;
+}
+
+/* Nested lists (causal steps, sub-points) keep their markers. */
+.doc-prose ul ul,
+.doc-prose ol,
+.doc-prose li > ul {
+  padding-left: 1.4em;
+  margin: 0.5em 0;
+}
+
+.doc-prose ul ul,
+.doc-prose li > ul {
+  list-style: disc;
+}
+
+.doc-prose ol {
+  list-style: decimal;
+}
+
+.doc-prose li {
+  margin: 0.3em 0;
+}
+
+/* Arguments are parted by a hairline, not boxed. */
 .doc-prose hr {
-  margin: 1.25em 0;
+  border: 0;
+  border-top: 1px solid var(--color-divider);
+  margin: 34px 0;
 }
 
-/* The typography plugin renders inline code as `like this`, adding literal
- * backtick characters through ::before/::after. That is a sensible default for
- * an article about code; here the code span is a pill-shaped tag (an argument
- * type, a stage marker), and the backticks read as stray punctuation the model
- * emitted. */
+.doc-prose a {
+  color: var(--color-accent-700);
+  text-decoration: none;
+}
+
+.doc-prose a:hover {
+  color: var(--color-accent-800);
+  text-decoration: underline;
+}
+
+/* GFM tables — the Stage 1 seed pool and Stage 2 scoring tables. Figures set
+   tabular where they stand as figures. */
+.doc-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 14px;
+  font-feature-settings: "tnum" 1;
+}
+
+.doc-prose th,
+.doc-prose td {
+  border: 1px solid var(--color-divider);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-prose th {
+  font-weight: 500;
+}
+
+.doc-prose code {
+  font-family: var(--font-body);
+  background: color-mix(in srgb, var(--color-accent-100) 60%, transparent);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+
 .doc-prose code::before,
 .doc-prose code::after {
   content: none;
 }
 
-.doc-prose code {
-  font-family: var(--font-sans);
-  background: var(--color-success-soft);
-  color: var(--color-success);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.doc-prose strong {
-  font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 10.5px;
-  letter-spacing: 0.5px;
+.doc-prose blockquote {
+  border-left: 2px solid var(--color-divider);
+  padding-left: 12px;
+  margin: 1em 0;
   color: var(--color-muted-foreground);
-  display: inline-block;
-  margin-top: 0.9em;
 }
 
-.doc-prose em {
+.doc-prose del {
   color: var(--color-muted-foreground);
-  font-style: italic;
 }
 
-/* Chat replies are Markdown too, but they need their own scale: `doc-prose`
-   restyles `strong` as a field label, which is right for the stage document
-   and wrong in a conversation. Self-contained rather than layered on the
-   typography plugin, whose default margins are far too airy inside a bubble. */
+/* -------------------------------------------------------------------------
+ * Chat replies (Rhetor's messages). No surface: full column width, a small
+ * muted "Rhetor" label sits above this block in the component.
+ * ---------------------------------------------------------------------- */
 .chat-prose {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.5;
-  color: inherit;
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.68;
+  color: var(--color-foreground);
 }
 
 .chat-prose > :first-child {
@@ -182,13 +309,13 @@ body {
 }
 
 .chat-prose p {
-  margin: 0.65em 0;
+  margin: 0 0 12px;
 }
 
 .chat-prose ul,
 .chat-prose ol {
-  margin: 0.65em 0;
-  padding-left: 1.3em;
+  margin: 12px 0;
+  padding-left: 1.4em;
 }
 
 .chat-prose ul {
@@ -200,10 +327,9 @@ body {
 }
 
 .chat-prose li {
-  margin: 0.25em 0;
+  margin: 0.3em 0;
 }
 
-/* Markdown wraps list text in <p> when the list is loose. */
 .chat-prose li > p {
   margin: 0.15em 0;
 }
@@ -212,13 +338,14 @@ body {
 .chat-prose h2,
 .chat-prose h3,
 .chat-prose h4 {
-  font-weight: 700;
-  font-size: 14.5px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 16px;
   margin: 1em 0 0.4em;
 }
 
 .chat-prose strong {
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .chat-prose em {
@@ -226,23 +353,23 @@ body {
 }
 
 .chat-prose a {
-  color: var(--color-primary);
+  color: var(--color-accent-700);
   text-decoration: underline;
 }
 
 .chat-prose code {
-  font-family: var(--font-sans);
-  background: var(--color-secondary);
-  border-radius: 4px;
+  font-family: var(--font-body);
+  background: color-mix(in srgb, var(--color-accent-100) 60%, transparent);
+  border-radius: 3px;
   padding: 1px 5px;
-  font-size: 12.5px;
+  font-size: 0.92em;
 }
 
 .chat-prose pre {
-  background: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-accent-100) 50%, transparent);
   border-radius: 6px;
   padding: 10px 12px;
-  margin: 0.65em 0;
+  margin: 12px 0;
   overflow-x: auto;
 }
 
@@ -252,28 +379,28 @@ body {
 }
 
 .chat-prose blockquote {
-  border-left: 2px solid var(--color-border);
+  border-left: 2px solid var(--color-divider);
   padding-left: 10px;
-  margin: 0.65em 0;
+  margin: 12px 0;
   color: var(--color-muted-foreground);
 }
 
 .chat-prose hr {
   border: 0;
-  border-top: 1px solid var(--color-border);
-  margin: 0.9em 0;
+  border-top: 1px solid var(--color-divider);
+  margin: 14px 0;
 }
 
 .chat-prose table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.65em 0;
-  font-size: 13px;
+  margin: 12px 0;
+  font-size: 13.5px;
 }
 
 .chat-prose th,
 .chat-prose td {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-divider);
   padding: 4px 8px;
   text-align: left;
 }

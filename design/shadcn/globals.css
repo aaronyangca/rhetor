@@ -1,0 +1,112 @@
+/* Rhetor — shadcn/ui theme
+   Ported from the Classical design system with the warm terracotta/cream
+   override used on the Rhetor landing page.
+   Drop into app/globals.css (or src/index.css for Vite) BELOW the
+   @tailwind directives. Values are HSL channel triples, which is what
+   shadcn's hsl(var(--token)) wrappers expect. */
+
+@layer base {
+  :root {
+    /* ---- shadcn roles ---- */
+    --background: 37.2 59.2% 90.4%;       /* cream ground  #f5ead8 */
+    --foreground: 22.5 18.2% 8.6%;        /* near-black ink #1a1512 */
+
+    --card: 35 100% 97.6%;                /* warm surface  #fffaf3 */
+    --card-foreground: 22.5 18.2% 8.6%;
+    --popover: 35 100% 97.6%;
+    --popover-foreground: 22.5 18.2% 8.6%;
+
+    /* Terracotta accent. NOTE: this system's buttons are OUTLINED, not
+       filled — see button.tsx below. primary-foreground is only used if
+       you opt into a solid fill. */
+    --primary: 24.7 65.7% 35.5%;          /* accent-700 #96501f, 4.5:1 on cream */
+    --primary-foreground: 35 100% 97.6%;
+
+    --secondary: 28.1 69.6% 91%;          /* accent-100 tint #f8e7d8 */
+    --secondary-foreground: 23.9 67.1% 28.6%;
+
+    --muted: 26.6 68.5% 82.5%;            /* accent-200 #f1cfb4 */
+    --muted-foreground: 28.2 12.8% 26.1%; /* #4b423a */
+
+    --accent: 26.6 68.5% 82.5%;           /* hover tint */
+    --accent-foreground: 23.9 67.1% 28.6%;
+
+    --destructive: 0 72% 42%;
+    --destructive-foreground: 35 100% 97.6%;
+
+    --border: 26.6 62.9% 72.5%;           /* accent-300 hairline */
+    --input: 26.6 62.9% 72.5%;
+    --ring: 23.8 55.3% 50%;               /* accent, for focus-visible */
+
+    --radius: 0.25rem;                    /* 4px — Classical radius-md */
+
+    /* ---- raw ramp, if you want the deeper steps directly ---- */
+    --accent-100: 28.1 69.6% 91%;
+    --accent-200: 26.6 68.5% 82.5%;
+    --accent-300: 26.6 62.9% 72.5%;
+    --accent-400: 24.2 59.2% 60.6%;
+    --accent-500: 23.8 55.3% 50%;
+    --accent-600: 23.1 58.6% 43.5%;
+    --accent-700: 24.7 65.7% 35.5%;
+    --accent-800: 23.9 67.1% 28.6%;
+    --accent-900: 23.2 70.1% 21%;
+
+    /* ---- chart tokens (shadcn charts) ---- */
+    --chart-1: 23.8 55.3% 50%;
+    --chart-2: 24.7 65.7% 35.5%;
+    --chart-3: 26.6 62.9% 72.5%;
+    --chart-4: 28.2 12.8% 26.1%;
+    --chart-5: 0 4.8% 83.5%;
+  }
+
+  /* Optional dark mode: the colophon ground the deck uses. */
+  .dark {
+    --background: 23.2 70.1% 21%;
+    --foreground: 35 100% 97.6%;
+    --card: 22.5 18.2% 8.6%;
+    --card-foreground: 35 100% 97.6%;
+    --popover: 22.5 18.2% 8.6%;
+    --popover-foreground: 35 100% 97.6%;
+    --primary: 26.6 62.9% 72.5%;
+    --primary-foreground: 22.5 18.2% 8.6%;
+    --secondary: 23.9 67.1% 28.6%;
+    --secondary-foreground: 35 100% 97.6%;
+    --muted: 23.9 67.1% 28.6%;
+    --muted-foreground: 26.6 68.5% 82.5%;
+    --accent: 23.9 67.1% 28.6%;
+    --accent-foreground: 35 100% 97.6%;
+    --border: 24.7 65.7% 35.5%;
+    --input: 24.7 65.7% 35.5%;
+    --ring: 26.6 62.9% 72.5%;
+  }
+
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body, "Lora", Georgia, serif);
+    text-wrap: pretty;
+  }
+
+  /* Display type sets LIGHTER as it grows — Classical retires bold.
+     Interface headings cap at 600; display sizes take the normal cut. */
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading, "Cormorant Garamond", Georgia, serif);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+  }
+  h1 { font-weight: 400; }
+
+  /* Figures set tabular; running prose keeps its text figures. */
+  .tnum, table, .tabular { font-feature-settings: "tnum" 1; }
+
+  ::selection {
+    background: hsl(var(--accent-200));
+    color: hsl(var(--foreground));
+  }
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+}

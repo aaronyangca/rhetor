@@ -1,5 +1,8 @@
-import { MessageSquare } from 'lucide-react'
-
+/**
+ * One motion in the sidebar list (SPEC.md 3.2): a single line — title left
+ * (ellipsised), stage meta right. Selected row is a plain tint only: no border,
+ * no left accent bar.
+ */
 export function SidebarMotionItem({
   title,
   stage,
@@ -14,23 +17,13 @@ export function SidebarMotionItem({
   return (
     <button
       onClick={onClick}
-      className={`flex w-full items-center gap-[10px] rounded-[6px] px-3 py-[10px] text-left transition-colors ${
-        active ? 'bg-secondary' : 'hover:bg-black/5'
+      aria-current={active ? 'true' : undefined}
+      className={`flex w-full items-center gap-[10px] px-[10px] py-[7px] text-left transition-colors ${
+        active ? 'bg-selected-row' : 'hover:bg-accent-100/60'
       }`}
     >
-      <MessageSquare size={16} className={active ? 'text-primary' : 'text-muted-foreground'} />
-      <div className="flex min-w-0 flex-1 flex-col gap-[2px]">
-        <div
-          className={`truncate text-[13px] ${
-            active ? 'font-semibold text-primary' : 'font-medium text-foreground'
-          }`}
-        >
-          {title}
-        </div>
-        <div className={`text-[11px] ${active ? 'text-primary' : 'text-muted-foreground'}`}>
-          Stage {stage}
-        </div>
-      </div>
+      <span className="min-w-0 flex-1 truncate text-[13.5px] leading-[1.35]">{title}</span>
+      <span className="flex-none text-[12px] whitespace-nowrap text-ink-48">Stage {stage}</span>
     </button>
   )
 }

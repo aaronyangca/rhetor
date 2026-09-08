@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogoMark } from '../components/Logo'
+import { Wordmark } from '../components/Logo'
 import { FormInput } from '../components/FormInput'
 import { Button } from '../components/Button'
 import { useApp } from '../state/AppContext'
@@ -43,11 +43,11 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
     <div className="flex min-h-screen items-center justify-center bg-background px-6">
       <div className="flex w-full max-w-[380px] flex-col items-center gap-8">
         <Link to="/">
-          <LogoMark size={52} />
+          <Wordmark className="text-[30px]" />
         </Link>
         <form onSubmit={handleSubmit} className="flex w-full flex-col gap-7">
           <div className="flex flex-col gap-[6px]">
-            <h1 className="font-display text-[28px] font-bold text-foreground">
+            <h1 className="font-heading text-[28px] font-normal text-foreground">
               {isSignup ? 'Create your account' : 'Welcome back'}
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -81,7 +81,7 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
           {error && (
             <p
               role="alert"
-              className="rounded-[6px] border border-destructive/30 bg-destructive/5 px-3 py-2 text-[13px] text-destructive"
+              className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-[13px] text-destructive"
             >
               {error}
             </p>
@@ -107,7 +107,7 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
             <span className="text-muted-foreground">
               {isSignup ? 'Already have an account?' : "Don't have an account?"}
             </span>
-            <Link to={isSignup ? '/login' : '/signup'} className="font-semibold text-primary">
+            <Link to={isSignup ? '/login' : '/signup'} className="font-medium text-accent-700">
               {isSignup ? 'Log in' : 'Sign up'}
             </Link>
           </div>

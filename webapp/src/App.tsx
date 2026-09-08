@@ -5,12 +5,12 @@ import { Welcome } from './pages/Welcome'
 import { Auth } from './pages/Auth'
 import { Workspace } from './pages/Workspace'
 import { AccountSettings } from './pages/AccountSettings'
-import { LogoMark } from './components/Logo'
+import { Wordmark } from './components/Logo'
 
 function Loading() {
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background">
-      <LogoMark size={52} />
+      <Wordmark className="text-[26px]" />
       <p className="text-sm text-muted-foreground">Loading…</p>
     </div>
   )

@@ -1,567 +1,356 @@
-import { ArrowRight } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { LogoMark } from '../components/Logo'
-import { Button } from '../components/Button'
+import { Wordmark } from '../components/Logo'
 
-// Every coordinate below is read directly from ui-design.pen (node w7kbo1,
-// "Welcome"), authored on a 1440x900 canvas — converted to percentages so
-// the scene scales with the viewport instead of hand-approximated.
-const CW = 1440
-const CH = 900
-const px = (v: number) => `${(v / CW) * 100}%`
-const py = (v: number) => `${(v / CH) * 100}%`
-const range = (n: number) => Array.from({ length: n }, (_, i) => i)
+/* Landing page — the "Classical" terracotta-and-cream design. Copy is final;
+ * do not rewrite it. The product-preview panel is a static placeholder. */
 
-/** Flat rectangle positioned/sized from real canvas coordinates. */
-function Rect({
-  x,
-  y,
-  w,
-  h,
-  fill,
-  radius,
-  opacity,
-}: {
-  x: number
-  y: number
-  w: number
-  h: number
-  fill: string
-  radius?: number
-  opacity?: number
-}) {
+const VERBS = ['ameliorating', 'bolstering', 'strengthening', 'sharpening', 'improving']
+
+/**
+ * The rotating hero verb. A hidden sizer span measures the current word; the
+ * visible word is absolutely positioned in a slot whose width animates to that
+ * measurement, so the line closes up smoothly instead of jumping. Re-measures
+ * on resize and once web fonts have loaded.
+ */
+function prefersReducedMotion() {
   return (
-    <div
-      className="absolute"
-      style={{ left: px(x), top: py(y), width: px(w), height: py(h), background: fill, borderRadius: radius, opacity }}
-    />
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   )
 }
 
-/** One or more literal SVG paths in real 1440x900 canvas coordinates — for organic
- *  shapes (flames, lamp bowls) that a CSS approximation can't reproduce faithfully. */
-function CanvasPaths({ paths }: { paths: { d: string; fill: string; opacity?: number }[] }) {
+function RotatingVerb() {
+  const [index, setIndex] = useState(0)
+  const [width, setWidth] = useState(0)
+  const [reduced] = useState(prefersReducedMotion)
+  const sizerRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    if (reduced) return
+    const id = window.setInterval(() => setIndex((n) => (n + 1) % VERBS.length), 2800)
+    return () => window.clearInterval(id)
+  }, [reduced])
+
+  useLayoutEffect(() => {
+    let cancelled = false
+    const measure = () => {
+      const el = sizerRef.current
+      if (el && !cancelled) setWidth(el.getBoundingClientRect().width)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    if (document.fonts?.ready) void document.fonts.ready.then(measure)
+    return () => {
+      cancelled = true
+      window.removeEventListener('resize', measure)
+    }
+  }, [index])
+
   return (
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-      {paths.map((p, i) => (
-        <path key={i} d={p.d} fill={p.fill} opacity={p.opacity} />
-      ))}
-    </svg>
+    <span
+      className="relative inline-block whitespace-nowrap"
+      style={{
+        width: width ? `${width}px` : undefined,
+        transition: 'width .42s cubic-bezier(.4,0,.2,1)',
+      }}
+    >
+      <span ref={sizerRef} aria-hidden className="invisible inline-block whitespace-nowrap">
+        {VERBS[index]}
+      </span>
+      <span
+        key={index}
+        className="absolute top-0 left-0 whitespace-nowrap text-accent-800"
+        style={reduced ? undefined : { animation: 'rh-verb-in .46s ease both' }}
+      >
+        {VERBS[index]}
+      </span>
+    </span>
   )
 }
 
-/** A blind arch: flat-sided, semicircular top, built from a rect + a half-ellipse cap.
- *  `y`/`h` describe the straight-sided part only (the arch's spring line down to its
- *  base), matching the source path's `l0,-h a r,r 0 0 1 w,0` — the semicircular cap
- *  then adds another full radius `r` of height *above* that spring line, so the
- *  shape's true top is `y - r`, not `y`. */
-function Arch({
-  x,
-  y,
-  h,
-  w,
-  fill,
-  opacity,
-}: {
-  x: number
-  y: number
-  h: number
-  w: number
-  fill: string
-  opacity?: number
-}) {
-  const r = w / 2
+const HERO_PHOTO: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  height: 900,
+  backgroundImage: "url('/forum-illustration.webp')",
+  backgroundSize: 'cover',
+  backgroundPosition: '50% 34%',
+  filter: 'saturate(1.02) contrast(1.02)',
+  opacity: 0.96,
+  maskImage:
+    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 46%, rgba(0,0,0,0.62) 70%, rgba(0,0,0,0.18) 88%, rgba(0,0,0,0) 100%)',
+  WebkitMaskImage:
+    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 46%, rgba(0,0,0,0.62) 70%, rgba(0,0,0,0.18) 88%, rgba(0,0,0,0) 100%)',
+  pointerEvents: 'none',
+}
+
+const HERO_WASH: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  height: 900,
+  background:
+    'radial-gradient(760px 400px at 50% 26%, color-mix(in srgb, #fbf3e6 84%, transparent) 0%, color-mix(in srgb, #fbf3e6 52%, transparent) 62%, transparent 100%), ' +
+    'linear-gradient(to bottom, color-mix(in srgb, #f7ecdb 76%, transparent) 0%, color-mix(in srgb, #f7ecdb 58%, transparent) 34%, color-mix(in srgb, var(--color-background) 40%, transparent) 64%, var(--color-background) 100%)',
+  pointerEvents: 'none',
+}
+
+const CREAM_SHADOW = '0 1px 26px rgba(251,243,230,.95), 0 1px 3px rgba(251,243,230,.9)'
+
+function Nav() {
   return (
-    <>
-      <Rect x={x} y={y} w={w} h={h} fill={fill} opacity={opacity} />
-      <div
-        className="absolute"
+    <nav className="flex h-[72px] items-center justify-between gap-6 px-[clamp(20px,5vw,64px)]">
+      <Wordmark className="text-[23px]" />
+      <div className="flex items-center gap-7 text-[15px]">
+        <a href="#how" className="hidden text-ink-82 hover:text-accent-800 sm:inline">
+          How it works
+        </a>
+        <a href="#how" className="hidden text-ink-82 hover:text-accent-800 sm:inline">
+          Scoring
+        </a>
+        <Link to="/login" className="text-ink-82 hover:text-accent-800">
+          Sign in
+        </Link>
+        <Link
+          to="/signup"
+          className="rounded-md border border-accent-500 px-[18px] py-[8px] text-[14px] font-medium text-accent-800 transition-colors hover:bg-accent-100"
+        >
+          Start free trial
+        </Link>
+      </div>
+    </nav>
+  )
+}
+
+function Hero() {
+  return (
+    <section className="mx-auto max-w-[1160px] px-[clamp(20px,5vw,48px)] pt-[clamp(48px,7vw,104px)] text-center">
+      <h1
+        className="m-0 font-heading font-medium text-hero-ink [font-feature-settings:'tnum'_1]"
         style={{
-          left: px(x),
-          top: py(y - r),
-          width: px(w),
-          height: py(r),
-          background: fill,
-          opacity,
-          borderRadius: '50% 50% 0 0 / 100% 100% 0 0',
+          fontSize: 'clamp(40px, 5.6vw, 80px)',
+          lineHeight: 1.06,
+          letterSpacing: '-0.012em',
+          textShadow: CREAM_SHADOW,
         }}
-      />
-    </>
+      >
+        <span className="block">
+          #1 AI for <RotatingVerb />
+        </span>
+        <span className="block">your arguments.</span>
+      </h1>
+
+      <p
+        className="mx-auto mt-7 max-w-[54ch] text-[19.5px] leading-[1.66] text-[#2b241f]"
+        style={{ textShadow: '0 1px 18px rgba(251,243,230,.95)' }}
+      >
+        An AI assistant that makes your own arguments stronger. Generic AI wants to do all the
+        thinking for you. We built Rhetor to think with you, not for you. Step inside the AI
+        brainstorming process to push your ideas further.
+      </p>
+
+      <div className="mt-[34px] flex flex-wrap items-center justify-center gap-7">
+        <Link
+          to="/signup"
+          className="flex min-h-[54px] items-center rounded-md border border-accent-500 px-[34px] text-[17px] font-medium text-accent-800 transition-colors hover:bg-accent-100"
+        >
+          Start free trial
+        </Link>
+        <a href="#how" className="text-[16px] text-accent-700 hover:text-accent-800 hover:underline">
+          See a worked motion
+        </a>
+      </div>
+
+      <p
+        className="mt-[22px] text-[14.5px] text-hero-sub"
+        style={{ textShadow: '0 1px 14px rgba(251,243,230,.9)' }}
+      >
+        British Parliamentary. Three motions on the trial, no card.
+      </p>
+    </section>
   )
 }
 
-function CeilingCornice() {
+/** Static placeholder — a real argument shown in full, on a raised surface. */
+function ProductPanel() {
   return (
-    <>
-      <Rect
-        x={-40}
-        y={0}
-        w={1520}
-        h={200}
-        fill="linear-gradient(180deg, #151B33 0%, #1A2140 50%, #212949 100%)"
-      />
-      <Rect x={-40} y={196} w={1520} h={11} fill="#2E3868" />
-      <Rect x={-40} y={207} w={1520} h={7} fill="#171D39" />
-      <Rect x={-40} y={214} w={1520} h={15} fill="#262E58" />
-      <Rect x={-40} y={229} w={1520} h={5} fill="#141A33" />
-    </>
-  )
-}
-
-function UpperGallery() {
-  return (
-    <>
-      {range(13).map((i) => (
-        <div key={i}>
-          <Arch x={-101 + i * 126} y={99} h={73} w={90} fill="#242C50" />
-          <Arch x={-93 + i * 126} y={99} h={73} w={74} fill="#10152B" />
+    <section className="mx-auto max-w-[1000px] px-[clamp(16px,4vw,48px)] pt-[clamp(44px,5vw,72px)] pb-[clamp(56px,6vw,96px)]">
+      <div className="rounded-md border border-ink-16 bg-card p-[clamp(24px,3vw,40px)] text-left shadow-lg">
+        <p className="m-0 text-[13px] text-ink-60">Opening Opposition · argument 1</p>
+        <h2 className="mt-[10px] mb-4 font-heading text-[clamp(24px,2.4vw,32px)] leading-[1.15] font-normal text-foreground">
+          Abolition relocates selection from the fee to the postcode
+        </h2>
+        <div className="flex flex-col gap-4 text-[15.5px] leading-[1.7] text-ink-90">
+          <p className="m-0">
+            Claim. Abolishing private schools does not remove selective education. It moves the
+            point of selection from the fee to the postcode, and postcodes are far harder to tax
+            than fees.
+          </p>
+          <p className="m-0">
+            Mechanism. Families who currently convert money into educational advantage through
+            tuition do not stop wanting to convert it once tuition is illegal; they look for the
+            nearest available market, and in the UK that market is housing. State secondary
+            admissions are overwhelmingly decided by distance from the gate, so a house inside the
+            catchment of a strong comprehensive is a direct substitute for a term's fees. Roughly
+            six hundred thousand privately educated pupils enter that market at once, bidding
+            against families already in it and against each other.
+          </p>
+          <p className="m-0">
+            Evidence. Homes inside the catchment of high-performing English state secondaries
+            already sell at a measurable premium over near-identical homes a street outside, and
+            the same pattern appears wherever places are allocated by distance rather than by
+            test.
+          </p>
+          <p className="m-0">
+            Impact. A fee is visible, annual, and something a government can tax, cap or regulate;
+            a house price is none of those. It capitalises into the wealth of families who already
+            own, locks in for a generation, and stays invisible to education policy because it is
+            not education spending. Selection survives the motion, and the poorest child now
+            competes against a mortgage instead of against a bursary.
+          </p>
         </div>
-      ))}
-      {range(12).map((i) => (
-        <Rect key={i} x={-4 + i * 126} y={54} w={22} h={118} fill="#2A3358" />
-      ))}
-      {range(13).map((i) => (
-        <div
-          key={i}
-          className="absolute"
-          style={{ left: px(-64 + i * 126), top: py(52), width: px(16), height: py(18), background: '#333C72' }}
-        />
-      ))}
-      <Rect x={-60} y={172} w={1560} h={11} fill="#2C3663" />
-      <Rect x={-60} y={183} w={1560} h={6} fill="#141A33" />
-    </>
+      </div>
+    </section>
   )
 }
 
-function Clerestory() {
-  return (
-    <>
-      {[1239, 1081, 923, 765, 607].map((x, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            left: px(x),
-            top: py(320),
-            width: px(190),
-            height: py(240),
-            background: 'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(247,200,138,0.27) 0%, rgba(247,200,138,0) 100%)',
-          }}
-        />
-      ))}
-      {range(9).map((i) => (
-        <Arch key={i} x={28 + i * 158} y={394} h={68} w={84} fill="#2E3868" />
-      ))}
-      {range(4).map((i) => (
-        <Arch key={i} x={35 + i * 158} y={395} h={59} w={70} fill="#2B3358" />
-      ))}
-      {range(5).map((i) => (
-        <Arch
-          key={i}
-          x={667 + i * 158}
-          y={395}
-          h={59}
-          w={70}
-          fill="linear-gradient(180deg, #FFF2D8 0%, #F6CE92 100%)"
-        />
-      ))}
-    </>
-  )
-}
-
-const IMPOSTS_D =
-  'M-158 532l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z m116 0l24 0 0 12-24 0z m42 0l24 0 0 12-24 0z'
-
-function ArchDetail() {
-  return (
-    <>
-      {range(11).map((i) => (
-        <Rect key={i} x={-100 + i * 158} y={464} w={24} h={34} fill="#414A88" />
-      ))}
-      <CanvasPaths paths={[{ d: IMPOSTS_D, fill: '#333C72' }]} />
-    </>
-  )
-}
-
-function Entablature() {
-  return (
-    <>
-      <Rect x={-40} y={250} w={1520} h={6} fill="#3D4886" />
-      <Rect x={-40} y={250} w={1520} h={42} fill="#2B3463" />
-      <Rect x={-40} y={292} w={1520} h={10} fill="#161C38" />
-    </>
-  )
-}
-
-function Dentils() {
-  return (
-    <>
-      {range(55).map((i) => (
-        <Rect key={i} x={12 + i * 26} y={266} w={13} h={16} fill="#3A4478" />
-      ))}
-      <Rect x={-40} y={282} w={1520} h={5} fill="#1B2242" />
-    </>
-  )
-}
-
-function Columns() {
-  const positions = [-61, 97, 255, 413, 571, 729, 887, 1045, 1203, 1361]
-  return (
-    <>
-      {positions.map((capX, i) => {
-        const shaftX = capX + 13
-        return (
-          <div key={i}>
-            <Rect x={capX} y={302} w={104} h={20} fill="#333C72" />
-            <Rect x={shaftX} y={322} w={78} h={456} fill="#2B3463" />
-            {i > 0 && <Rect x={shaftX} y={322} w={17} h={456} fill="#3D4886" opacity={0.9} />}
-            {[26, 40, 54, 68].map((dx, fi) => (
-              <Rect key={fi} x={shaftX + dx} y={322} w={2} h={456} fill="#212A54" />
-            ))}
-            <Rect x={capX} y={778} w={104} h={22} fill="#333C72" />
-          </div>
-        )
-      })}
-      <Rect x={-40} y={800} w={1520} h={12} fill="#252D57" />
-    </>
-  )
-}
-
-function ArchNiches() {
-  return (
-    <>
-      {range(11).map((i) => {
-        const x0 = -148 + i * 158
-        return (
-          <div key={i}>
-            <Arch x={x0} y={538} h={254} w={120} fill="#2A3360" />
-            <Arch x={x0 + 4} y={538} h={254} w={112} fill="#39427A" />
-            <Arch
-              x={x0 + 8}
-              y={538}
-              h={254}
-              w={104}
-              fill="linear-gradient(180deg, #0D1226 0%, #0D1226 54%, #1A2144 73%, #283057 87%, #2E3663 100%)"
-            />
-            <Arch
-              x={x0 + 8}
-              y={538}
-              h={254}
-              w={104}
-              fill="linear-gradient(180deg, rgba(15,20,40,0.878) 0%, rgba(15,20,40,0.4) 55%, rgba(27,34,66,0) 100%)"
-            />
-            <Rect x={x0 + 4} y={786} w={112} h={8} fill="#2E3768" />
-          </div>
-        )
-      })}
-    </>
-  )
-}
-
-/** The stepped stone platform running the width of the hall, at the viewer's feet. */
-function Steps() {
-  const steps = [
-    { x: -40, y: 812, w: 1520, h: 24, fill: '#212A52', edge: '#2C3663' },
-    { x: -60, y: 836, w: 1560, h: 26, fill: '#1D2547', edge: '#28315C' },
-    { x: -80, y: 862, w: 1600, h: 38, fill: '#191F3D', edge: '#232B52' },
-  ]
-  return (
-    <>
-      {steps.map((s, i) => (
-        <div key={i}>
-          <Rect x={s.x} y={s.y} w={s.w} h={s.h} fill={s.fill} />
-          <Rect x={s.x} y={s.y} w={s.w} h={4} fill={s.edge} />
-        </div>
-      ))}
-    </>
-  )
-}
-
-/** Light falling from a clerestory window: a narrow trapezoid (66 wide at the sill,
- *  74 wide by the time it reaches the floor), not a flat-sided rectangle. */
-function LightShafts() {
-  const shafts: { x: number; grad: 'dim' | 'bright' }[] = [
-    { x: 353, grad: 'dim' },
-    { x: 511, grad: 'dim' },
-    { x: 669, grad: 'bright' },
-    { x: 827, grad: 'bright' },
-    { x: 985, grad: 'bright' },
-    { x: 1143, grad: 'bright' },
-    { x: 1301, grad: 'bright' },
-  ]
-  return (
-    <svg viewBox="0 0 1440 900" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-      <defs>
-        <linearGradient id="lightshaft-dim" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#F7C88A" stopOpacity={0.169} />
-          <stop offset="50%" stopColor="#F5B368" stopOpacity={0.071} />
-          <stop offset="100%" stopColor="#F5B368" stopOpacity={0} />
-        </linearGradient>
-        <linearGradient id="lightshaft-bright" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#F7C88A" stopOpacity={0.302} />
-          <stop offset="50%" stopColor="#F5B368" stopOpacity={0.122} />
-          <stop offset="100%" stopColor="#F5B368" stopOpacity={0} />
-        </linearGradient>
-      </defs>
-      {shafts.map((s, i) => (
-        <path key={i} d={`M${s.x} 454l66 0 4 352-74 0z`} fill={`url(#lightshaft-${s.grad})`} />
-      ))}
-    </svg>
-  )
-}
-
-function RimLights() {
-  return (
-    <>
-      {[972, 1058, 1288, 1374].map((x, i) => (
-        <div
-          key={i}
-          className="absolute"
-          style={{
-            left: px(x),
-            top: py(300),
-            width: px(8),
-            height: py(400),
-            background: 'linear-gradient(0deg, rgba(224,154,76,0) 0%, rgba(240,172,92,0.48) 50%, rgba(224,154,76,0) 100%)',
-          }}
-        />
-      ))}
-    </>
-  )
-}
-
-interface BrazierData {
-  cx: number
-  footX: number
-  stemX: number
-  bowlD: string
-  flameOuterD: string
-  flameInnerD: string
-  embers: { x: number; y: number; size: number; fill: string }[]
-}
-
-const BRAZIERS: BrazierData[] = [
+const STAGES = [
   {
-    cx: 1018,
-    footX: 988,
-    stemX: 1009,
-    bowlD: 'M980 618l76 0-17 42-42 0z',
-    flameOuterD: 'M1021 516c15 38 25 74 22 104-2 25-13 38-25 38-12 0-23-12-25-36-2-28 9-58 19-78-3 18 0 28 5 22-1-20 1-36 4-50z',
-    flameInnerD: 'M1023 562c9 28 13 51 11 70-2 15-9 22-15 22-7 0-13-7-14-22-1-17 6-42 18-70z',
-    embers: [
-      { x: 999, y: 490.6, size: 6.8, fill: '#F5B368B8' },
-      { x: 1024.4, y: 467.4, size: 5.2, fill: '#F3A85699' },
-      { x: 1009.8, y: 439.8, size: 4.4, fill: '#F0A05070' },
-      { x: 1033.2, y: 412.2, size: 3.6, fill: '#EE9C4C4D' },
-    ],
+    numeral: 'I',
+    title: 'Bring your idea',
+    body: 'Give it the motion, your side, and the line you already have in mind. Rhetor builds the bench out around it — the variants you would have reached eventually, and the ones you wouldn’t.',
   },
   {
-    cx: 1334,
-    footX: 1304,
-    stemX: 1325,
-    bowlD: 'M1296 618l76 0-17 42-42 0z',
-    flameOuterD: 'M1331 536c-14 32-23 61-20 88 2 22 13 34 24 34 11 0 21-12 23-35 2-24-8-51-17-71 2 14-1 22-6 17 1-15-1-23-4-33z',
-    flameInnerD: 'M1330 578c-8 22-13 40-11 56 2 14 8 21 15 21 7 0 12-7 13-21 1-16-6-34-17-56z',
-    embers: [
-      { x: 1343.8, y: 502.8, size: 6.4, fill: '#F5B368B0' },
-      { x: 1320.5, y: 475.5, size: 5, fill: '#F3A85691' },
-      { x: 1338, y: 448, size: 4, fill: '#F0A05066' },
-      { x: 1316.3, y: 422.3, size: 3.4, fill: '#EE9C4C45' },
-    ],
+    numeral: 'II',
+    title: 'Score and rank',
+    body: 'Each argument is marked on the axes a judge marks it on: is it true, is it relevant, does the logic hold, does the impact matter. The bench sorts by intrinsic score and shows which stage lost the marks.',
+  },
+  {
+    numeral: 'III',
+    title: 'Refine stage by stage',
+    body: "Open one stage at a time and rewrite it against the score. Push the mechanism, demand a harder source, weigh the impact against the other side's, and watch the mark move before the round rather than after it.",
   },
 ]
 
-/** Freestanding brazier: foot, stem, bowl, two-tone flame, and rising embers. */
-function Brazier({ b }: { b: BrazierData }) {
+function HowItWorks() {
   return (
-    <>
-      <div
-        className="absolute rounded-full"
-        style={{
-          left: px(b.cx - 150),
-          top: py(437),
-          width: px(300),
-          height: py(300),
-          background:
-            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(242,166,80,0.6) 0%, rgba(242,166,80,0.24) 42%, rgba(242,166,80,0) 100%)',
-        }}
-      />
-      <CanvasPaths
-        paths={[
-          { d: b.flameOuterD, fill: '#DE8F42' },
-          { d: b.flameInnerD, fill: '#F7D08A' },
-        ]}
-      />
-      {b.embers.map((e, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full"
-          style={{ left: px(e.x), top: py(e.y), width: px(e.size), height: py(e.size), background: e.fill }}
-        />
-      ))}
-      <CanvasPaths paths={[{ d: b.bowlD, fill: '#454E80' }]} />
-      <Rect x={b.stemX} y={656} w={18} h={126} fill="#333C68" />
-      <Rect x={b.footX} y={780} w={60} h={20} fill="#3A4270" />
-    </>
+    <section
+      id="how"
+      className="border-y border-divider"
+      style={{
+        background:
+          'linear-gradient(to bottom, color-mix(in srgb, var(--color-accent-100) 72%, var(--color-background)) 0%, var(--color-background) 100%)',
+      }}
+    >
+      <div className="mx-auto max-w-[1140px] px-[clamp(20px,5vw,48px)] py-[clamp(48px,6vw,88px)] text-center">
+        <h2 className="mx-auto max-w-[24ch] font-heading text-[clamp(32px,4vw,52px)] leading-[1.08] font-normal">
+          Three stages, the same three you'd do on paper
+        </h2>
+        <div className="mt-[clamp(34px,4vw,56px)] grid gap-[clamp(28px,3.4vw,52px)] text-left md:grid-cols-3">
+          {STAGES.map((stage, i) => (
+            <div
+              key={stage.numeral}
+              className={i > 0 ? 'md:border-l md:border-divider md:pl-[clamp(20px,2.6vw,40px)]' : ''}
+            >
+              <p className="m-0 font-heading text-[44px] leading-none text-accent-700 [font-feature-settings:'tnum'_1]">
+                {stage.numeral}
+              </p>
+              <h3 className="mt-[14px] font-heading text-[24px] leading-[1.2] font-medium">
+                {stage.title}
+              </h3>
+              <p className="mt-3 text-[16px] leading-[1.7] text-ink-82">{stage.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
-function Braziers() {
+function PullQuote() {
   return (
-    <>
-      {BRAZIERS.map((b, i) => (
-        <Brazier key={i} b={b} />
-      ))}
-    </>
+    <section className="mx-auto max-w-[1140px] px-[clamp(20px,5vw,48px)] py-[clamp(48px,6vw,88px)]">
+      <figure className="m-0 max-w-[46ch]">
+        <blockquote className="m-0 font-heading text-[clamp(24px,2.7vw,36px)] leading-[1.32] font-normal text-accent-900 italic">
+          &ldquo;It marked my second argument down for relevance and it was right. I dropped it and
+          won the room on the first one.&rdquo;
+        </blockquote>
+        <figcaption className="mt-6 text-[15.5px] leading-[1.7] text-ink-70">
+          — A. Mensah, university open, semifinalist
+        </figcaption>
+      </figure>
+    </section>
   )
 }
 
-/** Oil lamp hanging on a chain from the ceiling, in front of one of the lit windows. */
-function HangingLamp({ chainX, glowX, flameD, bowlD }: { chainX: number; glowX: number; flameD: string; bowlD: string }) {
+function ClosingBand() {
   return (
-    <>
-      <div
-        className="absolute rounded-full"
-        style={{
-          left: px(glowX),
-          top: py(292),
-          width: px(156),
-          height: py(156),
-          background:
-            'radial-gradient(ellipse 50% 50% at 50% 50%, rgba(242,166,80,0.4) 0%, rgba(242,166,80,0.11) 42%, rgba(242,166,80,0) 100%)',
-        }}
-      />
-      <Rect x={chainX} y={234} w={2} h={120} fill="#39426F" />
-      <Rect x={chainX - 5} y={348} w={12} h={6} fill="#4A5488" />
-      <CanvasPaths paths={[{ d: flameD, fill: '#F7D08A' }]} />
-      <CanvasPaths paths={[{ d: bowlD, fill: '#4A5488' }]} />
-    </>
+    <section
+      id="pricing"
+      style={{ background: 'linear-gradient(160deg, #5b2d10 0%, #7a3f18 55%, #b0602e 100%)' }}
+    >
+      <div className="mx-auto max-w-[1140px] px-[clamp(20px,5vw,48px)] py-[clamp(52px,7vw,104px)] text-center text-[#f7ecdb]">
+        <h2 className="mx-auto max-w-[22ch] font-heading text-[clamp(32px,4.4vw,58px)] leading-[1.05] font-normal text-[#fdf6ea]">
+          Your round is Saturday. Your case can be ready tonight.
+        </h2>
+        <p className="mx-auto mt-5 max-w-[48ch] text-[17px] leading-[1.66] text-[rgba(253,246,234,.8)]">
+          Three motions on the free trial, no card. After that it's the price of a coffee a month.
+        </p>
+        <div className="mt-[30px] flex flex-wrap items-center justify-center gap-[26px]">
+          <Link
+            to="/signup"
+            className="flex min-h-[54px] items-center rounded-md border border-[#f1cfb4] px-[34px] text-[17px] font-medium text-[#fdf6ea] transition-colors hover:bg-white/10"
+          >
+            Start free trial
+          </Link>
+          <a href="#how" className="text-[16px] text-[rgba(253,246,234,.82)] hover:underline">
+            Read how scoring works
+          </a>
+        </div>
+      </div>
+    </section>
   )
 }
 
-const LAMPS = [
-  { chainX: 701, glowX: 624, flameD: 'M702 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z', bowlD: 'M676 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z' },
-  { chainX: 859, glowX: 782, flameD: 'M860 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z', bowlD: 'M834 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z' },
-  { chainX: 1175, glowX: 1098, flameD: 'M1176 316c9 17 13 32 11 44-2 11-6 16-11 16-5 0-9-5-11-16-2-12 2-27 11-44z', bowlD: 'M1150 354l52 0c-3 23-14 32-26 32-12 0-23-9-26-32z' },
-]
-
-function HangingLamps() {
+function Footer() {
   return (
-    <>
-      {LAMPS.map((l, i) => (
-        <HangingLamp key={i} {...l} />
-      ))}
-    </>
+    <footer className="mx-auto flex max-w-[1140px] flex-wrap justify-between gap-6 border-t border-divider px-[clamp(20px,5vw,48px)] pt-[34px] pb-[56px] text-[14.5px] text-ink-64">
+      <Wordmark className="text-[20px]" />
+      <span className="flex flex-wrap gap-[26px]">
+        <a href="#how" className="hover:text-accent-800">
+          How it works
+        </a>
+        <a href="#how" className="hover:text-accent-800">
+          Scoring
+        </a>
+        <a href="#pricing" className="hover:text-accent-800">
+          Pricing
+        </a>
+        <a href="#pricing" className="hover:text-accent-800">
+          Contact
+        </a>
+      </span>
+      <span>© 2026 Rhetor</span>
+    </footer>
   )
 }
-
-const navLinks = ['How It Works', 'The Method', 'The Rhetor']
 
 export function Welcome() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#12172B]">
-      <div className="absolute inset-0 overflow-hidden">
-        <Rect x={-40} y={234} w={1520} h={576} fill="#1F2749" />
-        <CeilingCornice />
-        <UpperGallery />
-        <Rect x={-40} y={330} w={1520} h={16} fill="#252E56" />
-        <ArchNiches />
-        <Clerestory />
-        <ArchDetail />
-        <Entablature />
-        <Columns />
-        <Dentils />
-        <Steps />
-        <LightShafts />
-        <RimLights />
-        <Braziers />
-        <HangingLamps />
-      </div>
-
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'linear-gradient(90deg, rgba(18,23,43,0.94) 0%, rgba(18,23,43,0.8) 32%, rgba(18,23,43,0.4) 58%, rgba(18,23,43,0) 78%)',
-        }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 65% 70% at 22% 45%, rgba(14,19,39,0.86) 0%, rgba(14,19,39,0.55) 45%, rgba(14,19,39,0) 75%)',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 top-0 h-[150px]"
-        style={{ background: 'linear-gradient(180deg, rgba(11,15,32,0.88) 0%, rgba(11,15,32,0.6) 50%, rgba(11,15,32,0) 100%)' }}
-      />
-
-      <nav className="relative z-10 flex h-[88px] items-center px-[100px]">
-        <Link to="/" className="flex items-center gap-[13px]">
-          <LogoMark size={44} className="border-[1.5px] border-[#F7F1E5]" />
-          <span className="font-wordmark text-[21px] font-semibold text-[#F7F1E5]">
-            R<span style={{ letterSpacing: '2.2px' }}>HETOR</span>
-          </span>
-        </Link>
-        <div className="flex-1" />
-        <div className="flex items-center gap-8">
-          {navLinks.map((link) => (
-            <span key={link} className="text-sm font-medium text-[#C3BCD4]">
-              {link}
-            </span>
-          ))}
-          <div className="h-5 w-px bg-[#3A3F5C]" />
-          <Link to="/login" className="text-sm font-semibold text-[#F7F1E5]">
-            Log in
-          </Link>
-          <Link to="/signup">
-            <Button variant="accent">Sign Up</Button>
-          </Link>
-        </div>
-      </nav>
-
-      <div className="relative z-10 flex min-h-[calc(100vh-88px)] items-center px-[100px]">
-        <div className="flex max-w-[600px] flex-col gap-[26px]">
-          <div className="text-[11px] font-bold text-accent" style={{ letterSpacing: '2.6px' }}>
-            ANCIENT ROME · 1ST CENTURY BCE
-          </div>
-          <p className="font-serif text-[19px] leading-[29px] text-[#D9D3C6] italic">
-            The rhetor was the last teacher a young Roman ever had — the master who took him at
-            sixteen and taught him to stand before a hostile senate and win.
-          </p>
-          <div className="h-[2px] w-16 bg-accent" />
-          <h1 className="font-display text-[52px] leading-[58px] font-bold text-[#F7F1E5]">
-            Two thousand years later, he's yours.
-          </h1>
-          <p className="text-base leading-[26px] text-[#C3BCD4]">
-            Rhetor takes your motion and builds the case the way that master would have —
-            drafting arguments, scoring them against the standard real adjudicators judge by, and
-            ranking what survives.
-          </p>
-          <div className="flex items-center gap-[22px]">
-            <Link to="/signup">
-              <Button variant="accent" className="text-[15px]">
-                Start Your Case <ArrowRight size={16} />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-[5px] text-[13.5px]">
-              <span className="text-[#A79FC0]">Already have an account?</span>
-              <Link to="/login" className="font-semibold text-[#F7F1E5]">
-                Log in
-              </Link>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background">
+      <div className="relative overflow-hidden">
+        <div aria-hidden style={HERO_PHOTO} />
+        <div aria-hidden style={HERO_WASH} />
+        <div className="relative">
+          <Nav />
+          <Hero />
+          <ProductPanel />
         </div>
       </div>
-
-      <div className="absolute bottom-10 left-[100px] z-10 flex max-w-[660px] items-center gap-[11px]">
-        <div className="h-px w-[22px] shrink-0 bg-[#6E668A]" />
-        <p className="font-serif text-[13.5px] leading-5 text-[#9A92B4] italic">
-          Modelled on the controversiae — the simulated trials Roman students argued before they
-          ever faced a real one.
-        </p>
-      </div>
+      <HowItWorks />
+      <PullQuote />
+      <ClosingBand />
+      <Footer />
     </div>
   )
 }

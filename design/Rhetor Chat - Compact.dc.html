@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/classical-4211af1c-392a-4d08-b176-361c8728cd47/styles.css">
+<script src="_ds/classical-4211af1c-392a-4d08-b176-361c8728cd47/_ds_bundle.js"></script>
+<style>
+body{margin:0;text-wrap:pretty;background:var(--color-bg);overflow:hidden}
+a{color:var(--color-accent-700);text-decoration:none}
+a:hover{color:var(--color-accent-800);text-decoration:underline}
+:root{--color-bg:#f5ead8;--color-surface:#fffaf3;--color-accent:#c67139;--color-accent-100:#f8e7d8;--color-accent-200:#f1cfb4;--color-accent-300:#e5b48d;--color-accent-600:#b0602e;--color-accent-700:#96501f;--color-accent-800:#7a3f18;--color-accent-900:#5b2d10;--color-divider:rgba(90,45,16,.2);--font-heading:'Lora',Georgia,serif;--font-body:'Lora',Georgia,serif}
+</style>
+</helmet>
+<div style="{{ shellStyle }}">
+
+  <aside style="{{ asideStyle }}">
+    <div style="{{ sideHeadStyle }}">
+      <span style="{{ brandStyle }}">Rhetor</span>
+      <div style="{{ brandSpacer }}"></div>
+      <button type="button" class="btn btn-icon" aria-label="Collapse sidebar" onClick="{{ toggle }}" style="min-height:30px;padding:5px;flex:none">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1.5" /><path d="M9.5 4v16" /></svg>
+      </button>
+    </div>
+    <div style="{{ hideCollapsed }}">
+      <div style="height:14px"></div>
+      <div style="display:flex;padding:0 14px 14px">
+        <button type="button" class="btn btn-primary" style="flex:1;display:flex;align-items:center;justify-content:center;gap:9px;min-height:38px;font-size:14.5px;white-space:nowrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+          New Motion
+        </button>
+      </div>
+      <div style="overflow:auto;padding:2px 10px 16px">
+        <p style="margin:6px 10px 6px;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Today</p>
+        <div style="display:flex;flex-direction:column;gap:1px">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:color-mix(in srgb, var(--color-accent-200) 30%, transparent)">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THW abolish private schools</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Stage 1</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THBT the EU should federalise defence</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Stage 3</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THW ban political donations from firms</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Stage 2</span>
+          </div>
+        </div>
+        <p style="margin:20px 10px 6px;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Earlier this week</p>
+        <div style="display:flex;flex-direction:column;gap:1px">
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THR the rise of the expert witness</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Closed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THW pay reparations for colonial rule</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Closed</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:7px 10px">
+            <span style="flex:1;min-width:0;font-size:13.5px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">THBT unions should run pension funds</span><span style="flex:none;font-size:12px;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 48%, transparent)">Closed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="{{ footStyle }}">
+      <span>A. Mensah</span>
+      <a href="#settings">Settings</a>
+    </div>
+  </aside>
+
+  <main style="display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;min-height:0">
+    <header style="display:flex;align-items:center;gap:10px;flex-wrap:nowrap;padding:0 16px;height:52px;min-width:0;overflow:hidden;border-bottom:1px solid var(--color-divider)">
+      <h1 style="font-family:var(--font-heading);font-weight:400;font-size:17px;letter-spacing:-0.005em;line-height:1.2;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0">This House Would abolish private schools</h1>
+      <button type="button" class="btn btn-icon" aria-label="Rename motion" style="min-height:28px;padding:4px;flex:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+      </button>
+      <span style="{{ positionStyle }}">Opening Opposition</span>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;flex:none;white-space:nowrap;font-feature-settings:'tnum' 1">
+        <span style="{{ step1 }}">Stage 1</span>
+        <span style="{{ step2 }}">2</span>
+        <span style="{{ step3 }}">3</span>
+      </div>
+      <button type="button" class="btn btn-primary" style="display:flex;align-items:center;gap:7px;min-height:32px;padding:0 13px;font-size:13.5px;white-space:nowrap;flex:none">
+        <span style="{{ advanceLabelStyle }}">{{ advanceLabel }}</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:-2px 0"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+      </button>
+    </header>
+
+    <div ref="{{ splitRef }}" style="{{ splitStyle }}">
+      <section style="display:grid;grid-template-rows:minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);min-height:0;min-width:0;min-width:0;overflow:hidden">
+        <div style="overflow:auto;padding:14px 20px 8px;display:flex;flex-direction:column;gap:26px;min-height:0">
+          <div style="align-self:flex-end;max-width:70%;background:var(--color-surface);border:1px solid color-mix(in srgb, var(--color-text) 15%, transparent);border-radius:var(--radius-lg, 8px);padding:13px 16px;font-size:15.5px;line-height:1.6">
+            My instinct on Opp: abolition doesn't kill selection, it just moves it somewhere less visible. Not sure that's a full argument yet.
+          </div>
+          <div style="max-width:100%;font-size:15.5px;line-height:1.68">
+            <p style="margin:0 0 12px;font-size:13px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Rhetor</p>
+            <p style="margin:0 0 12px">That is a full argument, it's just missing the market it moves into. Say where the money goes when fees are illegal and you have a mechanism rather than a suspicion.</p>
+            <p style="margin:0 0 12px">Housing is the strongest candidate: state admissions run on distance from the gate, so catchment property is the substitute good. That gives you a price effect you can point at, and it lets you keep your framing — selection survives, it just stops being visible to policy.</p>
+            <p style="margin:0">Two things I'd want from you before we score it: how many pupils enter that market, and whether you want to run this as your first or second argument.</p>
+          </div>
+          <div style="align-self:flex-end;max-width:70%;background:var(--color-surface);border:1px solid color-mix(in srgb, var(--color-text) 15%, transparent);border-radius:var(--radius-lg, 8px);padding:13px 16px;font-size:15.5px;line-height:1.6">
+            First. Around 600k pupils, I think. Can we make the impact land harder than "it's unfair"?
+          </div>
+          <div style="max-width:100%;font-size:15.5px;line-height:1.68">
+            <p style="margin:0 0 12px;font-size:13px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Rhetor</p>
+            <p style="margin:0 0 12px">Yes — compare the two instruments rather than the two outcomes. A fee is annual, visible and taxable; a house price is capitalised, locked in for a generation and invisible to education policy. That's the line that makes the harm structural instead of aesthetic.</p>
+            <p style="margin:0">I've written that version into the panel on the right. The evidence stage is still your weak point.</p>
+          </div>
+        </div>
+        <div style="padding:8px 16px 16px">
+          <div style="border:1px solid color-mix(in srgb, var(--color-text) 20%, transparent);border-radius:var(--radius-lg, 8px);background:var(--color-surface);padding:7px 8px 7px 14px;display:flex;align-items:center;gap:6px">
+            <input type="text" placeholder="Send message here…" aria-label="Message Rhetor" style="flex:1 1 120px;min-width:60px;border:0;outline:none;background:transparent;font-family:var(--font-body);font-size:15.5px;line-height:1.6;color:var(--color-text)" />
+            <div style="display:flex;align-items:center;gap:2px;flex:none">
+              <button type="button" class="btn btn-ghost" style="display:flex;align-items:center;gap:6px;min-height:30px;padding:0 8px;font-size:13.5px;white-space:nowrap">
+                <span>Sonnet 4.5</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+              </button>
+              <button type="button" class="btn btn-primary btn-icon" aria-label="Send message" style="width:36px;height:36px;min-height:36px;flex:none;padding:0;display:flex;align-items:center;justify-content:center;border-radius:999px;line-height:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block;transform:translate(-0.5px,0.5px)"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" /><path d="m21.854 2.147-10.94 10.939" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div role="separator" aria-label="Resize panels" title="Drag to resize" onPointerDown="{{ startDrag }}" style="{{ handleStyle }}"></div>
+      <section style="overflow:auto;min-height:0;min-width:0;background:color-mix(in srgb, var(--color-surface) 55%, var(--color-bg))">
+        <div style="max-width:none;padding:14px 28px 28px">
+          <h2 style="font-family:var(--font-body);font-weight:400;font-size:21px;line-height:1.4;margin:0 0 4px">1. Abolition relocates selection from the fee to the postcode</h2>
+          <p style="margin:0 0 1em;font-size:15.5px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Provisionally your first argument. Not yet scored; the evidence stage is the weakest part.</p>
+          <div style="font-size:15.5px;line-height:1.72">
+            <p style="margin:0 0 1em">Claim. Abolishing private schools does not remove selective education. It moves the point of selection from the fee to the postcode, and postcodes are far harder to tax than fees.</p>
+            <p style="margin:0 0 1em">Mechanism. Families who currently convert money into educational advantage through tuition do not stop wanting to convert it once tuition is illegal; they look for the nearest available market, and in the UK that market is housing. State secondary admissions are overwhelmingly decided by distance from the gate, so a house inside the catchment of a strong comprehensive is a direct substitute for a term's fees. Roughly six hundred thousand privately educated pupils enter that market at once, bidding against families already in it and against each other.</p>
+            <p style="margin:0 0 1em">Evidence. Homes inside the catchment of high-performing English state secondaries already sell at a measurable premium over near-identical homes a street outside.</p>
+            <p style="margin:0 0 1em">Impact. A fee is visible, annual, and something a government can tax, cap or regulate; a house price is none of those. It capitalises into the wealth of families who already own, locks in for a generation, and stays invisible to education policy because it is not education spending. Selection survives the motion, and the poorest child now competes against a mortgage instead of against a bursary.</p>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:14px">
+            <a href="#edit">Edit in place</a>
+            <a href="#evidence">Ask for harder evidence</a>
+            <a href="#copy">Copy</a>
+          </div>
+
+          <hr class="hr" style="margin:34px 0" />
+
+          <h2 style="font-family:var(--font-body);font-weight:400;font-size:21px;line-height:1.4;margin:0 0 4px">2. The bursary pipeline collapses before the state absorbs it</h2>
+          <p style="margin:0 0 1em;font-size:15.5px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Provisionally second. Not yet scored; drafted with you in the chat.</p>
+          <div style="font-size:15.5px;line-height:1.72">
+            <p style="margin:0 0 1em">Claim. The children the motion is meant to help are the ones it strands first, because bursaries end on day one and state capacity arrives years later.</p>
+            <p style="margin:0 0 1em">Mechanism. Around a third of pupils at large independent schools receive some fee remission, funded out of full-fee income and endowment. Abolition removes the income before it removes the demand: the school closes, the bursary ends immediately, and the pupil returns to a state sector that has not yet built the place, hired the teacher, or received the redirected money. Fiscal transfers move on budget cycles; a closure moves in a term.</p>
+            <p style="margin:0 0 1em">Evidence. Needs a figure on independent-sector bursary spend and the lag between a school closure and local state provision expanding.</p>
+            <p style="margin:0 0 1em">Impact. The cohort that absorbs the transition cost is the bursary cohort — low-income pupils already in the system — and they absorb it during exam years they cannot repeat.</p>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:14px">
+            <a href="#edit2">Edit in place</a>
+            <a href="#evidence2">Ask for harder evidence</a>
+            <a href="#copy2">Copy</a>
+          </div>
+
+          <hr class="hr" style="margin:34px 0" />
+
+          <h2 style="font-family:var(--font-body);font-weight:400;font-size:21px;line-height:1.4;margin:0 0 4px">3. State capacity shock</h2>
+          <p style="margin:0 0 1em;font-size:15.5px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Provisionally third. Your own idea, but the mechanism is still thin.</p>
+          <p style="margin:0 0 1em;font-size:15.5px;line-height:1.72">Claim. Six hundred thousand pupils arriving in a sector already at capacity degrades provision for everyone in it.</p>
+          <p style="margin:0 0 1em;font-size:15.5px;line-height:1.72;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Mechanism, evidence and impact are still open. This is close to argument 2 — one of the two should probably be cut before the round.</p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:14px">
+            <a href="#build3">Build this out</a>
+            <a href="#merge3">Merge into 2</a>
+          </div>
+
+          <hr class="hr" style="margin:34px 0" />
+
+          <p style="margin:0;font-size:15.5px;line-height:1.7;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Three more sit below the line: freedom of association, which still needs a mechanism; emigration of teachers, which is thin; and selection by aptitude returning, which is parked for now.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;stage&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:3,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Round state&quot;}}">
+class Component extends DCLogic {
+  state = { collapsed: false, w: 1400, split: 0.44, dragging: false };
+  splitRef = React.createRef();
+  beginDrag = e => {
+    e.preventDefault();
+    const move = ev => {
+      const el = this.splitRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const f = Math.min(0.7, Math.max(0.25, (ev.clientX - r.left) / r.width));
+      this.setState({ split: f });
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      document.body.style.cursor = '';
+      this.setState({ dragging: false });
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    document.body.style.cursor = 'col-resize';
+    this.setState({ dragging: true });
+  };
+  componentDidMount() {
+    this.onResize = () => this.setState({ w: window.innerWidth });
+    this.onResize();
+    window.addEventListener('resize', this.onResize);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  renderVals() {
+    const stage = Number(this.props.stage ?? 1);
+    const on = 'color:var(--color-accent-800);font-weight:600';
+    const off = 'color:color-mix(in srgb, var(--color-text) 40%, transparent)';
+    const done = 'color:color-mix(in srgb, var(--color-text) 72%, transparent)';
+    const style = n => (n === stage ? on : n < stage ? done : off);
+    const c = this.state.collapsed;
+    const w = this.state.w;
+    const long = stage < 3 ? 'Advance to stage ' + (stage + 1) : 'Finish and export';
+    return {
+      step1: style(1), step2: style(2), step3: style(3),
+      positionStyle: 'font-size:14px;white-space:nowrap;flex:none;margin-right:auto;color:color-mix(in srgb, var(--color-text) 70%, transparent);' + (w < 900 ? 'display:none' : ''),
+      advanceLabelStyle: w < 1100 ? 'display:none' : '',
+      advanceLabel: long,
+      splitRef: this.splitRef,
+      startDrag: this.beginDrag,
+      splitStyle: 'display:grid;grid-template-columns:minmax(0,' + this.state.split.toFixed(4) + 'fr) 5px minmax(0,' + (1 - this.state.split).toFixed(4) + 'fr);min-height:0',
+      handleStyle: 'cursor:col-resize;touch-action:none;background:' + (this.state.dragging ? 'var(--color-accent)' : 'var(--color-divider)') + ';transition:background .15s ease',
+      toggle: () => this.setState(s => ({ collapsed: !s.collapsed })),
+      shellStyle: 'display:grid;grid-template-columns:' + (c ? '48px' : '230px') + ' minmax(0,1fr);height:100vh;font-family:var(--font-body);color:var(--color-text);transition:grid-template-columns .22s ease',
+      asideStyle: 'display:flex;flex-direction:column;border-right:1px solid var(--color-divider);background:color-mix(in srgb, var(--color-accent-100) 10%, var(--color-bg));min-height:0;overflow:hidden',
+      sideHeadStyle: 'display:flex;align-items:center;' + (c ? 'justify-content:center;height:52px;border-bottom:1px solid var(--color-divider)' : 'height:52px;padding:0 12px 0 20px;border-bottom:1px solid var(--color-divider)'),
+      brandStyle: "font-family:var(--font-heading);font-size:17px;letter-spacing:0.01em;white-space:nowrap;overflow:hidden;" + (c ? 'display:none' : ''),
+      brandSpacer: c ? 'display:none' : 'flex:1',
+      hideCollapsed: c ? 'display:none' : 'display:flex;flex-direction:column;min-height:0',
+      footStyle: 'border-top:1px solid var(--color-divider);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;white-space:nowrap;overflow:hidden;font-size:13px;color:color-mix(in srgb, var(--color-text) 70%, transparent);opacity:' + (c ? 0 : 1)
+    };
+  }
+}
+</script>
+</body>
+</html>
