@@ -67,6 +67,44 @@ MODELS: dict[str, tuple[Model, ...]] = {
             "Previous-generation Pro. Tightly rate-limited on free keys.",
         ),
     ),
+    # OpenRouter proxies many upstreams behind one key. IDs are `upstream/model`
+    # slugs from https://openrouter.ai/models — verify them there, or override
+    # the default with the OPENROUTER_MODEL env var. A credit balance is
+    # required (there is no free tier), so every entry is flagged free_tier=False.
+    "openrouter": (
+        Model(
+            "anthropic/claude-opus-5",
+            "Claude Opus 5 · OpenRouter",
+            "Frontier reasoning, routed through OpenRouter.",
+            free_tier=False,
+        ),
+        Model(
+            "anthropic/claude-sonnet-5",
+            "Claude Sonnet 5 · OpenRouter",
+            "Balanced. A good default for full runs.",
+            free_tier=False,
+        ),
+        Model(
+            "z-ai/glm-5.3-flash",
+            "GLM-5.3-Flash · OpenRouter",
+            "1.3M context, reasoning-grade, ~10x cheaper than the Claude/GPT "
+            "tiers (formerly 'Ox Alpha'). Structured-output reliability varies "
+            "by which sub-provider OpenRouter routes to.",
+            free_tier=False,
+        ),
+        Model(
+            "openai/gpt-5.6-terra",
+            "GPT-5.6 Terra · OpenRouter",
+            "OpenAI's balanced tier, routed through OpenRouter.",
+            free_tier=False,
+        ),
+        Model(
+            "google/gemini-3.5-flash",
+            "Gemini 3.5 Flash · OpenRouter",
+            "Fast and cheap, routed through OpenRouter.",
+            free_tier=False,
+        ),
+    ),
 }
 
 # Deliberately Flash for Gemini: Pro is the option a free key cannot run, and a
@@ -75,6 +113,11 @@ DEFAULT_MODELS: dict[str, str] = {
     "openai": "gpt-5.6-terra",
     "anthropic": "claude-sonnet-5",
     "gemini": "gemini-3.5-flash",
+    # Claude Sonnet is the safe default: structured output is rock-solid on
+    # every route. GLM-5.3-Flash is the cheap high-context option, but its
+    # json_schema support depends on the sub-provider OpenRouter picks — set
+    # OPENROUTER_MODEL=z-ai/glm-5.3-flash (or pick it in the composer) to use it.
+    "openrouter": "anthropic/claude-sonnet-5",
 }
 
 #: Env var per provider, to override the default without a code change.
@@ -82,6 +125,7 @@ _CONFIG_KEYS = {
     "openai": "OPENAI_MODEL",
     "anthropic": "ANTHROPIC_MODEL",
     "gemini": "GEMINI_MODEL",
+    "openrouter": "OPENROUTER_MODEL",
 }
 
 

@@ -15,7 +15,7 @@ from flask import current_app
 
 from .. import crypto
 from ..models import Motion, User
-from . import anthropic_provider, catalogue, gemini_provider, openai_provider
+from . import anthropic_provider, catalogue, gemini_provider, openai_provider, openrouter_provider
 from .base import Generation, InvalidProviderKey, LLMError, Turn, unescape_literal_escapes
 from .streaming import StructuredStreamParser
 from .prompts import ADVANCE_INSTRUCTIONS, FIRST_TURN_INSTRUCTIONS, system_prompt
@@ -34,6 +34,7 @@ PROVIDER_IMPLS = {
     "openai": openai_provider,
     "anthropic": anthropic_provider,
     "gemini": gemini_provider,
+    "openrouter": openrouter_provider,
 }
 
 

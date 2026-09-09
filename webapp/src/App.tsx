@@ -5,6 +5,7 @@ import { Welcome } from './pages/Welcome'
 import { Auth } from './pages/Auth'
 import { Workspace } from './pages/Workspace'
 import { AccountSettings } from './pages/AccountSettings'
+import { Privacy } from './pages/Privacy'
 import { Wordmark } from './components/Logo'
 
 function Loading() {
@@ -39,6 +40,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Welcome />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route
             path="/signup"
             element={

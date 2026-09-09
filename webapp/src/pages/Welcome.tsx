@@ -326,6 +326,9 @@ function Footer() {
         <a href="#pricing" className="hover:text-accent-800">
           Pricing
         </a>
+        <Link to="/privacy" className="hover:text-accent-800">
+          Privacy
+        </Link>
         <a href="#pricing" className="hover:text-accent-800">
           Contact
         </a>

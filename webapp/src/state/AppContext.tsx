@@ -24,6 +24,7 @@ const EMPTY_KEYS: ApiKeys = {
   openai: { connected: false, masked: null },
   anthropic: { connected: false, masked: null },
   gemini: { connected: false, masked: null },
+  openrouter: { connected: false, masked: null },
 }
 
 interface AppState {

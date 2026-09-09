@@ -27,7 +27,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .extensions import db
 
 POSITIONS = ("OG", "OO", "CG", "CO")
-PROVIDERS = ("openai", "anthropic", "gemini")
+PROVIDERS = ("openai", "anthropic", "gemini", "openrouter")
 ROLES = ("user", "assistant")
 STAGES = (1, 2, 3)
 
@@ -51,12 +51,14 @@ class User(UserMixin, db.Model):
     encrypted_openai_key: Mapped[str | None] = mapped_column(Text)
     encrypted_anthropic_key: Mapped[str | None] = mapped_column(Text)
     encrypted_gemini_key: Mapped[str | None] = mapped_column(Text)
+    encrypted_openrouter_key: Mapped[str | None] = mapped_column(Text)
 
     # The display form (`sk-...a8f2`), stored at write time so the settings
     # page never has to decrypt a key just to render it.
     openai_key_masked: Mapped[str | None] = mapped_column(String(32))
     anthropic_key_masked: Mapped[str | None] = mapped_column(String(32))
     gemini_key_masked: Mapped[str | None] = mapped_column(String(32))
+    openrouter_key_masked: Mapped[str | None] = mapped_column(String(32))
 
     is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -88,7 +90,7 @@ class Motion(db.Model):
     __table_args__ = (
         CheckConstraint("position IN ('OG','OO','CG','CO')", name="ck_motions_position"),
         CheckConstraint(
-            "provider IN ('openai','anthropic','gemini')", name="ck_motions_provider"
+            "provider IN ('openai','anthropic','gemini','openrouter')", name="ck_motions_provider"
         ),
         CheckConstraint("current_stage BETWEEN 1 AND 3", name="ck_motions_stage"),
         Index("ix_motions_user_updated", "user_id", "updated_at"),

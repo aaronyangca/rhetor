@@ -99,7 +99,11 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
 
           {isSignup && (
             <p className="text-center text-[11.5px] leading-4 text-muted-foreground">
-              By creating an account, you agree to the Terms of Service and Privacy Policy.
+              By creating an account, you agree to our{' '}
+              <Link to="/privacy" className="text-accent-700 hover:underline">
+                Privacy Policy
+              </Link>
+              .
             </p>
           )}
 

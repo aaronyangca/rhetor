@@ -161,12 +161,20 @@ def update_motion(motion_id: uuid.UUID):
         stage = data["currentStage"]
         if stage not in (1, 2, 3):
             raise ApiError("'currentStage' must be 1, 2, or 3", 422)
-        # Navigating back is always allowed; jumping forward is not — that's
-        # what /advance is for, and it needs to generate the document.
-        if stage > motion.current_stage and motion.document(stage) is None:
-            raise ApiError(
-                f"Stage {stage} has no document yet. Use /advance to generate it.", 409
-            )
+        if stage > motion.current_stage:
+            # Forward moves happen one stage at a time, and only from a stage
+            # that has actually produced something to build on. This is the
+            # lightweight path the user takes by typing "move to stage N" — it
+            # just switches the stage; the next message generates the document.
+            # `/advance` is the other path, which generates it up front.
+            if stage != motion.current_stage + 1:
+                raise ApiError("Move forward one stage at a time.", 409)
+            if motion.document(motion.current_stage) is None:
+                raise ApiError(
+                    f"Stage {motion.current_stage} has nothing to build on yet — "
+                    f"work on it a little first.",
+                    409,
+                )
         motion.current_stage = stage
 
     db.session.commit()
@@ -382,15 +390,16 @@ def advance_stage_streaming(motion_id: uuid.UUID):
 @bp.get("/<uuid:motion_id>/export")
 @login_required
 def export_motion(motion_id: uuid.UUID):
-    """Download the current stage document as Markdown.
+    """Download a stage document as Markdown or PDF.
 
-    Copy-to-clipboard is client-side and needs no endpoint. PDF is not built
-    yet — see the note in the 501 below.
+    Copy-to-clipboard is client-side and needs no endpoint.
     """
     from flask import request
 
     motion = _get_motion(motion_id)
     fmt = request.args.get("format", "markdown")
+    if fmt not in ("markdown", "pdf"):
+        raise ApiError("'format' must be 'markdown' or 'pdf'", 422)
 
     stage = request.args.get("stage", type=int) or motion.current_stage
     if stage not in (1, 2, 3):
@@ -400,21 +409,25 @@ def export_motion(motion_id: uuid.UUID):
     if not document:
         raise ApiError(f"Stage {stage} has no document to export", 409)
 
-    if fmt == "pdf":
-        raise ApiError(
-            "PDF export is not implemented yet — use Markdown, or the browser's "
-            "print dialog.",
-            501,
-            code="not_implemented",
-        )
-    if fmt != "markdown":
-        raise ApiError("'format' must be 'markdown' or 'pdf'", 422)
-
     slug = re.sub(r"[^a-z0-9]+", "-", motion.title.lower()).strip("-") or "motion"
+    filename = f"{slug}-stage-{stage}.{'pdf' if fmt == 'pdf' else 'md'}"
+
+    if fmt == "pdf":
+        from ..pdf import render_pdf
+
+        body = render_pdf(
+            title=motion.title,
+            position=motion.position,
+            stage=stage,
+            markdown_text=document,
+        )
+        mimetype = "application/pdf"
+    else:
+        body = document
+        mimetype = "text/markdown; charset=utf-8"
+
     return Response(
-        document,
-        mimetype="text/markdown; charset=utf-8",
-        headers={
-            "Content-Disposition": f'attachment; filename="{slug}-stage-{stage}.md"'
-        },
+        body,
+        mimetype=mimetype,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )

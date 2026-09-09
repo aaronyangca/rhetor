@@ -14,8 +14,11 @@ python-dotenv>=1.0
 email-validator>=2.2
 cryptography>=45
 
-# Admin panel rendering
+# Markdown rendering — admin panel, and the PDF export
 markdown>=3.7
+
+# PDF export (pure-Python, no system libraries)
+fpdf2>=2.8.2
 
 # LLM providers
 openai>=2.0

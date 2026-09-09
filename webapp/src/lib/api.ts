@@ -201,6 +201,6 @@ export const api = {
     request<Motion>(`/motions/${id}/advance`, { method: 'POST', body: json({}) }),
 
   /** A plain URL, so the browser can download it directly. */
-  exportUrl: (id: string, stage: Stage) =>
-    `/api/motions/${id}/export?format=markdown&stage=${stage}`,
+  exportUrl: (id: string, stage: Stage, format: 'markdown' | 'pdf' = 'markdown') =>
+    `/api/motions/${id}/export?format=${format}&stage=${stage}`,
 }

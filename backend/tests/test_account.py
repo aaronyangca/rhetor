@@ -8,7 +8,17 @@ def test_keys_start_disconnected(auth_client):
         "openai": {"connected": False, "masked": None},
         "anthropic": {"connected": False, "masked": None},
         "gemini": {"connected": False, "masked": None},
+        "openrouter": {"connected": False, "masked": None},
     }
+
+
+def test_openrouter_key_round_trips(auth_client, stored_user):
+    key = "sk-or-v1-" + "d" * 40 + "9c7a"
+    response = auth_client.put("/api/account/keys/openrouter", json={"key": key})
+
+    assert response.status_code == 200
+    assert response.get_json()["openrouter"] == {"connected": True, "masked": "sk-or-...9c7a"}
+    assert stored_user()["encrypted_openrouter_key"]
 
 
 def test_storing_a_key_returns_only_the_masked_form(auth_client):
@@ -88,6 +98,12 @@ def test_anthropic_mask_keeps_its_full_prefix(auth_client):
         ("anthropic", "AQ.Ab8" + "c" * 35),
         # And an sk- key in the Gemini slot.
         ("gemini", "sk-" + "a" * 40),
+        # OpenRouter's sk-or- also starts with sk-, so it must be rejected from
+        # the OpenAI slot; and a plain OpenAI key must be rejected from the
+        # OpenRouter slot.
+        ("openai", "sk-or-v1-" + "d" * 40),
+        ("openrouter", "sk-" + "a" * 40),
+        ("openrouter", "sk-ant-" + "b" * 40),
     ],
 )
 def test_key_must_match_the_provider(auth_client, provider, key):

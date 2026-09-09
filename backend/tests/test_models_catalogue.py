@@ -15,9 +15,15 @@ def test_every_provider_offers_models_and_a_valid_default(app):
 
 
 def test_every_default_is_reachable_on_a_free_api_key(app):
-    """The whole point of the change: a default nobody can run is useless."""
+    """The whole point of the change: a default nobody can run is useless.
+
+    OpenRouter is the exception — it has no free tier at all (a credit balance
+    is required regardless of model), so "free-tier reachable" doesn't apply.
+    """
     with app.app_context():
         for provider in PROVIDERS:
+            if provider == "openrouter":
+                continue
             default = catalogue.default_model(provider)
             model = next(m for m in catalogue.models_for(provider) if m.id == default)
             assert model.free_tier, f"{provider} defaults to a paid-only model"

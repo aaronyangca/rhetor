@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AlertCircle,
@@ -30,6 +30,7 @@ import {
   type Motion,
   type MotionSummary,
   type Provider,
+  type Stage,
 } from '../lib/types'
 
 const DAY_MS = 86_400_000
@@ -417,18 +418,105 @@ function TopBar({ motion }: { motion: Motion }) {
   )
 }
 
-function ChatColumn({ motion }: { motion: Motion }) {
-  const { sendMessage, sending, streaming } = useApp()
-  const [draft, setDraft] = useState('')
+const STAGE_HELP: Record<Stage, string> = {
+  1: 'Stage 1 · Ideas. Give Rhetor the motion and your position (OG / OO / CG / CO), then think out loud. It builds a wide pool of rough argument ideas around your line — no scoring yet. When you have enough to develop, type “move to stage 2”.',
+  2: 'Stage 2 · Develop & score. Rhetor fills each argument out — claim, mechanism, evidence, impact — and marks it the way a judge would, then ranks the bench. Ask it to push a mechanism, find harder evidence, or cut a weak one. When the bench is solid, type “move to stage 3”.',
+  3: 'Stage 3 · Final ranking. Rhetor picks the shortlist you’d actually run and orders it by strategic fit for your bench position. Ask it to reconsider an inclusion or the order, then export when you’re done.',
+}
 
-  const messages = motion.messages.filter((m) => m.stage === motion.currentStage)
-  const scroll = useStickToBottom<HTMLDivElement>([messages.length, sending, streaming?.reply])
+const MOVE_VERB = /\b(move|advance|go|proceed|continue|jump|skip)\b/
+const HOLD_BACK = /\b(don'?t|do not|dont|shouldn'?t|not yet|wait|hold on|hold off|stay|remain|keep)\b/
+const NUM: Record<string, number> = { '2': 2, two: 2, '3': 3, three: 3 }
+
+/** Deterministic — never the model's judgement. Returns a target stage only for
+ *  an unambiguous, explicit "move to the next stage" instruction. */
+function parseStageCommand(
+  text: string,
+  current: Stage,
+): { kind: 'help' } | { kind: 'advance'; to: Stage } | null {
+  const t = text.trim().toLowerCase()
+  if (t === '?' || t === 'help' || t === '/help') return { kind: 'help' }
+  if (!MOVE_VERB.test(t) || HOLD_BACK.test(t)) return null
+
+  let to: number | null = null
+  if (/\bnext stage\b/.test(t)) to = current + 1
+  else {
+    const m = t.match(/\bstage\s*(2|3|two|three)\b/)
+    if (m) to = NUM[m[1]]
+  }
+  return to === current + 1 && to <= 3 ? { kind: 'advance', to: to as Stage } : null
+}
+
+function StageDivider({ stage }: { stage: number }) {
+  return (
+    <div className="flex items-center gap-3 text-[12px] whitespace-nowrap text-ink-58">
+      <span className="h-px flex-1 bg-divider" />
+      Moved to Stage {stage}
+      <span className="h-px flex-1 bg-divider" />
+    </div>
+  )
+}
+
+function StageHelpNote({ stage, onDismiss }: { stage: Stage; onDismiss: () => void }) {
+  return (
+    <div className="rounded-md border border-divider bg-accent-100/40 px-4 py-3 text-[13.5px] leading-[1.55] text-ink-82">
+      <div className="mb-1 flex items-center justify-between">
+        <span className="font-medium">Stage {stage}</span>
+        <button
+          onClick={onDismiss}
+          aria-label="Dismiss"
+          className="px-1 text-ink-58 hover:text-accent-800"
+        >
+          ×
+        </button>
+      </div>
+      {STAGE_HELP[stage]}
+    </div>
+  )
+}
+
+function ChatColumn({ motion }: { motion: Motion }) {
+  const { sendMessage, sending, streaming, goToStage } = useApp()
+  const [draft, setDraft] = useState('')
+  const [help, setHelp] = useState<Stage | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+
+  const stage = motion.currentStage
+  const messages = motion.messages.filter((m) => m.stage === stage)
+  const scroll = useStickToBottom<HTMLDivElement>([messages.length, sending, streaming?.reply, help])
+
+  // Clear the ephemeral help / notice whenever the stage changes.
+  useEffect(() => {
+    setHelp(null)
+    setNotice(null)
+  }, [stage])
 
   async function handleSend() {
     const content = draft.trim()
     if (!content || sending) return
+
+    const cmd = parseStageCommand(content, stage)
+    if (cmd?.kind === 'help') {
+      setHelp(stage)
+      setNotice(null)
+      setDraft('')
+      scroll.stick()
+      return
+    }
+    if (cmd?.kind === 'advance') {
+      if (!motion.stageDocs[String(stage) as '1' | '2' | '3']) {
+        setNotice('There’s nothing to move on with yet — send some ideas first.')
+        return
+      }
+      setDraft('')
+      setNotice(null)
+      await goToStage(cmd.to)
+      return
+    }
+
     scroll.stick()
     setDraft('')
+    setNotice(null)
     const delivered = await sendMessage(content)
     if (!delivered) setDraft((current) => current || content)
   }
@@ -443,6 +531,7 @@ function ChatColumn({ motion }: { motion: Motion }) {
         onScroll={scroll.onScroll}
         className="flex min-h-0 flex-col gap-[26px] overflow-y-auto px-5 pt-[14px] pb-2"
       >
+        {stage > 1 && <StageDivider stage={stage} />}
         {messages.map((m) => (
           <ChatBubble key={m.id} role={m.role} content={m.content} />
         ))}
@@ -450,9 +539,14 @@ function ChatColumn({ motion }: { motion: Motion }) {
         {sending && !streaming?.reply && (
           <p className="text-[13px] text-muted-foreground italic">Rhetor is working…</p>
         )}
+        {help && <StageHelpNote stage={help} onDismiss={() => setHelp(null)} />}
+        {messages.length === 0 && !help && (
+          <p className="text-[12.5px] text-ink-58">Type “?” for what to do in this stage.</p>
+        )}
       </div>
 
       <div className="px-4 pt-2 pb-4">
+        {notice && <p className="mb-2 px-1 text-[12.5px] text-accent-800">{notice}</p>}
         <div className="flex items-center gap-[6px] rounded-lg border border-ink-20 bg-card py-[7px] pr-2 pl-[14px]">
           <input
             value={draft}
@@ -493,15 +587,14 @@ function DocToolbar({ motion, markdown }: { motion: Motion; markdown: string }) 
 
   return (
     <div className="flex shrink-0 items-center gap-4 border-t border-divider px-7 py-[10px] text-[14px]">
-      <button onClick={copy} className={link}>
-        {copied ? 'Copied' : 'Copy'}
-      </button>
       <a href={api.exportUrl(motion.id, motion.currentStage)} download className={link}>
         Markdown
       </a>
-      {/* Server-side PDF isn't built; this is the browser's print dialog. */}
-      <button onClick={() => window.print()} className={link}>
-        Print
+      <a href={api.exportUrl(motion.id, motion.currentStage, 'pdf')} download className={link}>
+        PDF
+      </a>
+      <button onClick={copy} className={link}>
+        {copied ? 'Copied' : 'Copy'}
       </button>
     </div>
   )

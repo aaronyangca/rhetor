@@ -61,6 +61,22 @@ def test_a_motion_can_run_on_any_provider(keyed_client, fake_llm, provider):
     assert fake_llm[0]["provider"] == provider
 
 
+def test_creating_a_motion_makes_no_provider_call(keyed_client, fake_llm):
+    """The opening message is a fixed string — creating a motion must not spend
+    a single token."""
+    from app.blueprints.motions import OPENING_MESSAGE
+
+    created = keyed_client.post("/api/motions", json={"provider": "openai"})
+    assert created.status_code == 201
+
+    assert fake_llm == []  # llm.generate was never called
+
+    messages = created.get_json()["messages"]
+    assert len(messages) == 1
+    assert messages[0]["role"] == "assistant"
+    assert messages[0]["content"] == OPENING_MESSAGE
+
+
 def test_an_unknown_provider_is_rejected(keyed_client):
     response = keyed_client.post("/api/motions", json={"provider": "grok"})
     assert response.status_code == 422
@@ -163,6 +179,25 @@ def test_cannot_jump_forward_to_an_ungenerated_stage(keyed_client, motion, fake_
     assert response.status_code == 409
 
 
+def test_can_step_forward_one_stage_once_the_current_one_has_a_document(
+    keyed_client, motion, fake_llm
+):
+    mid = motion["id"]
+    # No document yet -> nothing to build on.
+    assert keyed_client.patch(f"/api/motions/{mid}", json={"currentStage": 2}).status_code == 409
+
+    # A message produces the Stage 1 document; now the step forward is allowed
+    # and makes no LLM call of its own.
+    keyed_client.post(f"/api/motions/{mid}/messages", json={"content": "THW x, OG"})
+    calls_before = len(fake_llm)
+    response = keyed_client.patch(f"/api/motions/{mid}", json={"currentStage": 2})
+
+    assert response.status_code == 200
+    assert response.get_json()["currentStage"] == 2
+    assert len(fake_llm) == calls_before  # the step itself did not generate
+    assert keyed_client.get(f"/api/motions/{mid}").get_json()["stageDocs"]["2"] is None
+
+
 def test_a_failed_provider_call_does_not_persist_the_user_message(
     keyed_client, motion, monkeypatch
 ):
@@ -189,10 +224,20 @@ def test_export_returns_markdown_for_the_current_stage(keyed_client, motion, fak
     assert "attachment" in response.headers["Content-Disposition"]
 
 
-def test_export_pdf_is_not_implemented_yet(keyed_client, motion, fake_llm):
+def test_export_returns_pdf(keyed_client, motion, fake_llm):
     keyed_client.post(f"/api/motions/{motion['id']}/messages", json={"content": "THW x, OG"})
     response = keyed_client.get(f"/api/motions/{motion['id']}/export?format=pdf")
-    assert response.status_code == 501
+
+    assert response.status_code == 200
+    assert response.mimetype == "application/pdf"
+    assert response.get_data().startswith(b"%PDF-")
+    assert response.headers["Content-Disposition"].endswith('.pdf"')
+
+
+def test_export_rejects_unknown_format(keyed_client, motion, fake_llm):
+    keyed_client.post(f"/api/motions/{motion['id']}/messages", json={"content": "THW x, OG"})
+    response = keyed_client.get(f"/api/motions/{motion['id']}/export?format=docx")
+    assert response.status_code == 422
 
 
 def test_another_users_motion_is_not_found(client, motion, credentials):

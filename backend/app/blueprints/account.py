@@ -29,8 +29,14 @@ KEY_PREFIXES: dict[str, tuple[str, ...]] = {
     "openai": ("sk-",),
     "anthropic": ("sk-ant-",),
     "gemini": ("AIza", "AQ"),
+    "openrouter": ("sk-or-",),
 }
-PROVIDER_LABELS = {"openai": "OpenAI", "anthropic": "Anthropic", "gemini": "Gemini"}
+PROVIDER_LABELS = {
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "gemini": "Gemini",
+    "openrouter": "OpenRouter",
+}
 MIN_KEY_LENGTH = 20
 
 
@@ -68,9 +74,11 @@ def set_key(provider: str):
 
     prefixes = KEY_PREFIXES[provider]
     matched = next((p for p in prefixes if key.startswith(p)), None)
-    # OpenAI's prefix is a prefix of Anthropic's, so an sk-ant- key pasted into
-    # the OpenAI slot matches but is still a real mistake.
-    wrong_slot = provider == "openai" and key.startswith("sk-ant-")
+    # OpenAI's `sk-` is a prefix of both `sk-ant-` (Anthropic) and `sk-or-`
+    # (OpenRouter), so those match the OpenAI slot but are still a real mistake.
+    wrong_slot = provider == "openai" and (
+        key.startswith("sk-ant-") or key.startswith("sk-or-")
+    )
 
     if wrong_slot or matched is None or len(key) < MIN_KEY_LENGTH:
         expected = " or ".join(f"'{p}'" for p in prefixes)

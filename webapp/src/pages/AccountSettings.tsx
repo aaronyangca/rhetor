@@ -11,6 +11,7 @@ const PROVIDER_INITIALS: Record<Provider, string> = {
   openai: 'AI',
   anthropic: 'A',
   gemini: 'G',
+  openrouter: 'OR',
 }
 
 function KeyRow({ provider }: { provider: Provider }) {

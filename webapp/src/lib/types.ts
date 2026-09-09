@@ -1,5 +1,5 @@
 export type Position = 'OG' | 'OO' | 'CG' | 'CO'
-export type Provider = 'openai' | 'anthropic' | 'gemini'
+export type Provider = 'openai' | 'anthropic' | 'gemini' | 'openrouter'
 export type Stage = 1 | 2 | 3
 
 export interface User {
@@ -60,12 +60,13 @@ export interface ApiKeyState {
 
 export type ApiKeys = Record<Provider, ApiKeyState>
 
-export const PROVIDERS: Provider[] = ['openai', 'anthropic', 'gemini']
+export const PROVIDERS: Provider[] = ['openai', 'anthropic', 'gemini', 'openrouter']
 
 export const PROVIDER_LABELS: Record<Provider, string> = {
   openai: 'OpenAI',
   anthropic: 'Anthropic',
   gemini: 'Google Gemini',
+  openrouter: 'OpenRouter',
 }
 
 /** Placeholder text for the key field. Google issues both `AIza...` and the
@@ -74,6 +75,7 @@ export const PROVIDER_KEY_HINT: Record<Provider, string> = {
   openai: 'sk-…',
   anthropic: 'sk-ant-…',
   gemini: 'AIza… or AQ…',
+  openrouter: 'sk-or-…',
 }
 
 export const POSITION_LABELS: Record<Position, string> = {
