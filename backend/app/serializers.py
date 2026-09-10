@@ -23,7 +23,9 @@ def motion_summary_json(motion: Motion) -> dict:
         "title": motion.title,
         "position": motion.position,
         "provider": motion.provider,
-        "model": catalogue.resolve(motion.provider, motion.model),
+        # `model` is the user's explicit choice (null until they make one);
+        # `modelLabel` always names the model that will actually run.
+        "model": motion.model,
         "modelLabel": catalogue.label_for(
             motion.provider, catalogue.resolve(motion.provider, motion.model)
         ),

@@ -69,8 +69,12 @@ MODELS: dict[str, tuple[Model, ...]] = {
     ),
     # OpenRouter proxies many upstreams behind one key. IDs are `upstream/model`
     # slugs from https://openrouter.ai/models — verify them there, or override
-    # the default with the OPENROUTER_MODEL env var. A credit balance is
-    # required (there is no free tier), so every entry is flagged free_tier=False.
+    # the default with the OPENROUTER_MODEL env var. The named upstreams all bill
+    # against a credit balance (free_tier=False); `openrouter/free` is the one
+    # no-cost option — it routes among OpenRouter's `:free` models and, with our
+    # `provider.require_parameters`, only to ones that honour the JSON schema.
+    # Free keys are rate-limited: ~20 req/min and 50 req/day, rising to 1000/day
+    # once the account has bought 10 credits (openrouter.ai/docs/api-reference/limits).
     "openrouter": (
         Model(
             "anthropic/claude-opus-5",
@@ -103,6 +107,13 @@ MODELS: dict[str, tuple[Model, ...]] = {
             "Gemini 3.5 Flash · OpenRouter",
             "Fast and cheap, routed through OpenRouter.",
             free_tier=False,
+        ),
+        Model(
+            "openrouter/free",
+            "Free model router · OpenRouter",
+            "No-cost models only, auto-picked for JSON-schema support. Needs just "
+            "a free OpenRouter key; capped at ~20 requests/min and 50/day (1000 "
+            "after 10 credits). Which model answers — and how good it is — varies.",
         ),
     ),
 }

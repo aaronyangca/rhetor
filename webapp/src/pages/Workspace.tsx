@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import {
   AlertCircle,
@@ -9,12 +10,12 @@ import {
   Pencil,
   Plus,
   Send,
+  Square,
   Trash2,
   X,
 } from 'lucide-react'
 import { useApp } from '../state/AppContext'
 import { api } from '../lib/api'
-import { readLastModel } from '../lib/lastModel'
 import { useStickToBottom } from '../lib/useStickToBottom'
 import { useResizableSplit } from '../lib/useResizableSplit'
 import { Wordmark } from '../components/Logo'
@@ -79,10 +80,14 @@ function ErrorBanner() {
 function ModelOptionRow({
   model,
   selected,
+  markFree,
   onClick,
 }: {
   model: ModelOption
   selected?: boolean
+  /** Show the "Free" tag — set only when free is the minority tier in this
+   *  provider's list, so the marker actually distinguishes a row. */
+  markFree?: boolean
   onClick: () => void
 }) {
   return (
@@ -95,10 +100,9 @@ function ModelOptionRow({
       <div className="flex items-center gap-1.5">
         <span className="text-[13px] text-foreground">{model.label}</span>
         {selected && <Check size={12} className="text-accent-700" />}
-        {/* Worth surfacing: picking one of these with a free key just fails. */}
-        {!model.freeTier && (
-          <span className="rounded-[3px] border border-accent-300 px-1 py-[1px] text-[10px] tracking-[0.3px] text-accent-700">
-            PAID KEY
+        {markFree && model.freeTier && (
+          <span className="text-[10px] font-medium tracking-[0.4px] text-success uppercase">
+            Free
           </span>
         )}
       </div>
@@ -111,26 +115,19 @@ function NewMotionButton() {
   const { connectedProviders, createMotion, catalogue } = useApp()
   const [open, setOpen] = useState(false)
   const [creating, setCreating] = useState(false)
+  const single = connectedProviders.length === 1
 
-  async function create(provider: Provider, model: string) {
+  async function create(provider: Provider) {
     setOpen(false)
     setCreating(true)
     try {
-      await createMotion(provider, model)
+      // No model is chosen here — that's a per-motion setting in the workspace.
+      await createMotion(provider)
     } catch {
       // Surfaced by the shared error banner.
     } finally {
       setCreating(false)
     }
-  }
-
-  const remembered = readLastModel()
-  const preset =
-    remembered && connectedProviders.includes(remembered.provider) ? remembered : null
-
-  function start() {
-    if (preset) void create(preset.provider, preset.model)
-    else setOpen((v) => !v)
   }
 
   if (connectedProviders.length === 0) {
@@ -146,49 +143,29 @@ function NewMotionButton() {
 
   return (
     <div className="relative">
-      <div className="flex items-stretch gap-1">
-        <button
-          onClick={start}
-          disabled={creating || !catalogue}
-          className="flex min-h-[38px] flex-1 items-center justify-center gap-[9px] rounded-md border border-accent-500 px-[18px] text-[14.5px] font-medium whitespace-nowrap text-accent-800 transition-colors hover:bg-accent-100 disabled:opacity-45"
-        >
-          <Plus size={15} strokeWidth={1.6} /> {creating ? 'Creating…' : 'New Motion'}
-        </button>
-        {preset && (
-          <button
-            onClick={() => setOpen((v) => !v)}
-            disabled={creating || !catalogue}
-            aria-label="Start with a different model"
-            title="Start with a different model"
-            className="flex items-center rounded-md border border-accent-500 px-2 text-accent-800 transition-colors hover:bg-accent-100 disabled:opacity-45"
-          >
-            <ChevronDown size={15} />
-          </button>
-        )}
-      </div>
+      <button
+        onClick={() => (single ? create(connectedProviders[0]) : setOpen((v) => !v))}
+        disabled={creating || !catalogue}
+        className="flex min-h-[38px] w-full items-center justify-center gap-[9px] rounded-md border border-accent-500 px-[18px] text-[14.5px] font-medium whitespace-nowrap text-accent-800 transition-colors hover:bg-accent-100 disabled:opacity-45"
+      >
+        <Plus size={15} strokeWidth={1.6} /> {creating ? 'Creating…' : 'New Motion'}
+      </button>
 
-      {open && catalogue && (
+      {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute top-full right-0 left-0 z-20 mt-1 flex max-h-[420px] flex-col overflow-y-auto rounded-md border border-border bg-card p-1 shadow-md">
+          <div className="absolute top-full right-0 left-0 z-20 mt-1 flex flex-col rounded-md border border-border bg-card p-1 shadow-sm">
+            <div className="px-2 pt-2 pb-1 text-[11px] tracking-[0.4px] text-muted-foreground">
+              PROVIDER
+            </div>
             {connectedProviders.map((provider) => (
-              <div key={provider} className="flex flex-col">
-                <div className="px-2 pt-2 pb-1 text-[11px] tracking-[0.4px] text-muted-foreground">
-                  {PROVIDER_LABELS[provider].toUpperCase()}
-                </div>
-                {catalogue[provider].models.map((model) => (
-                  <ModelOptionRow
-                    key={model.id}
-                    model={model}
-                    selected={
-                      preset
-                        ? provider === preset.provider && model.id === preset.model
-                        : model.id === catalogue[provider].default
-                    }
-                    onClick={() => create(provider, model.id)}
-                  />
-                ))}
-              </div>
+              <button
+                key={provider}
+                onClick={() => create(provider)}
+                className="rounded-md px-2 py-[7px] text-left text-[13px] text-foreground hover:bg-accent-100"
+              >
+                {PROVIDER_LABELS[provider]}
+              </button>
             ))}
           </div>
         </>
@@ -198,53 +175,83 @@ function NewMotionButton() {
 }
 
 /**
- * Switches the model an open motion generates with. Lives in the composer,
- * next to Send — it is a property of the message you are about to send. Opens
- * upward for the same reason.
+ * The one place a motion's model is chosen — it applies to every stage. Lives
+ * in the header next to the stage readout so it is always visible, and there is
+ * never any doubt about which model an advance will use.
  */
-function ModelSwitcher({ motion }: { motion: Motion }) {
+function MotionModelPicker({ motion }: { motion: Motion }) {
   const { catalogue, setModel } = useApp()
   const [open, setOpen] = useState(false)
+  const anchorRef = useRef<HTMLButtonElement>(null)
+  // The header has `overflow-hidden`, so the menu is portalled to <body> and
+  // positioned against the button's viewport rect rather than clipped inside it.
+  const [pos, setPos] = useState<{ top: number; right: number } | null>(null)
+
+  useLayoutEffect(() => {
+    if (!open) return
+    const place = () => {
+      const el = anchorRef.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      setPos({ top: r.bottom + 4, right: Math.max(8, window.innerWidth - r.right) })
+    }
+    place()
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [open])
+
   if (!catalogue) return null
 
   const options = catalogue[motion.provider].models
+  const freeCount = options.filter((m) => m.freeTier).length
+  // Tag the free option only when free is the minority in a mixed list — a
+  // marker on every row (or on none) tells you nothing.
+  const markFree = freeCount > 0 && freeCount < options.length - freeCount
 
   return (
-    <div className="relative">
+    <div className="relative flex-none">
       <button
+        ref={anchorRef}
         onClick={() => setOpen((v) => !v)}
-        title={`${PROVIDER_LABELS[motion.provider]} · ${motion.modelLabel}`}
-        className="flex min-h-[30px] max-w-[180px] shrink-0 items-center gap-[6px] rounded-md px-[8px] py-[5px] text-[13.5px] whitespace-nowrap text-muted-foreground hover:bg-accent-100"
+        title={`Model · ${PROVIDER_LABELS[motion.provider]} · ${motion.modelLabel}`}
+        className="flex min-h-[28px] max-w-[160px] items-center gap-[5px] rounded-md px-[8px] text-[13px] whitespace-nowrap text-muted-foreground transition-colors hover:bg-accent-100 hover:text-accent-800"
       >
         <span className="truncate">{motion.modelLabel}</span>
         <ChevronDown size={13} className="shrink-0" />
       </button>
 
-      {open && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 bottom-full z-20 mb-1 flex w-[280px] flex-col rounded-md border border-border bg-card p-1 shadow-md">
-            <div className="px-2 pt-2 pb-1 text-[11px] tracking-[0.4px] text-muted-foreground">
-              {PROVIDER_LABELS[motion.provider].toUpperCase()}
+      {open &&
+        pos &&
+        createPortal(
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+            <div
+              className="fixed z-50 flex w-[280px] flex-col rounded-md border border-border bg-card p-1 shadow-sm"
+              style={{ top: pos.top, right: pos.right }}
+            >
+              <div className="px-2 pt-2 pb-1 text-[11px] tracking-[0.4px] text-muted-foreground">
+                {PROVIDER_LABELS[motion.provider].toUpperCase()}
+              </div>
+              {options.map((model) => (
+                <ModelOptionRow
+                  key={model.id}
+                  model={model}
+                  selected={model.id === motion.model}
+                  markFree={markFree}
+                  onClick={() => {
+                    setOpen(false)
+                    setModel(model.id)
+                  }}
+                />
+              ))}
+              <p className="px-2 pt-2 pb-1 text-[11px] leading-4 text-muted-foreground">
+                Used for the whole motion — every stage. Changing it takes effect
+                on the next generation.
+              </p>
             </div>
-            {options.map((model) => (
-              <ModelOptionRow
-                key={model.id}
-                model={model}
-                selected={model.id === motion.model}
-                onClick={() => {
-                  setOpen(false)
-                  setModel(model.id)
-                }}
-              />
-            ))}
-            <p className="px-2 pt-2 pb-1 text-[11px] leading-4 text-muted-foreground">
-              The provider is fixed for this motion. Switching model affects the
-              next generation only.
-            </p>
-          </div>
-        </>
-      )}
+          </>,
+          document.body,
+        )}
     </div>
   )
 }
@@ -312,7 +319,7 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
                             deleteMotion(m.id)
                         }}
                         aria-label={`Delete ${m.title}`}
-                        className="absolute top-1/2 right-2 hidden -translate-y-1/2 text-muted-foreground hover:text-destructive group-hover:block"
+                        className="absolute top-1/2 right-2 hidden -translate-y-1/2 text-muted-foreground hover:text-destructive group-hover:block focus-visible:block"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -395,6 +402,8 @@ function TopBar({ motion }: { motion: Motion }) {
         </span>
       )}
 
+      <MotionModelPicker motion={motion} />
+
       <StageIndicator
         currentStage={motion.currentStage}
         onSelect={goToStage}
@@ -447,13 +456,21 @@ function parseStageCommand(
   return to === current + 1 && to <= 3 ? { kind: 'advance', to: to as Stage } : null
 }
 
-function StageDivider({ stage }: { stage: number }) {
+/** A section boundary in the continuous chat — also the in-context way to make
+ *  that stage current (switches the document panel and where new turns land). */
+function StageDivider({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <div className="flex items-center gap-3 text-[12px] whitespace-nowrap text-ink-58">
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex w-full items-center gap-3 text-[12px] whitespace-nowrap text-ink-58"
+    >
       <span className="h-px flex-1 bg-divider" />
-      Moved to Stage {stage}
+      <span className="rounded-full px-2 py-[1px] transition-colors group-hover:bg-accent-100 group-hover:text-accent-800">
+        {label}
+      </span>
       <span className="h-px flex-1 bg-divider" />
-    </div>
+    </button>
   )
 }
 
@@ -465,9 +482,9 @@ function StageHelpNote({ stage, onDismiss }: { stage: Stage; onDismiss: () => vo
         <button
           onClick={onDismiss}
           aria-label="Dismiss"
-          className="px-1 text-ink-58 hover:text-accent-800"
+          className="shrink-0 text-ink-58 hover:text-accent-800"
         >
-          ×
+          <X size={14} />
         </button>
       </div>
       {STAGE_HELP[stage]}
@@ -475,25 +492,45 @@ function StageHelpNote({ stage, onDismiss }: { stage: Stage; onDismiss: () => vo
   )
 }
 
+const CHAT_STAGES: Stage[] = [1, 2, 3]
+
 function ChatColumn({ motion }: { motion: Motion }) {
-  const { sendMessage, sending, streaming, goToStage } = useApp()
+  const { sendMessage, sending, advancing, streaming, goToStage, cancelGeneration } = useApp()
   const [draft, setDraft] = useState('')
   const [help, setHelp] = useState<Stage | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  const sectionRefs = useRef<Partial<Record<Stage, HTMLDivElement | null>>>({})
 
+  // Any in-flight turn — a message or an advance — locks the composer to Stop.
+  const busy = sending || advancing
   const stage = motion.currentStage
-  const messages = motion.messages.filter((m) => m.stage === stage)
-  const scroll = useStickToBottom<HTMLDivElement>([messages.length, sending, streaming?.reply, help])
+  // The whole conversation is shown at once, split into per-stage blocks — a
+  // stage never disappears, you just scroll. New turns still go to `stage`.
+  const byStage = (s: Stage) => motion.messages.filter((m) => m.stage === s)
+  const highestStage = Math.max(stage, ...motion.messages.map((m) => m.stage)) as Stage
+  const visibleStages = CHAT_STAGES.filter((s) => s <= highestStage)
+  const scroll = useStickToBottom<HTMLDivElement>([
+    motion.messages.length,
+    busy,
+    streaming?.reply,
+    help,
+  ])
 
-  // Clear the ephemeral help / notice whenever the stage changes.
+  // Clear the ephemeral help / notice, and jump to the stage's block, on switch.
   useEffect(() => {
     setHelp(null)
     setNotice(null)
+    sectionRefs.current[stage]?.scrollIntoView({ block: 'start', behavior: 'smooth' })
   }, [stage])
+
+  function jumpToStage(s: Stage) {
+    if (s === stage) sectionRefs.current[s]?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    else void goToStage(s)
+  }
 
   async function handleSend() {
     const content = draft.trim()
-    if (!content || sending) return
+    if (!content || busy) return
 
     const cmd = parseStageCommand(content, stage)
     if (cmd?.kind === 'help') {
@@ -529,20 +566,48 @@ function ChatColumn({ motion }: { motion: Motion }) {
       <div
         ref={scroll.ref}
         onScroll={scroll.onScroll}
-        className="flex min-h-0 flex-col gap-[26px] overflow-y-auto px-5 pt-[14px] pb-2"
+        className="flex min-h-0 flex-col overflow-y-auto px-5 pt-[14px] pb-2"
       >
-        {stage > 1 && <StageDivider stage={stage} />}
-        {messages.map((m) => (
-          <ChatBubble key={m.id} role={m.role} content={m.content} />
-        ))}
-        {streaming?.reply && <ChatBubble role="assistant" content={streaming.reply} />}
-        {sending && !streaming?.reply && (
-          <p className="text-[13px] text-muted-foreground italic">Rhetor is working…</p>
-        )}
-        {help && <StageHelpNote stage={help} onDismiss={() => setHelp(null)} />}
-        {messages.length === 0 && !help && (
-          <p className="text-[12.5px] text-ink-58">Type “?” for what to do in this stage.</p>
-        )}
+        {visibleStages.map((s, i) => {
+          const msgs = byStage(s)
+          const isCurrent = s === stage
+          const multi = visibleStages.length > 1
+          return (
+            <div
+              key={s}
+              ref={(el) => {
+                sectionRefs.current[s] = el
+              }}
+              className={`flex flex-col gap-[26px] ${i > 0 ? 'pt-[26px]' : ''}`}
+            >
+              {multi && (
+                <StageDivider
+                  label={s === 1 ? 'Stage 1' : `Moved to Stage ${s}`}
+                  onClick={() => jumpToStage(s)}
+                />
+              )}
+              {msgs.map((m) => (
+                <ChatBubble key={m.id} role={m.role} content={m.content} />
+              ))}
+              {isCurrent && streaming?.reply && (
+                <ChatBubble role="assistant" content={streaming.reply} />
+              )}
+              {isCurrent && busy && !streaming?.reply && (
+                <p className="text-[13px] text-muted-foreground italic">
+                  {advancing ? 'Generating the next stage…' : 'Rhetor is working…'}
+                </p>
+              )}
+              {isCurrent && help && (
+                <StageHelpNote stage={help} onDismiss={() => setHelp(null)} />
+              )}
+              {isCurrent && msgs.length === 0 && !help && (
+                <p className="text-[12.5px] text-ink-58">
+                  Type “?” for what to do in this stage.
+                </p>
+              )}
+            </div>
+          )
+        })}
       </div>
 
       <div className="px-4 pt-2 pb-4">
@@ -552,21 +617,41 @@ function ChatColumn({ motion }: { motion: Motion }) {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-            disabled={sending}
+            disabled={busy}
             aria-label="Message Rhetor"
-            placeholder="Send message here…"
+            placeholder={
+              busy
+                ? advancing
+                  ? 'Generating the next stage…'
+                  : 'Waiting for a reply…'
+                : 'Send message here…'
+            }
             className="min-w-[60px] flex-[1_1_120px] bg-transparent text-[15.5px] leading-[1.6] text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-60"
           />
           <div className="flex flex-none items-center gap-[2px]">
-            <ModelSwitcher motion={motion} />
-            <button
-              onClick={handleSend}
-              aria-label="Send message"
-              disabled={!draft.trim() || sending}
-              className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-accent-500 text-accent-800 transition-colors hover:bg-accent-100 active:border-accent-600 active:bg-accent-200 disabled:opacity-40"
-            >
-              <Send size={16} strokeWidth={1.6} className="translate-x-[-0.5px] translate-y-[0.5px]" />
-            </button>
+            {busy ? (
+              <button
+                onClick={cancelGeneration}
+                aria-label="Stop generating"
+                title="Stop"
+                className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-accent-600 bg-accent-200 text-accent-900 transition-colors hover:bg-accent-300"
+              >
+                <Square size={13} strokeWidth={0} fill="currentColor" />
+              </button>
+            ) : (
+              <button
+                onClick={handleSend}
+                aria-label="Send message"
+                disabled={!draft.trim()}
+                className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-accent-500 text-accent-800 transition-colors hover:bg-accent-100 active:border-accent-600 active:bg-accent-200 disabled:opacity-45"
+              >
+                <Send
+                  size={16}
+                  strokeWidth={1.6}
+                  className="translate-x-[-0.5px] translate-y-[0.5px]"
+                />
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -601,12 +686,14 @@ function DocToolbar({ motion, markdown }: { motion: Motion; markdown: string }) 
 }
 
 function DocumentColumn({ motion }: { motion: Motion }) {
-  const { advancing, streaming } = useApp()
-  const stored = motion.stageDocs[String(motion.currentStage) as '1' | '2' | '3']
+  const { advancing, streaming, goToStage } = useApp()
+  const stage = motion.currentStage
+  const stored = motion.stageDocs[String(stage) as '1' | '2' | '3']
 
   const live = streaming?.document
   const doc = live || stored
   const isStreaming = Boolean(live)
+  const prevDone = stage > 1 && Boolean(motion.stageDocs[String(stage - 1) as '1' | '2' | '3'])
 
   const scroll = useStickToBottom<HTMLDivElement>([live], isStreaming)
 
@@ -625,10 +712,25 @@ function DocumentColumn({ motion }: { motion: Motion }) {
             )}
           </>
         ) : (
-          <div className="flex h-full items-center justify-center px-10 text-center text-sm text-muted-foreground">
-            {advancing || streaming
-              ? 'Generating this stage’s document…'
-              : "Send a message to generate this stage's document."}
+          <div className="flex h-full flex-col items-center justify-center gap-2 px-10 text-center text-sm text-muted-foreground">
+            {advancing || streaming ? (
+              'Generating this stage’s document…'
+            ) : (
+              <>
+                <p>Stage {stage} hasn’t been generated yet — send a message to start it.</p>
+                {prevDone && (
+                  <p>
+                    Your Stage {stage - 1} work is saved.{' '}
+                    <button
+                      onClick={() => goToStage((stage - 1) as Stage)}
+                      className="text-accent-700 hover:text-accent-800 hover:underline"
+                    >
+                      Go back to Stage {stage - 1}
+                    </button>
+                  </p>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>

@@ -7,7 +7,24 @@ progression, invalidation, ownership), not the models' output.
 import pytest
 
 from app import llm
+from app.blueprints.motions import _clamp_title
 from app.llm.base import Generation
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    [
+        ("THW Ban Zoos (OG)", "THW Ban Zoos (OG)"),
+        # A leaked stage word — the title is fixed for the motion's life.
+        ("OG — Ecosystem Personhood Seeds", "Ecosystem Personhood"),
+        ("Rewilding Bench (OG)", "Rewilding (OG)"),
+        ("CG: Nuclear Power Case File", "Nuclear Power"),
+        # Position belongs in a trailing "(OG)", never as a leading token.
+        ("OO - Free Speech", "Free Speech"),
+    ],
+)
+def test_clamp_title_strips_stage_jargon_and_a_leading_position(raw, expected):
+    assert _clamp_title(raw) == expected
 
 
 @pytest.fixture

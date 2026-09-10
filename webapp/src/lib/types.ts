@@ -39,7 +39,9 @@ export interface MotionSummary {
   /** Null until the user's first reply names the motion and position. */
   position: Position | null
   provider: Provider
-  model: string
+  /** The user's explicit choice — null until they pick one from the workspace. */
+  model: string | null
+  /** Always names the model that will actually run (the choice, or the default). */
   modelLabel: string
   currentStage: Stage
   createdAt: string

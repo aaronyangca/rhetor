@@ -35,6 +35,14 @@ def test_gemini_offers_both_the_flash_and_pro_options():
     assert "gemini-2.5-pro" in ids
 
 
+def test_openrouter_offers_a_free_router_alongside_its_paid_routes():
+    models = catalogue.models_for("openrouter")
+    free = [m for m in models if m.free_tier]
+    assert [m.id for m in free] == ["openrouter/free"]
+    # The paid routes stay the majority, so the picker marks the free one.
+    assert sum(not m.free_tier for m in models) > len(free)
+
+
 def test_resolve_falls_back_when_the_model_is_unknown_or_missing(app):
     with app.app_context():
         assert catalogue.resolve("openai", None) == catalogue.default_model("openai")
@@ -64,11 +72,11 @@ def test_catalogue_endpoint_lists_every_provider(auth_client):
     assert all({"id", "label", "blurb", "freeTier"} <= set(m) for m in gemini["models"])
 
 
-def test_a_new_motion_defaults_to_the_providers_default_model(keyed_client):
+def test_a_new_motion_has_no_model_pinned_but_shows_the_effective_default(keyed_client):
     motion = keyed_client.post("/api/motions", json={"provider": "gemini"}).get_json()
 
-    assert motion["model"] == "gemini-3.5-flash"
-    assert motion["modelLabel"] == "Gemini 3.5 Flash"
+    assert motion["model"] is None  # nothing chosen at creation
+    assert motion["modelLabel"] == "Gemini 3.5 Flash"  # the default is what would run
 
 
 def test_a_motion_can_be_created_with_a_chosen_model(keyed_client):

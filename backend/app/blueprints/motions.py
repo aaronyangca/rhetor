@@ -55,15 +55,30 @@ def _invalidate_later_stages(motion: Motion, from_stage: int) -> None:
 
 TITLE_MAX = 60
 
+# Words that describe the process or a single stage, not the debate topic. A
+# model occasionally leaks one into the title (e.g. "... Seeds"); the title is
+# fixed for the motion's life, so strip a trailing one.
+_STAGE_WORDS = re.compile(
+    r"[ \-–—]+(seeds?|bench|shortlist|pool|scoring|ranking|ideas?|drafts?"
+    r"|case\s*file)\s*(\([A-Z]{2}\))?\s*$",
+    re.IGNORECASE,
+)
+# A position belongs in a trailing "(OG)", never as a leading "OG — ...".
+_LEAD_POSITION = re.compile(r"^(OG|OO|CG|CO)\s*[-–—:]\s*", re.IGNORECASE)
+
 
 def _clamp_title(title: str) -> str:
-    """Hold the model to the length the schema asks for.
+    """Hold the model to the format the schema asks for.
 
-    The format itself is the schema's job; this only enforces the one part a
-    model reliably overruns, and cuts at a word boundary so a truncated title
-    still reads as words rather than a severed one.
+    The format itself is the schema's job; this enforces the parts a model
+    reliably gets wrong — overrunning the length, appending a stage word,
+    leading with the position — and cuts at a word boundary so a truncated
+    title still reads as words.
     """
     title = " ".join(title.split())
+    title = _LEAD_POSITION.sub("", title)
+    stripped = _STAGE_WORDS.sub(lambda m: f" {m.group(2)}" if m.group(2) else "", title)
+    title = stripped.strip() or title
     if len(title) <= TITLE_MAX:
         return title
     head = title[:TITLE_MAX].rsplit(" ", 1)[0].rstrip(" ,;:-—")
@@ -121,10 +136,13 @@ def create_motion():
             400,
         )
 
+    # `model` is left unset at creation — no generation happens here, so there
+    # is nothing to pin yet. It resolves to the provider default at call time
+    # unless the user chooses one from the workspace.
     motion = Motion(
         user=current_user,
         provider=provider,
-        model=model or catalogue.default_model(provider),
+        model=model,
         title="New motion",
         current_stage=1,
     )

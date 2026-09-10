@@ -7,12 +7,6 @@ import { Wordmark } from '../components/Logo'
 
 const VERBS = ['ameliorating', 'bolstering', 'strengthening', 'sharpening', 'improving']
 
-/**
- * The rotating hero verb. A hidden sizer span measures the current word; the
- * visible word is absolutely positioned in a slot whose width animates to that
- * measurement, so the line closes up smoothly instead of jumping. Re-measures
- * on resize and once web fonts have loaded.
- */
 function prefersReducedMotion() {
   return (
     typeof window !== 'undefined' &&
@@ -20,6 +14,13 @@ function prefersReducedMotion() {
   )
 }
 
+/**
+ * The rotating hero verb. An invisible sizer holds the current word and drives
+ * the slot width, which eases to each new measurement so `for` stays tight
+ * against the word instead of floating in a fixed-width box. Every verb is
+ * stacked in the slot and only the current one is opaque, so words crossfade
+ * with no blank frame. Re-measures on resize and once web fonts have loaded.
+ */
 function RotatingVerb() {
   const [index, setIndex] = useState(0)
   const [width, setWidth] = useState(0)
@@ -49,20 +50,23 @@ function RotatingVerb() {
 
   return (
     <span
-      className="relative inline-block whitespace-nowrap"
+      className="relative inline-block whitespace-nowrap align-baseline"
       style={{
         width: width ? `${width}px` : undefined,
-        transition: 'width .42s cubic-bezier(.4,0,.2,1)',
+        transition: reduced ? undefined : 'width .46s cubic-bezier(.4,0,.2,1)',
       }}
     >
-      <span ref={sizerRef} aria-hidden className="invisible inline-block whitespace-nowrap">
-        {VERBS[index]}
-      </span>
-      <span
-        key={index}
-        className="absolute top-0 left-0 whitespace-nowrap text-accent-800"
-        style={reduced ? undefined : { animation: 'rh-verb-in .46s ease both' }}
-      >
+      {VERBS.map((verb, i) => (
+        <span
+          key={verb}
+          aria-hidden={i !== index}
+          className="absolute top-0 left-0 text-accent-800 transition-opacity duration-[460ms] ease-out"
+          style={{ opacity: i === index ? 1 : 0 }}
+        >
+          {verb}
+        </span>
+      ))}
+      <span ref={sizerRef} aria-hidden className="invisible">
         {VERBS[index]}
       </span>
     </span>
@@ -124,7 +128,7 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="mx-auto max-w-[1160px] px-[clamp(20px,5vw,48px)] pt-[clamp(48px,7vw,104px)] text-center">
+    <section className="mx-auto max-w-[1160px] px-[clamp(20px,5vw,48px)] pt-[clamp(44px,6vw,96px)] text-center">
       <h1
         className="m-0 font-heading font-medium text-hero-ink [font-feature-settings:'tnum'_1]"
         style={{
@@ -141,7 +145,7 @@ function Hero() {
       </h1>
 
       <p
-        className="mx-auto mt-7 max-w-[54ch] text-[19.5px] leading-[1.66] text-[#2b241f]"
+        className="mx-auto mt-7 max-w-[60ch] text-[19px] leading-[1.58] text-[#2b241f]"
         style={{ textShadow: '0 1px 18px rgba(251,243,230,.95)' }}
       >
         An AI assistant that makes your own arguments stronger. Generic AI wants to do all the
@@ -276,7 +280,7 @@ function PullQuote() {
           won the room on the first one.&rdquo;
         </blockquote>
         <figcaption className="mt-6 text-[15.5px] leading-[1.7] text-ink-70">
-          — A. Mensah, university open, semifinalist
+          A. Mensah, university open, semifinalist
         </figcaption>
       </figure>
     </section>

@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react'
@@ -18,7 +19,6 @@ import type {
   User,
 } from '../lib/types'
 import { PROVIDERS } from '../lib/types'
-import { writeLastModel } from '../lib/lastModel'
 
 const EMPTY_KEYS: ApiKeys = {
   openai: { connected: false, masked: null },
@@ -46,6 +46,8 @@ interface AppState {
    *  composer can hand the user their text back instead of losing it. */
   sendMessage: (content: string) => Promise<boolean>
   advanceStage: () => Promise<void>
+  /** Abort the in-flight message or advance turn. */
+  cancelGeneration: () => void
   goToStage: (stage: Stage) => Promise<void>
   setModel: (model: string) => Promise<void>
 
@@ -82,6 +84,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [sending, setSending] = useState(false)
   const [streaming, setStreaming] = useState<{ reply: string; document: string } | null>(null)
   const [advancing, setAdvancing] = useState(false)
+  const abortRef = useRef<AbortController | null>(null)
+
+  /** Abort an in-flight message or advance turn. */
+  const cancelGeneration = useCallback(() => {
+    abortRef.current?.abort()
+  }, [])
   const [error, setError] = useState<string | null>(null)
 
   const clearError = useCallback(() => setError(null), [])
@@ -247,12 +255,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const createMotion = useCallback(
-    async (provider: Provider, model?: string) => {
+    async (provider: Provider) => {
       try {
-        const motion = await api.createMotion(provider, model)
-        // Remember what the server actually pinned, not what was asked for —
-        // an unknown model falls back to the provider default.
-        writeLastModel({ provider: motion.provider, model: motion.model })
+        // No model is chosen at creation — nothing runs yet. It's set later
+        // from the workspace, and defaults at call time if left alone.
+        const motion = await api.createMotion(provider)
         applyMotion(motion)
         setActiveMotionId(motion.id)
         return motion.id
@@ -312,6 +319,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setActiveMotion({ ...activeMotion, messages: [...activeMotion.messages, pending] })
       setSending(true)
       setError(null)
+      const controller = new AbortController()
+      abortRef.current = controller
 
       try {
         // Streaming is refused for searching stages (409 no_streaming); those
@@ -319,12 +328,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
         let motion: Motion
         try {
           setStreaming({ reply: '', document: '' })
-          motion = await api.streamMessage(motionId, content, {
-            onDelta: (field, text) =>
-              setStreaming((prev) =>
-                prev ? { ...prev, [field]: prev[field] + text } : prev,
-              ),
-          })
+          motion = await api.streamMessage(
+            motionId,
+            content,
+            {
+              onDelta: (field, text) =>
+                setStreaming((prev) =>
+                  prev ? { ...prev, [field]: prev[field] + text } : prev,
+                ),
+            },
+            controller.signal,
+          )
         } catch (streamErr) {
           if (streamErr instanceof ApiError && streamErr.code === 'no_streaming') {
             setStreaming(null)
@@ -336,6 +350,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
         applyMotion(motion)
         return true
       } catch (err) {
+        // The user hit Stop: drop the optimistic message, no error banner.
+        if (err instanceof ApiError && err.code === 'aborted') {
+          setActiveMotion((prev) =>
+            prev && prev.id === motionId
+              ? { ...prev, messages: prev.messages.filter((m) => m.id !== pending.id) }
+              : prev,
+          )
+          return false
+        }
         // Whether the user's message survives depends on *why* this failed.
         //
         // A real HTTP error response means the backend handled the request and
@@ -376,6 +399,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           return false
         }
       } finally {
+        abortRef.current = null
         setSending(false)
         setStreaming(null)
       }
@@ -388,14 +412,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const motionId = activeMotion.id
     setAdvancing(true)
     setError(null)
+    const controller = new AbortController()
+    abortRef.current = controller
     try {
       let motion: Motion
       try {
         setStreaming({ reply: '', document: '' })
-        motion = await api.streamAdvance(motionId, {
-          onDelta: (field, text) =>
-            setStreaming((prev) => (prev ? { ...prev, [field]: prev[field] + text } : prev)),
-        })
+        motion = await api.streamAdvance(
+          motionId,
+          {
+            onDelta: (field, text) =>
+              setStreaming((prev) => (prev ? { ...prev, [field]: prev[field] + text } : prev)),
+          },
+          controller.signal,
+        )
       } catch (streamErr) {
         if (streamErr instanceof ApiError && streamErr.code === 'no_streaming') {
           setStreaming(null)
@@ -406,9 +436,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       applyMotion(motion)
     } catch (err) {
+      // Stop pressed — no document was generated; nothing to report.
+      if (err instanceof ApiError && err.code === 'aborted') return
       if (err instanceof ApiError) setError(err.message)
       else setError('Something went wrong.')
     } finally {
+      abortRef.current = null
       setAdvancing(false)
       setStreaming(null)
     }
@@ -437,7 +470,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setModel = useCallback(
     async (model: string) => {
       if (!activeMotion || activeMotion.model === model) return
-      const previous = activeMotion
+      const previous: Motion = activeMotion
       // Optimistic: the choice only affects the next generation call, so a
       // failed switch costs nothing but the rollback.
       setActiveMotion({ ...activeMotion, model })
@@ -455,9 +488,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
               : m,
           ),
         )
-        // Switching mid-motion is a preference statement too, so the next new
-        // motion starts here rather than back at the catalogue default.
-        writeLastModel({ provider: previous.provider, model: updated.model })
       } catch (err) {
         setActiveMotion(previous)
         if (err instanceof ApiError) setError(err.message)
@@ -508,6 +538,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     renameMotion,
     sendMessage,
     advanceStage,
+    cancelGeneration,
     goToStage,
     setModel,
     catalogue,

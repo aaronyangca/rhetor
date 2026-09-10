@@ -80,7 +80,12 @@ export interface StreamHandlers {
  * are `event:`/`data:` pairs separated by a blank line; a partial frame at the
  * end of a chunk is held back until the rest arrives.
  */
-async function streamTurn(path: string, body: unknown, handlers: StreamHandlers): Promise<Motion> {
+async function streamTurn(
+  path: string,
+  body: unknown,
+  handlers: StreamHandlers,
+  signal?: AbortSignal,
+): Promise<Motion> {
   let response: Response
   try {
     response = await fetch(`/api${path}`, {
@@ -88,8 +93,12 @@ async function streamTurn(path: string, body: unknown, handlers: StreamHandlers)
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal,
     })
-  } catch {
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new ApiError('Generation cancelled.', 0, 'aborted')
+    }
     throw new ApiError('Could not reach the server. Is the API running?', 0, 'network_error')
   }
 
@@ -109,7 +118,16 @@ async function streamTurn(path: string, body: unknown, handlers: StreamHandlers)
   let motion: Motion | null = null
 
   for (;;) {
-    const { done, value } = await reader.read()
+    let chunk: ReadableStreamReadResult<Uint8Array>
+    try {
+      chunk = await reader.read()
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        throw new ApiError('Generation cancelled.', 0, 'aborted')
+      }
+      throw err
+    }
+    const { done, value } = chunk
     if (done) break
     buffer += decoder.decode(value, { stream: true })
 
@@ -171,8 +189,8 @@ export const api = {
 
   getMotion: (id: string) => request<Motion>(`/motions/${id}`),
 
-  createMotion: (provider: Provider, model?: string) =>
-    request<Motion>('/motions', { method: 'POST', body: json({ provider, model }) }),
+  createMotion: (provider: Provider) =>
+    request<Motion>('/motions', { method: 'POST', body: json({ provider }) }),
 
   renameMotion: (id: string, title: string) =>
     request<MotionSummary>(`/motions/${id}`, { method: 'PATCH', body: json({ title }) }),
@@ -185,11 +203,15 @@ export const api = {
 
   deleteMotion: (id: string) => request<void>(`/motions/${id}`, { method: 'DELETE' }),
 
-  streamMessage: (id: string, content: string, handlers: StreamHandlers) =>
-    streamTurn(`/motions/${id}/messages/stream`, { content }, handlers),
+  streamMessage: (
+    id: string,
+    content: string,
+    handlers: StreamHandlers,
+    signal?: AbortSignal,
+  ) => streamTurn(`/motions/${id}/messages/stream`, { content }, handlers, signal),
 
-  streamAdvance: (id: string, handlers: StreamHandlers) =>
-    streamTurn(`/motions/${id}/advance/stream`, {}, handlers),
+  streamAdvance: (id: string, handlers: StreamHandlers, signal?: AbortSignal) =>
+    streamTurn(`/motions/${id}/advance/stream`, {}, handlers, signal),
 
   sendMessage: (id: string, content: string) =>
     request<{ userMessage: ChatMessage; assistantMessage: ChatMessage; motion: Motion }>(

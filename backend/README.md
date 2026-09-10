@@ -58,9 +58,11 @@ provider's own list (`unknown_model` on a mismatch). `Motion.model` is nullable
 so a retired id falls back to the default rather than stranding the motion.
 
 Every default is reachable on a **free** API key — there's a test pinning that.
-Gemini's Pro models are not, which is why the Gemini default is Flash; models
-that need a paid key carry `freeTier: false` and are labelled in the picker
-rather than hidden. `OPENAI_MODEL` / `ANTHROPIC_MODEL` / `GEMINI_MODEL` can
+Gemini's Pro models are not, which is why the Gemini default is Flash. OpenRouter
+bills every named route against credit, but its `openrouter/free` option routes
+among no-cost `:free` models; the picker tags whichever tier is the minority in a
+provider's list — the lone free route on OpenRouter, the lone paid one on Gemini.
+`OPENAI_MODEL` / `ANTHROPIC_MODEL` / `GEMINI_MODEL` / `OPENROUTER_MODEL` can
 override a default, but are ignored unless they name a model in the catalogue.
 
 ### Providers
