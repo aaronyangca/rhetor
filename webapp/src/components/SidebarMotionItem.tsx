@@ -18,7 +18,7 @@ export function SidebarMotionItem({
     <button
       onClick={onClick}
       aria-current={active ? 'true' : undefined}
-      className={`flex w-full items-center gap-[10px] px-[10px] py-[7px] text-left transition-colors ${
+      className={`flex w-full items-center gap-[10px] py-[7px] pl-[10px] pr-[28px] text-left transition-colors ${
         active ? 'bg-selected-row' : 'hover:bg-accent-100/60'
       }`}
     >
