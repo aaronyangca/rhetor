@@ -262,6 +262,12 @@ class _Doc(FPDF):
             line_height=10 * 1.15,
             first_row_as_headings=True,
             headings_style=FontFace(emphasis="BOLD", fill_color=(255, 255, 255)),
+            # fpdf2 defaults to a page-centered table, vertically-middled cells,
+            # and justified text — none of which match a plain Sheets/Docs
+            # export. Pin all three to plain top-left, like the rest of the doc.
+            align="LEFT",
+            v_align="TOP",
+            text_align="LEFT",
         ) as table:
             for r in rows:
                 row = table.row()
