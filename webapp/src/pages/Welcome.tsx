@@ -109,7 +109,7 @@ function Nav() {
         <a href="#how" className="hidden text-ink-82 hover:text-accent-800 sm:inline">
           How it works
         </a>
-        <a href="#how" className="hidden text-ink-82 hover:text-accent-800 sm:inline">
+        <a href="/how-it-works#scoring" className="hidden text-ink-82 hover:text-accent-800 sm:inline">
           Scoring
         </a>
         <Link to="/login" className="text-ink-82 hover:text-accent-800">
@@ -160,7 +160,7 @@ function Hero() {
         >
           Start free trial
         </Link>
-        <a href="#how" className="text-[16px] text-accent-700 hover:text-accent-800 hover:underline">
+        <a href="#demo" className="text-[16px] text-accent-700 hover:text-accent-800 hover:underline">
           See a worked motion
         </a>
       </div>
@@ -178,7 +178,10 @@ function Hero() {
 /** Static placeholder — a real argument shown in full, on a raised surface. */
 function ProductPanel() {
   return (
-    <section className="mx-auto max-w-[1000px] px-[clamp(16px,4vw,48px)] pt-[clamp(44px,5vw,72px)] pb-[clamp(56px,6vw,96px)]">
+    <section
+      id="demo"
+      className="mx-auto max-w-[1000px] px-[clamp(16px,4vw,48px)] pt-[clamp(44px,5vw,72px)] pb-[clamp(56px,6vw,96px)]"
+    >
       <div className="rounded-md border border-ink-16 bg-card p-[clamp(24px,3vw,40px)] text-left shadow-lg">
         <p className="m-0 text-[13px] text-ink-60">Opening Opposition · argument 1</p>
         <h2 className="mt-[10px] mb-4 font-heading text-[clamp(24px,2.4vw,32px)] leading-[1.15] font-normal text-foreground">
@@ -218,7 +221,7 @@ function ProductPanel() {
   )
 }
 
-const STAGES = [
+const STAGES: { numeral: string; title: string; body: string; anchor?: string }[] = [
   {
     numeral: 'I',
     title: 'Bring your idea',
@@ -228,6 +231,7 @@ const STAGES = [
     numeral: 'II',
     title: 'Score and rank',
     body: 'Each argument is marked on the axes a judge marks it on: is it true, is it relevant, does the logic hold, does the impact matter. The bench sorts by intrinsic score and shows which stage lost the marks.',
+    anchor: 'scoring',
   },
   {
     numeral: 'III',
@@ -254,6 +258,7 @@ function HowItWorks() {
           {STAGES.map((stage, i) => (
             <div
               key={stage.numeral}
+              id={stage.anchor}
               className={i > 0 ? 'md:border-l md:border-divider md:pl-[clamp(20px,2.6vw,40px)]' : ''}
             >
               <p className="m-0 font-heading text-[44px] leading-none text-accent-700 [font-feature-settings:'tnum'_1]">
@@ -266,6 +271,12 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+        <Link
+          to="/how-it-works"
+          className="mt-[clamp(28px,3vw,44px)] inline-block text-[15px] text-accent-700 hover:text-accent-800 hover:underline"
+        >
+          Read the full breakdown of how each stage works
+        </Link>
       </div>
     </section>
   )
@@ -307,7 +318,10 @@ function ClosingBand() {
           >
             Start free trial
           </Link>
-          <a href="#how" className="text-[16px] text-[rgba(253,246,234,.82)] hover:underline">
+          <a
+            href="/how-it-works#scoring"
+            className="text-[16px] text-[rgba(253,246,234,.82)] hover:underline"
+          >
             Read how scoring works
           </a>
         </div>
@@ -324,7 +338,7 @@ function Footer() {
         <a href="#how" className="hover:text-accent-800">
           How it works
         </a>
-        <a href="#how" className="hover:text-accent-800">
+        <a href="/how-it-works#scoring" className="hover:text-accent-800">
           Scoring
         </a>
         <a href="#pricing" className="hover:text-accent-800">
@@ -333,7 +347,7 @@ function Footer() {
         <Link to="/privacy" className="hover:text-accent-800">
           Privacy
         </Link>
-        <a href="#pricing" className="hover:text-accent-800">
+        <a href="mailto:aaronyang.ca@gmail.com" className="hover:text-accent-800">
           Contact
         </a>
       </span>

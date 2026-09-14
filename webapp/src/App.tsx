@@ -6,6 +6,7 @@ import { Auth } from './pages/Auth'
 import { Workspace } from './pages/Workspace'
 import { AccountSettings } from './pages/AccountSettings'
 import { Privacy } from './pages/Privacy'
+import { HowItWorks } from './pages/HowItWorks'
 import { Wordmark } from './components/Logo'
 
 function Loading() {
@@ -41,6 +42,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route
             path="/signup"
             element={
