@@ -89,14 +89,6 @@ MODELS: dict[str, tuple[Model, ...]] = {
             free_tier=False,
         ),
         Model(
-            "z-ai/glm-5.3-flash",
-            "GLM-5.3-Flash · OpenRouter",
-            "1.3M context, reasoning-grade, ~10x cheaper than the Claude/GPT "
-            "tiers (formerly 'Ox Alpha'). Structured-output reliability varies "
-            "by which sub-provider OpenRouter routes to.",
-            free_tier=False,
-        ),
-        Model(
             "openai/gpt-5.6-terra",
             "GPT-5.6 Terra · OpenRouter",
             "OpenAI's balanced tier, routed through OpenRouter.",
@@ -106,6 +98,13 @@ MODELS: dict[str, tuple[Model, ...]] = {
             "google/gemini-3.5-flash",
             "Gemini 3.5 Flash · OpenRouter",
             "Fast and cheap, routed through OpenRouter.",
+            free_tier=False,
+        ),
+        Model(
+            "deepseek/deepseek-v4.1-flash",
+            "DeepSeek V4.1 Flash · OpenRouter",
+            "DeepSeek's fast tier. Cheapest named route here; good for "
+            "iterating on a single stage.",
             free_tier=False,
         ),
         Model(
@@ -125,9 +124,7 @@ DEFAULT_MODELS: dict[str, str] = {
     "anthropic": "claude-sonnet-5",
     "gemini": "gemini-3.5-flash",
     # Claude Sonnet is the safe default: structured output is rock-solid on
-    # every route. GLM-5.3-Flash is the cheap high-context option, but its
-    # json_schema support depends on the sub-provider OpenRouter picks — set
-    # OPENROUTER_MODEL=z-ai/glm-5.3-flash (or pick it in the composer) to use it.
+    # every route.
     "openrouter": "anthropic/claude-sonnet-5",
 }
 
