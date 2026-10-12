@@ -165,15 +165,31 @@ def run_advance(motion: Motion, to_stage: int) -> Generation:
     return generate(**advance_context(motion, to_stage))
 
 
+#: Providers that can stream a *searching* turn. The other two providers in
+#: PROVIDER_IMPLS cannot, for reasons specific to each: Gemini has to run
+#: research as a separate ungrounded-then-grounded pair (nothing to stream
+#: during that first leg), and Anthropic cannot force the submit tool while
+#: search is available (streaming depends on forcing it). OpenRouter's `:online`
+#: suffix is handled identically in generate() and stream() — verified live,
+#: a real Stage 2 call streamed its first character at 2.5s and kept flowing
+#: for the full ~140s instead of sitting silent. OpenAI's stream() already
+#: filters web-search-progress events down to just the output-text deltas,
+#: so it should work the same way, but that path hasn't been exercised live.
+SEARCH_CAPABLE_STREAMING_PROVIDERS = {"openrouter"}
+
+
 def supports_streaming(provider: str, *, web_search: bool) -> bool:
     """Whether a turn can be streamed, given what it needs.
 
-    Searching stages cannot: Gemini has to run its research as a separate
-    ungrounded-then-grounded pair, and Anthropic cannot force the submit tool
-    while search is available. Both would sit silent through the research leg
-    anyway, so those turns take the buffered path.
+    Non-searching stages can stream on any provider. Searching stages sit
+    silent through the research/search leg on most providers, so those take
+    the buffered path — except the ones in SEARCH_CAPABLE_STREAMING_PROVIDERS,
+    which have nothing structural stopping them from streaming through search
+    too.
     """
-    return provider in PROVIDER_IMPLS and not web_search
+    if provider not in PROVIDER_IMPLS:
+        return False
+    return not web_search or provider in SEARCH_CAPABLE_STREAMING_PROVIDERS
 
 
 def stream_generation(
