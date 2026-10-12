@@ -18,6 +18,7 @@ from ..models import Motion, User
 from . import anthropic_provider, catalogue, gemini_provider, openai_provider, openrouter_provider
 from .base import Generation, InvalidProviderKey, LLMError, Turn, unescape_literal_escapes
 from .streaming import StructuredStreamParser
+from .tracing import traced_generation
 from .prompts import ADVANCE_INSTRUCTIONS, FIRST_TURN_INSTRUCTIONS, system_prompt
 from .schemas import FIRST_TURN_SCHEMA, TURN_SCHEMA
 
@@ -68,15 +69,32 @@ def generate(
     if impl is None:
         raise LLMError(f"Unknown provider '{provider}'", status=400)
 
-    return impl.generate(
-        api_key=_provider_key(user, provider),
+    max_tokens = current_app.config["LLM_MAX_TOKENS"]
+    with traced_generation(
+        name="llm.generate",
+        provider=provider,
         model=model,
-        system_prompt=system,
+        system=system,
         history=history,
-        schema=schema,
         web_search=web_search,
-        max_tokens=current_app.config["LLM_MAX_TOKENS"],
-    )
+        max_tokens=max_tokens,
+        user_id=str(user.id),
+    ) as obs:
+        try:
+            result = impl.generate(
+                api_key=_provider_key(user, provider),
+                model=model,
+                system_prompt=system,
+                history=history,
+                schema=schema,
+                web_search=web_search,
+                max_tokens=max_tokens,
+            )
+        except Exception as exc:
+            obs.update(level="ERROR", status_message=str(exc))
+            raise
+        obs.update(output=result.raw)
+        return result
 
 
 def _history_for_stage(motion: Motion, stage: int) -> list[Turn]:
@@ -178,36 +196,64 @@ def stream_generation(
     if impl is None:
         raise LLMError(f"Unknown provider '{provider}'", status=400)
 
+    max_tokens = current_app.config["LLM_MAX_TOKENS"]
     parser = StructuredStreamParser()
     raw: list[str] = []
 
-    for chunk in impl.stream(
-        api_key=_provider_key(user, provider),
+    with traced_generation(
+        name="llm.stream_generation",
+        provider=provider,
         model=model,
-        system_prompt=system,
+        system=system,
         history=history,
-        schema=schema,
         web_search=web_search,
-        max_tokens=current_app.config["LLM_MAX_TOKENS"],
-    ):
-        raw.append(chunk)
-        for field, delta in parser.feed(chunk):
-            yield field, delta, None
+        max_tokens=max_tokens,
+        user_id=str(user.id),
+    ) as obs:
+        try:
+            for chunk in impl.stream(
+                api_key=_provider_key(user, provider),
+                model=model,
+                system_prompt=system,
+                history=history,
+                schema=schema,
+                web_search=web_search,
+                max_tokens=max_tokens,
+            ):
+                raw.append(chunk)
+                for field, delta in parser.feed(chunk):
+                    yield field, delta, None
 
-    if "reply" not in parser.finished and "document" not in parser.finished:
-        raise LLMError("The response ended before anything usable arrived.")
+            if "reply" not in parser.finished and "document" not in parser.finished:
+                raise LLMError("The response ended before anything usable arrived.")
 
-    # Parse the whole payload for the fields the incremental pass ignores
-    # (title, motionText, position); fall back to the streamed values if the
-    # JSON turned out to be malformed.
-    try:
-        payload = json.loads("".join(raw))
-    except json.JSONDecodeError:
-        payload = {}
+            # Parse the whole payload for the fields the incremental pass
+            # ignores (title, motionText, position); fall back to the streamed
+            # values if the JSON turned out to be malformed.
+            try:
+                payload = json.loads("".join(raw))
+            except json.JSONDecodeError:
+                payload = {}
 
-    payload.setdefault("reply", parser.values["reply"])
-    payload.setdefault("document", parser.values["document"])
-    yield "", "", Generation.from_payload(payload)
+            payload.setdefault("reply", parser.values["reply"])
+            payload.setdefault("document", parser.values["document"])
+            result = Generation.from_payload(payload)
+        except Exception as exc:
+            # The one case most worth seeing in a trace: content arrived but
+            # neither field ever closed (a reasoning model burning its whole
+            # budget on hidden chain-of-thought) vs. nothing arriving at all.
+            obs.update(
+                level="ERROR",
+                status_message=str(exc),
+                output={
+                    "raw_chars_received": len("".join(raw)),
+                    "fields_finished": sorted(parser.finished),
+                },
+            )
+            raise
+
+        obs.update(output=result.raw)
+        yield "", "", result
 
 
 def _document_context(motion: Motion, stage: int) -> str:

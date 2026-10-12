@@ -25,5 +25,8 @@ openai>=2.0
 anthropic>=0.60
 google-genai>=1.0
 
+# LLM call tracing (app/llm/tracing.py) — no-op if LANGFUSE_* env vars are unset
+langfuse>=4,<5
+
 # Tests
 pytest>=8.3
