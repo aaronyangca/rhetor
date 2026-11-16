@@ -79,6 +79,18 @@ def test_a_new_motion_has_no_model_pinned_but_shows_the_effective_default(keyed_
     assert motion["modelLabel"] == "Gemini 3.5 Flash"  # the default is what would run
 
 
+def test_a_new_motion_starts_on_the_last_model_chosen_for_that_provider(keyed_client):
+    first = keyed_client.post("/api/motions", json={"provider": "gemini"}).get_json()
+    keyed_client.patch(f"/api/motions/{first['id']}", json={"model": "gemini-2.5-pro"})
+
+    second = keyed_client.post("/api/motions", json={"provider": "gemini"}).get_json()
+    assert second["model"] == "gemini-2.5-pro"
+
+    # Other providers are unaffected.
+    other = keyed_client.post("/api/motions", json={"provider": "openai"}).get_json()
+    assert other["model"] is None
+
+
 def test_a_motion_can_be_created_with_a_chosen_model(keyed_client):
     motion = keyed_client.post(
         "/api/motions", json={"provider": "gemini", "model": "gemini-2.5-pro"}

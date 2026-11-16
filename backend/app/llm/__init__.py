@@ -254,6 +254,21 @@ def stream_generation(
             payload.setdefault("reply", parser.values["reply"])
             payload.setdefault("document", parser.values["document"])
             result = Generation.from_payload(payload)
+        except GeneratorExit:
+            # The consumer stopped reading partway (the turn was cancelled).
+            # Not an Exception subclass, so without this the observation would
+            # close as an ordinary, error-free generation with no output — which
+            # reads in Langfuse as if the model answered and Rhetor lost it.
+            obs.update(
+                level="WARNING",
+                status_message="Stopped before the response finished (cancelled).",
+                output={
+                    "raw_chars_received": len("".join(raw)),
+                    "fields_finished": sorted(parser.finished),
+                    "partial_reply": parser.values["reply"],
+                },
+            )
+            raise
         except Exception as exc:
             # The one case most worth seeing in a trace: content arrived but
             # neither field ever closed (a reasoning model burning its whole

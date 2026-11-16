@@ -7,11 +7,11 @@ import re
 import uuid
 from datetime import datetime, timezone
 
-from flask import Blueprint, Response, current_app, jsonify, stream_with_context
+from flask import Blueprint, Response, jsonify, stream_with_context
 from flask_login import current_user, login_required
 from sqlalchemy import select
 
-from .. import llm
+from .. import generation, llm
 from ..errors import ApiError
 from ..llm import catalogue
 from ..extensions import db
@@ -123,6 +123,22 @@ def _check_model(provider: str, model: object) -> str | None:
     return model
 
 
+def _last_model_used(provider: str) -> str | None:
+    """The model on the user's most recently touched motion for `provider`,
+    if it is still in the catalogue."""
+    model = db.session.scalar(
+        select(Motion.model)
+        .where(
+            Motion.user_id == current_user.id,
+            Motion.provider == provider,
+            Motion.model.is_not(None),
+        )
+        .order_by(Motion.updated_at.desc())
+        .limit(1)
+    )
+    return model if model and catalogue.is_valid(provider, model) else None
+
+
 @bp.post("")
 @login_required
 def create_motion():
@@ -136,9 +152,13 @@ def create_motion():
             400,
         )
 
-    # `model` is left unset at creation — no generation happens here, so there
-    # is nothing to pin yet. It resolves to the provider default at call time
-    # unless the user chooses one from the workspace.
+    # Unless one is given, start on the model the user last chose for this
+    # provider — picking a model once shouldn't have to be repeated for every
+    # new motion. With no history it stays unset and resolves to the
+    # provider default at call time.
+    if model is None:
+        model = _last_model_used(provider)
+
     motion = Motion(
         user=current_user,
         provider=provider,
@@ -158,7 +178,14 @@ def create_motion():
 @bp.get("/<uuid:motion_id>")
 @login_required
 def get_motion(motion_id: uuid.UUID):
-    return jsonify(motion_json(_get_motion(motion_id)))
+    motion = _get_motion(motion_id)
+    generation.reap_if_stale(motion)
+    payload = motion_json(motion)
+    if motion.generation_error:
+        # Shown once: the page reports it, then it's gone.
+        motion.generation_error = None
+        db.session.commit()
+    return jsonify(payload)
 
 
 @bp.patch("/<uuid:motion_id>")
@@ -207,32 +234,64 @@ def delete_motion(motion_id: uuid.UUID):
     return "", 204
 
 
+def _begin_turn(motion: Motion, content: str) -> tuple[int, ChatMessage]:
+    """Store the user's message for a new turn, refusing while one is running."""
+    generation.reap_if_stale(motion)
+    if generation.is_running(motion):
+        raise ApiError("Rhetor is still working on the last message.", 409, code="busy")
+    stage = motion.current_stage
+    user_message = _add_message(motion, stage, "user", content)
+    db.session.flush()
+    return stage, user_message
+
+
+def _begin_advance(motion: Motion) -> int:
+    generation.reap_if_stale(motion)
+    if generation.is_running(motion):
+        raise ApiError("Rhetor is still working on the last message.", 409, code="busy")
+    current = motion.current_stage
+    # Sitting on a stage that was switched to but never generated (e.g. an
+    # older "move to stage N" that only changed the stage number): generate
+    # *this* stage from the finished one before it, rather than skipping on.
+    if current > 1 and not motion.document(current) and motion.document(current - 1):
+        return current
+    if current >= 3:
+        raise ApiError("Stage 3 is the final stage", 409)
+    if not motion.document(current):
+        raise ApiError(
+            f"Stage {current} has no document yet — work on it before advancing.", 409
+        )
+    return current + 1
+
+
+def _await(job: generation.Job) -> dict:
+    """Block until a buffered job finishes; return its motion JSON or raise."""
+    event, data = "cancelled", {}
+    for event, data in generation.listen(job):
+        pass
+    if event == "done":
+        return data["motion"]
+    if event == "error":
+        generation.consume_error(job.motion_id)
+        raise ApiError(data["message"], 502, code="provider_error")
+    raise ApiError("Generation cancelled.", 409, code="cancelled")
+
+
 @bp.post("/<uuid:motion_id>/messages")
 @login_required
 def send_message(motion_id: uuid.UUID):
     motion = _get_motion(motion_id)
     content = required_str(body(), "content", max_length=20000)
-    stage = motion.current_stage
-
-    user_message = _add_message(motion, stage, "user", content)
-    db.session.flush()
-
-    try:
-        result = llm.run_turn(motion, stage)
-    except llm.LLMError as exc:
-        # Drop the user's message rather than leaving a turn the AI never
-        # answered — the client re-sends on retry.
-        db.session.rollback()
-        raise ApiError(exc.message, exc.status, code="provider_error") from exc
-
-    assistant_message = _apply_turn(motion, stage, result)
-    db.session.commit()
-
+    stage, user_message = _begin_turn(motion, content)
+    job = generation.start(
+        motion, kind="turn", stage=stage, user_message_id=user_message.id, streaming=False
+    )
+    payload = _await(job)
     return jsonify(
         {
-            "userMessage": message_json(user_message),
-            "assistantMessage": message_json(assistant_message),
-            "motion": motion_json(motion),
+            "userMessage": next(m for m in payload["messages"] if m["id"] == str(job.user_message_id)),
+            "assistantMessage": payload["messages"][-1],
+            "motion": payload,
         }
     )
 
@@ -241,42 +300,52 @@ def send_message(motion_id: uuid.UUID):
 @login_required
 def advance_stage(motion_id: uuid.UUID):
     motion = _get_motion(motion_id)
-    current = motion.current_stage
+    target = _begin_advance(motion)
+    job = generation.start(
+        motion, kind="advance", stage=target, user_message_id=None, streaming=False
+    )
+    return jsonify(_await(job))
 
-    if current >= 3:
-        raise ApiError("Stage 3 is the final stage", 409)
-    if not motion.document(current):
-        raise ApiError(
-            f"Stage {current} has no document yet — work on it before advancing.", 409
-        )
 
-    target = current + 1
+@bp.post("/<uuid:motion_id>/cancel")
+@login_required
+def cancel_generation(motion_id: uuid.UUID):
+    """Stop the in-flight turn and drop the message it was answering."""
+    generation.cancel(_get_motion(motion_id))
+    return jsonify(motion_json(_get_motion(motion_id)))
 
-    try:
-        result = llm.run_advance(motion, target)
-    except llm.LLMError as exc:
-        raise ApiError(exc.message, exc.status, code="provider_error") from exc
 
-    motion.set_document(target, result.document)
-    motion.current_stage = target
-    _add_message(motion, target, "assistant", result.reply)
-    motion.updated_at = datetime.now(timezone.utc)
-    db.session.commit()
-
-    return jsonify(motion_json(motion))
+def apply_generation(motion: Motion, kind: str, stage: int, result) -> None:
+    """Fold a finished generation into the motion (called by the job)."""
+    if kind == "advance":
+        motion.set_document(stage, result.document)
+        motion.current_stage = stage
+        _add_message(motion, stage, "assistant", result.reply)
+        motion.updated_at = datetime.now(timezone.utc)
+    else:
+        _apply_turn(motion, stage, result)
 
 
 def _sse(event: str, data: dict) -> str:
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
 
-def _stream_response(generator):
-    """Wrap a generator as an SSE response.
+def _relay(job: generation.Job):
+    """Forward a job's frames as SSE. Disconnecting leaves the job running."""
+    for event, data in generation.listen(job):
+        if event == "cancelled":
+            data = {"message": "Generation cancelled.", "code": "cancelled"}
+            event = "error"
+        yield _sse(event, data)
+        if event == "error" and data.get("code") != "cancelled":
+            # Resuming past the yield means the frame was written, so the
+            # client has the error; don't also show it on its next load.
+            generation.consume_error(job.motion_id)
+            db.session.remove()
 
-    `stream_with_context` keeps the app and request context alive for the
-    generator's lifetime, which the database session needs — the body runs
-    after the view has already returned.
-    """
+
+def _stream_response(generator):
+    """Wrap a generator as an SSE response."""
     return Response(
         stream_with_context(generator),
         mimetype="text/event-stream",
@@ -288,121 +357,45 @@ def _stream_response(generator):
     )
 
 
-def _discard(message_id: uuid.UUID | None) -> None:
-    """Remove the user message a failed turn never answered."""
-    if message_id is None:
-        return
-    db.session.rollback()
-    message = db.session.get(ChatMessage, message_id)
-    if message is not None:
-        db.session.delete(message)
-        db.session.commit()
-
-
-def _stream_turn(motion_id: uuid.UUID, stage: int, mode: str, user_message_id=None):
-    """Shared body of both streaming endpoints.
-
-    Everything is re-fetched here rather than captured from the view. The
-    response body runs after the view returns, at which point Flask-SQLAlchemy
-    has already torn the session down — any ORM object carried across that
-    boundary is detached and raises on first attribute access.
-
-    The generation is persisted only once it completes, so a stream that dies
-    partway leaves the motion as it was. The user's own message is the
-    exception: it is committed before the stream opens, because an uncommitted
-    flush does not survive that same boundary, and is deleted here if the turn
-    fails.
-    """
-    try:
-        motion = db.session.get(Motion, motion_id)
-        if motion is None:
-            yield _sse("error", {"message": "Motion not found", "code": "not_found"})
-            return
-
-        if mode == "advance":
-            context = llm.advance_context(motion, stage)
-        else:
-            context = llm.turn_context(motion, stage)
-
-        for field, delta, result in llm.stream_generation(**context):
-            if result is None:
-                yield _sse("delta", {"field": field, "text": delta})
-                continue
-
-            if mode == "advance":
-                motion.set_document(stage, result.document)
-                motion.current_stage = stage
-                _add_message(motion, stage, "assistant", result.reply)
-                motion.updated_at = datetime.now(timezone.utc)
-            else:
-                _apply_turn(motion, stage, result)
-
-            db.session.commit()
-            # Serialising re-reads the motion, opening a fresh transaction
-            # after the commit. End it before yielding — nothing downstream
-            # will, so it would sit idle holding locks.
-            payload = motion_json(motion)
-            db.session.commit()
-            yield _sse("done", {"motion": payload})
-            return
-
-        raise llm.LLMError("The response ended before it was complete.")
-    except llm.LLMError as exc:
-        _discard(user_message_id)
-        yield _sse("error", {"message": exc.message, "code": "provider_error"})
-    except Exception:  # noqa: BLE001 - the client needs a frame, not a dead socket
-        current_app.logger.exception("Streaming turn failed")
-        _discard(user_message_id)
-        yield _sse("error", {"message": "Something went wrong.", "code": "internal_error"})
-    finally:
-        db.session.remove()
-
-
 @bp.post("/<uuid:motion_id>/messages/stream")
 @login_required
 def send_message_streaming(motion_id: uuid.UUID):
-    """Server-sent events version of send_message.
+    """Same contract as `send_message`, delivered as Server-Sent Events.
 
     `reply` streams first and `document` second — that is the schema's field
-    order — so the chat answers immediately and the document then fills in.
+    order — then a final `done` frame carries the persisted motion. The turn
+    runs as a background job (app/generation.py), so a client that disconnects
+    partway doesn't stop it: the result is still saved, and a reloaded page
+    picks the turn back up from the motion's `generation` field.
     """
     motion = _get_motion(motion_id)
     content = required_str(body(), "content", max_length=20000)
     stage = motion.current_stage
-
     if not llm.supports_streaming(motion.provider, web_search=stage in llm.WEB_SEARCH_STAGES):
         raise ApiError(
             "This turn cannot be streamed; use the plain endpoint.", 409, code="no_streaming"
         )
-
-    user_message = _add_message(motion, stage, "user", content)
-    db.session.commit()
-
-    return _stream_response(
-        _stream_turn(motion_id, stage, "turn", user_message_id=user_message.id)
+    stage, user_message = _begin_turn(motion, content)
+    job = generation.start(
+        motion, kind="turn", stage=stage, user_message_id=user_message.id, streaming=True
     )
+    return _stream_response(_relay(job))
 
 
 @bp.post("/<uuid:motion_id>/advance/stream")
 @login_required
 def advance_stage_streaming(motion_id: uuid.UUID):
+    """Streaming variant of `advance_stage`."""
     motion = _get_motion(motion_id)
-    current = motion.current_stage
-
-    if current >= 3:
-        raise ApiError("Stage 3 is the final stage", 409)
-    if not motion.document(current):
-        raise ApiError(
-            f"Stage {current} has no document yet — work on it before advancing.", 409
-        )
-
-    target = current + 1
+    target = _begin_advance(motion)
     if not llm.supports_streaming(motion.provider, web_search=target in llm.WEB_SEARCH_STAGES):
         raise ApiError(
             "This turn cannot be streamed; use the plain endpoint.", 409, code="no_streaming"
         )
-
-    return _stream_response(_stream_turn(motion_id, target, "advance"))
+    job = generation.start(
+        motion, kind="advance", stage=target, user_message_id=None, streaming=True
+    )
+    return _stream_response(_relay(job))
 
 
 @bp.get("/<uuid:motion_id>/export")

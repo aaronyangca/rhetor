@@ -116,6 +116,18 @@ class Motion(db.Model):
     stage_2_document: Mapped[str | None] = mapped_column(Text)
     stage_3_document: Mapped[str | None] = mapped_column(Text)
 
+    # The in-flight generation, if any — see app/generation.py. Null id means
+    # idle. Kept on the row (not in memory) so every worker process, and a
+    # page reloaded mid-turn, can see that a reply is still coming.
+    generation_id: Mapped[uuid.UUID | None] = mapped_column()
+    generation_kind: Mapped[str | None] = mapped_column(String(8))
+    generation_stage: Mapped[int | None] = mapped_column(Integer)
+    # The user message being answered; dropped if the turn fails or is cancelled.
+    generation_message_id: Mapped[uuid.UUID | None] = mapped_column()
+    generation_heartbeat_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Why the last turn failed, for a page that wasn't connected to hear it.
+    generation_error: Mapped[str | None] = mapped_column(Text)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow, server_default=func.now(), nullable=False
     )

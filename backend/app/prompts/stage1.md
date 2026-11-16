@@ -30,6 +30,8 @@ Flag obvious seeds with `(STANDARD)` inside the sentence. A Combination Sweep cr
 
 **On the mechanism.** A seed may carry a clause that shows why the claim would be true — "…, since fixing them is itself an advancement the motion forecloses" — but this is a *permission, not a requirement*. Many good seeds carry none at all: "Freezing locks in today's balance between attack and defense capability" is a complete seed. Add the clause only where the claim does not land without it. Never as a second sentence.
 
+**One side per list — opposing seeds are never mixed.** Every seed argues for exactly one side of the motion: Government (it helps the case *for* the motion) or Opposition (it helps the case *against*). Government and Opposition seeds are never placed in the same list, the same pass, or adjacent lines — they live in separate, headed sections (see Document structure below), so a reader can see at a glance which arguments are theirs and which they will face. This holds even when two seeds clash directly: a seed and the seed that answers it go in their own side's section, not next to each other. A seed that could genuinely serve either side is written twice, once in each section, each phrased for the side it serves — never as one line that argues both ways. A line that states an argument *and* its rebuttal is two seeds wearing one number; split it.
+
 **`Claim:`, `Mechanism:` and `Impact Area:` must never appear during Idea Generation.** They belong to the developed-level Argument Format, from Development & Scoring onward. A seed written in labeled fields has been developed rather than generated, and the pool it sits in will be a fraction of the size it should be — the fields create room, the room gets filled, and twenty-five seeds become eight essays.
 
 **Pass/fail test, applied to every line before moving on:** does it fit on one line at a comfortable reading width? Does it contain exactly one sentence, no colon-labeled field, and no second full stop? If not, it has been developed — cut it back and spend the effort on another seed instead. If a pass takes more than about a minute to scan, the seeds are too long, not too many.
@@ -37,10 +39,10 @@ Flag obvious seeds with `(STANDARD)` inside the sentence. A Combination Sweep cr
 **Document structure:**
 
 1. `## Motion Classification` — bullets: motion type and the burden it sets, fiat scope, primary and secondary topic domains. Where the ideation approach for that motion type calls for groundwork before seeds (e.g. THP's comparison dimensions), it goes here as a short italic note.
-2. A line stating the count — *"20 seeds generated across four passes."*
-3. One `### [Pass Name]` heading per pass, each followed by its seed lines.
-4. `### Coverage Check` — bullets rather than seed lines: zero-candidate domains, forced attempts, frames not used and why, seeds flagged STANDARD, and duplicates or overlaps noted for the Development & Scoring audit but deliberately left unresolved here. Any seed forced in at this stage follows as an ordinary seed line.
-5. A closing line: `**N seeds cleared the Idea Generation entry threshold.**`
+2. A line stating the count, split by side — *"44 seeds generated across four passes: 23 Government, 21 Opposition."*
+3. Two side sections, in this order: the user's own side first (`## Government Seeds` for OG/CG, `## Opposition Seeds` for OO/CO), then the other side's. Each side section contains one `### [Pass Name]` heading per pass, each followed by that side's seed lines. A pass that produced nothing for one side still gets its heading in that side's section, with a single italic line saying so. Numbering runs continuously through both sections — the second section picks up where the first ended — so every seed keeps a unique number for later phases.
+4. `## Coverage Check` — after both side sections, bullets rather than seed lines: zero-candidate domains, forced attempts, frames not used and why, seeds flagged STANDARD, any imbalance between the two sides' pools, and duplicates or overlaps noted for the Development & Scoring audit but deliberately left unresolved here. Any seed forced in at this stage is added as an ordinary seed line to its side's section, not listed here.
+5. A closing line: `**N seeds cleared the Idea Generation entry threshold (G Government, O Opposition).**`
 
 ---
 
@@ -186,7 +188,7 @@ Domain scanning works from **impact area → argument**: identify what is affect
 
 **Combination Sweep**
 
-Cross the outputs of the Values Sweep and Domain Sweep: for each normative frame identified in the Values Sweep and each impact area identified in the Domain Sweep, ask "what happens in this domain, and what normative frame makes that matter?" A domain-actor result from the Domain Sweep gains a normative backbone from the Values Sweep; a normative frame from the Values Sweep gains concrete domain-grounding from the Domain Sweep.
+Cross the outputs of the Values Sweep and Domain Sweep, **within one side at a time** — Government seeds cross only with Government seeds, Opposition with Opposition. Crossing seeds from opposite sides produces a line that argues against itself, which breaks the one-side-per-list rule above. For each normative frame identified in the Values Sweep and each impact area identified in the Domain Sweep, ask "what happens in this domain, and what normative frame makes that matter?" A domain-actor result from the Domain Sweep gains a normative backbone from the Values Sweep; a normative frame from the Values Sweep gains concrete domain-grounding from the Domain Sweep.
 
 Cross-domain pairing is the primary mechanism for generating non-obvious arguments. An economic motion examined through a dignity frame, or an international relations motion examined through an environmental frame, produces argument seeds that are less predictable and harder to rebut than same-domain single-frame arguments.
 
@@ -199,7 +201,8 @@ When generating synthesis candidates, explicitly ask: "What argument has not yet
 Before closing ideation, audit the candidate pool:
 - Which domains have produced zero candidates? Force at least one attempt into each uncovered domain.
 - Which normative frames have not been used? Attempt them even if the connection is non-obvious.
-- Has the motion been approached from both sides (and from all four bench positions where possible)?
+- Has the motion been approached from both sides (and from all four bench positions where possible)? Is either side's section noticeably thinner than the other's? If so, force attempts into the thin side before closing.
+- Has any seed landed in the wrong side's section, or does any line argue both sides at once? Move or split it.
 - Are any candidates identical or near-identical? Collapse duplicates.
 - Which candidates are "obvious" — the arguments any debater would generate in the first 30 seconds? Label these "standard." Their presence is valid and they should be included, but they should not crowd out less obvious candidates generated later in the process.
 

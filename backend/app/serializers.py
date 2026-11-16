@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .llm import catalogue
+from .generation import progress_json
 from .models import PROVIDERS, ChatMessage, Motion, User
 
 
@@ -46,6 +47,8 @@ def motion_json(motion: Motion) -> dict:
             "3": motion.stage_3_document,
         },
         "messages": [message_json(m) for m in motion.messages],
+        "generation": progress_json(motion),
+        "generationError": motion.generation_error,
     }
 
 

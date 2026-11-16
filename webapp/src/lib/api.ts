@@ -147,13 +147,16 @@ async function streamTurn(
       const payload = JSON.parse(data)
       if (event === 'delta') handlers.onDelta(payload.field, payload.text)
       else if (event === 'done') motion = payload.motion as Motion
-      else if (event === 'error') throw new ApiError(payload.message, 502, payload.code ?? 'error')
+      else if (event === 'error') {
+        if (payload.code === 'cancelled') throw new ApiError('Generation cancelled.', 0, 'aborted')
+        throw new ApiError(payload.message, 502, payload.code ?? 'error')
+      }
     }
   }
 
   if (!motion) {
-    // The socket closed before the turn finished; the server persists nothing
-    // in that case, so the caller should re-sync rather than assume.
+    // The socket closed before the turn finished. The server keeps generating
+    // regardless, so the caller should re-sync (and resume) rather than assume.
     throw new ApiError('The connection closed before the reply was complete.', 0, 'stream_truncated')
   }
   return motion
@@ -212,6 +215,9 @@ export const api = {
 
   streamAdvance: (id: string, handlers: StreamHandlers, signal?: AbortSignal) =>
     streamTurn(`/motions/${id}/advance/stream`, {}, handlers, signal),
+
+  /** Stop the motion's in-flight turn; the unanswered message is dropped. */
+  cancelGeneration: (id: string) => request<Motion>(`/motions/${id}/cancel`, { method: 'POST' }),
 
   sendMessage: (id: string, content: string) =>
     request<{ userMessage: ChatMessage; assistantMessage: ChatMessage; motion: Motion }>(

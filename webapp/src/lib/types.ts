@@ -49,10 +49,22 @@ export interface MotionSummary {
 }
 
 /** The full motion, for the open workspace. */
+/** A turn still running on the server — e.g. one started before a reload. */
+export interface GenerationProgress {
+  kind: 'turn' | 'advance'
+  stage: Stage
+  /** Partial text so far; empty when another server process is running it. */
+  reply: string
+  document: string
+}
+
 export interface Motion extends MotionSummary {
   motionText: string | null
   stageDocs: Record<'1' | '2' | '3', string | null>
   messages: ChatMessage[]
+  generation: GenerationProgress | null
+  /** Why the last turn failed, if no page was connected to hear it. Shown once. */
+  generationError: string | null
 }
 
 export interface ApiKeyState {

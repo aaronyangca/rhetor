@@ -84,12 +84,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [sending, setSending] = useState(false)
   const [streaming, setStreaming] = useState<{ reply: string; document: string } | null>(null)
   const [advancing, setAdvancing] = useState(false)
+  /** Set while following a turn this page didn't start (e.g. after a reload). */
+  const [resumeKind, setResumeKind] = useState<'turn' | 'advance' | null>(null)
   const abortRef = useRef<AbortController | null>(null)
-
-  /** Abort an in-flight message or advance turn. */
-  const cancelGeneration = useCallback(() => {
-    abortRef.current?.abort()
-  }, [])
   const [error, setError] = useState<string | null>(null)
 
   const clearError = useCallback(() => setError(null), [])
@@ -190,6 +187,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       .getMotion(activeMotionId)
       .then((motion) => {
         if (cancelled) return
+        if (motion.generationError) setError(motion.generationError)
         setActiveMotion((prev) => {
           // A slow fetch must never clobber fresher state. `cancelled` only
           // covers the selection changing — it does not stop an in-flight
@@ -228,6 +226,61 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return [summary, ...without].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
     })
   }, [])
+
+  /** Stop the in-flight turn. Closing the stream alone no longer stops it —
+   *  the server finishes turns whose page went away — so ask it explicitly. */
+  const cancelGeneration = useCallback(() => {
+    abortRef.current?.abort()
+    if (!activeMotionId) return
+    api
+      .cancelGeneration(activeMotionId)
+      .then(applyMotion)
+      .catch(() => {
+        /* nothing to undo locally; the next load re-syncs */
+      })
+  }, [activeMotionId, applyMotion])
+
+  // Follow a turn that is running on the server but wasn't started by this
+  // page — the page was reloaded mid-turn, or the stream dropped. Poll until it
+  // lands, showing its partial text, then fold in the result.
+  const generating = activeMotion?.generation ?? null
+  const followId = generating && !sending && !advancing ? activeMotion!.id : null
+  const followKind = generating?.kind ?? null
+  const followSeed = useRef(generating)
+  followSeed.current = generating
+  useEffect(() => {
+    if (!followId || !followKind) return
+    let stopped = false
+    const seed = followSeed.current
+    setResumeKind(followKind)
+    setStreaming({ reply: seed?.reply ?? '', document: seed?.document ?? '' })
+    ;(async () => {
+      while (!stopped) {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        if (stopped) return
+        let fresh: Motion
+        try {
+          fresh = await api.getMotion(followId)
+        } catch {
+          continue // transient — keep following
+        }
+        if (stopped) return
+        if (fresh.generation) {
+          const { reply, document } = fresh.generation
+          setStreaming({ reply, document })
+          continue
+        }
+        if (fresh.generationError) setError(fresh.generationError)
+        applyMotion(fresh) // clears `generation`, which ends this effect
+        return
+      }
+    })()
+    return () => {
+      stopped = true
+      setResumeKind(null)
+      setStreaming(null)
+    }
+  }, [followId, followKind, applyMotion])
 
   const signup = useCallback(
     async (email: string, password: string) => {
@@ -384,6 +437,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         try {
           const fresh = await api.getMotion(motionId)
           applyMotion(fresh)
+          // Still generating: the follow effect picks it up from here.
+          if (fresh.generation) {
+            setError(null)
+            return true
+          }
           // If the turn did land, there is nothing left to report.
           if (fresh.messages.some((m) => m.role === 'user' && m.content === content)) {
             setError(null)
@@ -438,6 +496,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       // Stop pressed — no document was generated; nothing to report.
       if (err instanceof ApiError && err.code === 'aborted') return
+      // Connection dropped: the server carries on, so re-sync and follow it.
+      if (err instanceof ApiError && err.status === 0) {
+        try {
+          applyMotion(await api.getMotion(motionId))
+          return
+        } catch {
+          /* fall through to the error */
+        }
+      }
       if (err instanceof ApiError) setError(err.message)
       else setError('Something went wrong.')
     } finally {
@@ -548,8 +615,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     removeKey,
     streaming,
     loadingMotion,
-    sending,
-    advancing,
+    sending: sending || resumeKind === 'turn',
+    advancing: advancing || resumeKind === 'advance',
     error,
     clearError,
   }

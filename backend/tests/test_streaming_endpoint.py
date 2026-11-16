@@ -172,3 +172,23 @@ def test_streaming_advance_moves_to_the_next_stage(keyed_client, motion, fake_st
 
     assert frames[-1][0] == "done"
     assert frames[-1][1]["motion"]["currentStage"] == 2
+
+
+def test_advance_generates_a_stage_that_was_switched_to_but_never_generated(
+    keyed_client, motion, fake_stream, monkeypatch
+):
+    """Older "move to stage 2" only flipped the stage number; Advance fills it in."""
+    drain(
+        keyed_client.post(
+            f"/api/motions/{motion['id']}/messages/stream", json={"content": "THW x, OG"}
+        )
+    )
+    keyed_client.patch(f"/api/motions/{motion['id']}", json={"currentStage": 2})
+    monkeypatch.setattr(llm, "supports_streaming", lambda provider, *, web_search: True)
+
+    frames = drain(keyed_client.post(f"/api/motions/{motion['id']}/advance/stream", json={}))
+
+    assert frames[-1][0] == "done"
+    done = frames[-1][1]["motion"]
+    assert done["currentStage"] == 2  # filled in, not skipped to 3
+    assert done["stageDocs"]["2"] == "# Stage 1\n\n* one"

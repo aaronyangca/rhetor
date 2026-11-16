@@ -6,6 +6,7 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  CircleHelp,
   PanelLeft,
   Pencil,
   Plus,
@@ -22,8 +23,11 @@ import { Wordmark } from '../components/Logo'
 import { SidebarMotionItem } from '../components/SidebarMotionItem'
 import { GhostIconButton } from '../components/Button'
 import { StageIndicator } from '../components/StageIndicator'
+import { ThinkingDots } from '../components/ThinkingDots'
 import { ChatBubble } from '../components/ChatBubble'
 import { DocumentView } from '../components/DocumentView'
+import { Guide } from '../components/Guide'
+import { hasSeenGuide, markGuideSeen } from '../lib/guideStorage'
 import {
   POSITION_LABELS,
   PROVIDER_LABELS,
@@ -256,7 +260,15 @@ function MotionModelPicker({ motion }: { motion: Motion }) {
   )
 }
 
-function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+function Sidebar({
+  collapsed,
+  onToggle,
+  onOpenGuide,
+}: {
+  collapsed: boolean
+  onToggle: () => void
+  onOpenGuide: () => void
+}) {
   const { motions, activeMotionId, selectMotion, deleteMotion, user } = useApp()
   const groups = collapsed ? [] : groupMotions(motions)
 
@@ -281,6 +293,14 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
           <PanelLeft size={17} strokeWidth={1.5} />
         </GhostIconButton>
       </div>
+
+      {collapsed && (
+        <div className="flex justify-center pt-2">
+          <GhostIconButton onClick={onOpenGuide} aria-label="Open guide" title="Guide">
+            <CircleHelp size={17} strokeWidth={1.5} />
+          </GhostIconButton>
+        </div>
+      )}
 
       {!collapsed && (
         <>
@@ -332,12 +352,20 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
 
           <div className="flex shrink-0 items-center justify-between gap-[10px] overflow-hidden border-t border-divider px-5 py-3 text-[13px] whitespace-nowrap text-ink-70">
             <span className="truncate">{user?.email}</span>
-            <Link
-              to="/app/settings"
-              className="flex-none text-accent-700 hover:text-accent-800 hover:underline"
-            >
-              Settings
-            </Link>
+            <div className="flex flex-none items-center gap-3">
+              <button
+                onClick={onOpenGuide}
+                className="text-accent-700 hover:text-accent-800 hover:underline"
+              >
+                Guide
+              </button>
+              <Link
+                to="/app/settings"
+                className="text-accent-700 hover:text-accent-800 hover:underline"
+              >
+                Settings
+              </Link>
+            </div>
           </div>
         </>
       )}
@@ -366,7 +394,7 @@ function TopBar({ motion }: { motion: Motion }) {
   // margin-right:auto pushes the readout and advance button right (SPEC.md 0.2).
   // With no position yet, the edit button carries the auto margin instead.
   return (
-    <header className="flex h-[52px] shrink-0 flex-nowrap items-center gap-[10px] overflow-hidden border-b border-divider px-4">
+    <header className="flex h-[52px] shrink-0 flex-nowrap items-center gap-[10px] overflow-hidden border-b border-divider bg-sidebar-bg px-4">
       {editing ? (
         <input
           autoFocus
@@ -495,7 +523,8 @@ function StageHelpNote({ stage, onDismiss }: { stage: Stage; onDismiss: () => vo
 const CHAT_STAGES: Stage[] = [1, 2, 3]
 
 function ChatColumn({ motion }: { motion: Motion }) {
-  const { sendMessage, sending, advancing, streaming, goToStage, cancelGeneration } = useApp()
+  const { sendMessage, sending, advancing, streaming, goToStage, advanceStage, cancelGeneration } =
+    useApp()
   const [draft, setDraft] = useState('')
   const [help, setHelp] = useState<Stage | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
@@ -547,7 +576,11 @@ function ChatColumn({ motion }: { motion: Motion }) {
       }
       setDraft('')
       setNotice(null)
-      await goToStage(cmd.to)
+      // Moving on generates the next stage straight away — the same as the
+      // Advance button — so the user refines its output rather than having to
+      // prompt it into existence.
+      scroll.stick()
+      await advanceStage()
       return
     }
 
@@ -594,7 +627,7 @@ function ChatColumn({ motion }: { motion: Motion }) {
               )}
               {isCurrent && busy && !streaming?.reply && (
                 <p className="text-[13px] text-muted-foreground italic">
-                  {advancing ? 'Generating the next stage…' : 'Rhetor is working…'}
+                  <ThinkingDots>{advancing ? 'Generating the next stage' : 'Rhetor is working'}</ThinkingDots>
                 </p>
               )}
               {isCurrent && help && (
@@ -612,7 +645,7 @@ function ChatColumn({ motion }: { motion: Motion }) {
 
       <div className="px-4 pt-2 pb-4">
         {notice && <p className="mb-2 px-1 text-[12.5px] text-accent-800">{notice}</p>}
-        <div className="flex items-center gap-[6px] rounded-lg border border-ink-20 bg-card py-[7px] pr-2 pl-[14px]">
+        <div className="flex items-center gap-[6px] rounded-lg border border-ink-20 bg-card py-[7px] pr-2 pl-[14px] focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent">
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -686,7 +719,7 @@ function DocToolbar({ motion, markdown }: { motion: Motion; markdown: string }) 
 }
 
 function DocumentColumn({ motion }: { motion: Motion }) {
-  const { advancing, streaming, goToStage } = useApp()
+  const { advancing, streaming, goToStage, advanceStage } = useApp()
   const stage = motion.currentStage
   const stored = motion.stageDocs[String(stage) as '1' | '2' | '3']
 
@@ -714,10 +747,19 @@ function DocumentColumn({ motion }: { motion: Motion }) {
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-2 px-10 text-center text-sm text-muted-foreground">
             {advancing || streaming ? (
-              'Generating this stage’s document…'
+              'Generating this stage’s document'
             ) : (
               <>
-                <p>Stage {stage} hasn’t been generated yet — send a message to start it.</p>
+                {prevDone ? (
+                  <button
+                    onClick={() => void advanceStage()}
+                    className="flex min-h-[32px] items-center gap-[7px] rounded-md border border-accent-500 px-[13px] text-[13.5px] text-accent-800 transition-colors hover:bg-accent-100"
+                  >
+                    Generate Stage {stage} <ArrowRight size={16} />
+                  </button>
+                ) : (
+                  <p>Stage {stage} hasn’t been generated yet — send a message to start it.</p>
+                )}
                 {prevDone && (
                   <p>
                     Your Stage {stage - 1} work is saved.{' '}
@@ -773,7 +815,9 @@ function SplitArea({ motion }: { motion: Motion }) {
 }
 
 export function Workspace() {
-  const { activeMotion, activeMotionId, loadingMotion } = useApp()
+  const { activeMotion, activeMotionId, loadingMotion, user, connectedProviders } = useApp()
+  // First visit opens the guide on its own; after that it's the sidebar's Guide button.
+  const [guideOpen, setGuideOpen] = useState(() => (user ? !hasSeenGuide(user.id) : false))
   const [sidebarOpen, setSidebarOpen] = useState(
     () => localStorage.getItem('rhetor.sidebar') !== 'closed',
   )
@@ -783,14 +827,23 @@ export function Workspace() {
     localStorage.setItem('rhetor.sidebar', open ? 'open' : 'closed')
   }
 
+  function closeGuide() {
+    setGuideOpen(false)
+    if (user) markGuideSeen(user.id)
+  }
+
   const pending = !activeMotion && (loadingMotion || Boolean(activeMotionId))
 
   return (
     <div
-      className="grid h-screen overflow-hidden bg-background transition-[grid-template-columns] duration-[220ms] [transition-timing-function:ease]"
+      className="grid h-screen overflow-hidden bg-workspace-bg transition-[grid-template-columns] duration-[220ms] [transition-timing-function:ease]"
       style={{ gridTemplateColumns: `${sidebarOpen ? '230px' : '48px'} minmax(0,1fr)` }}
     >
-      <Sidebar collapsed={!sidebarOpen} onToggle={() => toggleSidebar(!sidebarOpen)} />
+      <Sidebar
+        collapsed={!sidebarOpen}
+        onToggle={() => toggleSidebar(!sidebarOpen)}
+        onOpenGuide={() => setGuideOpen(true)}
+      />
 
       <main className="flex min-h-0 min-w-0 flex-col">
         {activeMotion ? (
@@ -811,12 +864,20 @@ export function Workspace() {
                   <p className="text-sm text-muted-foreground">
                     Select or create a motion to get started.
                   </p>
+                  <button
+                    onClick={() => setGuideOpen(true)}
+                    className="text-sm text-accent-700 hover:text-accent-800 hover:underline"
+                  >
+                    New to Rhetor? Take the guide
+                  </button>
                 </>
               )}
             </div>
           </>
         )}
       </main>
+
+      {guideOpen && <Guide hasKey={connectedProviders.length > 0} onClose={closeGuide} />}
     </div>
   )
 }
