@@ -13,7 +13,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, redirect, request, send_from_directory
 from werkzeug.exceptions import NotFound
 
 from .config import REPO_ROOT, Config
@@ -185,6 +185,16 @@ def _register_frontend(app: Flask) -> None:
     def frontend(path: str):
         if path.startswith(("api/", "admin/")):
             raise NotFound()
+
+        # Under `flask --debug` (i.e. `make dev`), never serve webapp/dist: it
+        # is whatever was last built, often weeks stale, and opening the API
+        # port by mistake then shows old UI that looks like a fix didn't land.
+        # Send the browser to the live Vite dev server instead. Set
+        # SERVE_BUILT_FRONTEND=1 to test the production build through Flask.
+        if app.debug and not os.environ.get("SERVE_BUILT_FRONTEND"):
+            vite = os.environ.get("VITE_DEV_URL", "http://localhost:5173").rstrip("/")
+            query = request.query_string.decode()
+            return redirect(f"{vite}/{path}" + (f"?{query}" if query else ""), 307)
 
         if not FRONTEND_DIST.exists():
             return (

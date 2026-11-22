@@ -8,6 +8,7 @@ import { AccountSettings } from './pages/AccountSettings'
 import { Privacy } from './pages/Privacy'
 import { HowItWorks } from './pages/HowItWorks'
 import { Wordmark } from './components/Logo'
+import { ForgotPassword, ResetPassword } from './pages/PasswordReset'
 
 function Loading() {
   return (
@@ -59,6 +60,17 @@ export default function App() {
               </RedirectIfAuthed>
             }
           />
+          <Route
+            path="/forgot-password"
+            element={
+              <RedirectIfAuthed>
+                <ForgotPassword />
+              </RedirectIfAuthed>
+            }
+          />
+          {/* Not guarded: a signed-in user following an emailed link should
+              still be able to reset. */}
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/app"
             element={

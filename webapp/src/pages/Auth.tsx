@@ -61,7 +61,6 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
             <FormInput
               label="Email"
               type="email"
-              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
@@ -70,12 +69,20 @@ export function Auth({ mode }: { mode: 'signup' | 'login' }) {
             <FormInput
               label="Password"
               type="password"
-              placeholder="••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete={isSignup ? 'new-password' : 'current-password'}
               required
             />
+            {!isSignup && (
+              <Link
+                to="/forgot-password"
+                state={{ email }}
+                className="-mt-1 self-end text-[13px] text-accent-700 hover:text-accent-800 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            )}
           </div>
 
           {error && (

@@ -40,6 +40,20 @@ class Config:
     GEMINI_MODEL = os.environ.get("GEMINI_MODEL")
     LLM_MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", "16000"))
 
+    # Where links in emails point (password reset). Must be set in production;
+    # never derived from the request, since a spoofed Host/Origin header would
+    # then let an attacker mail a victim a valid reset link to their own site.
+    FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    PASSWORD_RESET_MAX_AGE = int(os.environ.get("PASSWORD_RESET_MAX_AGE", "3600"))
+
+    # Outgoing email. With no SMTP_HOST, mail is not sent: it is logged to the
+    # server console instead (see app/mailer.py), which is enough for local dev.
+    SMTP_HOST = os.environ.get("SMTP_HOST", "")
+    SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
+    SMTP_USERNAME = os.environ.get("SMTP_USERNAME", "")
+    SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD", "")
+    MAIL_FROM = os.environ.get("MAIL_FROM", "Rhetor <no-reply@localhost>")
+
 
 class TestConfig(Config):
     TESTING = True

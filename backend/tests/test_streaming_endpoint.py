@@ -192,3 +192,36 @@ def test_advance_generates_a_stage_that_was_switched_to_but_never_generated(
     done = frames[-1][1]["motion"]
     assert done["currentStage"] == 2  # filled in, not skipped to 3
     assert done["stageDocs"]["2"] == "# Stage 1\n\n* one"
+
+
+def test_advancing_carries_the_debaters_earlier_messages(
+    keyed_client, motion, fake_stream, monkeypatch
+):
+    """Stage 1's chat isn't part of Stage 2's thread, but what the debater
+    asked for there must still reach the model."""
+    drain(
+        keyed_client.post(
+            f"/api/motions/{motion['id']}/messages/stream",
+            json={"content": "THW ban private schools, OG.\nRun the autonomy angle"},
+        )
+    )
+
+    seen = {}
+    real = llm.stream_generation
+
+    def capture(**kwargs):
+        seen.update(kwargs)
+        yield from real(**kwargs)
+
+    monkeypatch.setattr(llm, "stream_generation", capture)
+    monkeypatch.setattr(llm, "supports_streaming", lambda provider, *, web_search: True)
+    drain(keyed_client.post(f"/api/motions/{motion['id']}/advance/stream", json={}))
+
+    system = seen["system"]
+    assert "## What the debater said in earlier stages" in system
+    assert "> Run the autonomy angle" in system
+    # Rhetor's own Stage 1 replies are not carried over.
+    assert "Here you go." not in system.split("## What the debater said")[1]
+    # The notes sit before the turn instructions, after the Stage 1 document.
+    assert system.index("## Stage 1 output (final)") < system.index("## What the debater said")
+    assert system.index("## What the debater said") < system.index("## This turn")

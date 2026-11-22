@@ -120,6 +120,27 @@ body {
   }
 }
 
+/* Form fields (FormInput). Focus ring on the field itself, following its
+   rounded corners. Browsers paint autofilled / password-manager-previewed
+   inputs with their own (often blue or yellow) background that CSS cannot
+   set directly; an inset shadow the size of the field paints over it in the
+   card colour, and the long transition stops Chrome flashing its colour
+   first. */
+.form-field:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.form-field:-webkit-autofill,
+.form-field:-webkit-autofill:hover,
+.form-field:-webkit-autofill:focus,
+.form-field:autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-card) inset;
+  box-shadow: 0 0 0 1000px var(--color-card) inset;
+  -webkit-text-fill-color: var(--color-foreground);
+  caret-color: var(--color-foreground);
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
 ::selection {
   background: var(--color-accent-200);
   color: var(--color-foreground);

@@ -34,6 +34,8 @@ interface AppState {
   signup: (email: string, password: string) => Promise<void>
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  /** Redeem an emailed reset link; signs the user in on success. */
+  resetPassword: (token: string, password: string) => Promise<void>
 
   motions: MotionSummary[]
   activeMotion: Motion | null
@@ -291,6 +293,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     setUser(await api.login(email, password))
+  }, [])
+
+  const resetPassword = useCallback(async (token: string, password: string) => {
+    setUser(await api.resetPassword(token, password))
   }, [])
 
   const logout = useCallback(async () => {
@@ -596,6 +602,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     signup,
     login,
     logout,
+    resetPassword,
     motions,
     activeMotion,
     activeMotionId,

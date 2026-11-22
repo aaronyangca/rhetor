@@ -110,6 +110,9 @@ def turn_context(motion: Motion, stage: int) -> dict:
     first_turn = not motion.is_started
 
     system = system_prompt(stage, motion_text=motion.motion_text, position=motion.position)
+    notes = _debater_notes(motion, stage)
+    if notes:
+        system += "\n\n---\n\n" + notes
     system += "\n\n---\n\n" + (
         FIRST_TURN_INSTRUCTIONS if first_turn else _document_context(motion, stage)
     )
@@ -140,10 +143,11 @@ def advance_context(motion: Motion, to_stage: int) -> dict:
     previous = motion.document(to_stage - 1) or ""
 
     system = system_prompt(to_stage, motion_text=motion.motion_text, position=motion.position)
-    system += (
-        f"\n\n---\n\n## Stage {to_stage - 1} output (final)\n\n{previous}"
-        f"\n\n---\n\n{ADVANCE_INSTRUCTIONS}"
-    )
+    system += f"\n\n---\n\n## Stage {to_stage - 1} output (final)\n\n{previous}"
+    notes = _debater_notes(motion, to_stage)
+    if notes:
+        system += "\n\n---\n\n" + notes
+    system += f"\n\n---\n\n{ADVANCE_INSTRUCTIONS}"
 
     history = _history_for_stage(motion, to_stage)
     if not history:
@@ -285,6 +289,51 @@ def stream_generation(
 
         obs.update(output=result.raw)
         yield "", "", result
+
+
+#: Cap on carried-over debater notes. Generous — debaters' messages are short —
+#: but bounded so a very long earlier chat can't crowd out the documents.
+DEBATER_NOTES_MAX_CHARS = 12000
+
+
+def _debater_notes(motion: Motion, stage: int) -> str:
+    """The debater's own messages from every stage before `stage`.
+
+    Each stage keeps its own chat thread, and only the previous stage's
+    *document* carries forward on its own. Anything the debater asked for that
+    the document didn't capture — an angle to run, one to avoid, a framing
+    preference — would otherwise be lost at each stage boundary. Only their
+    messages are carried, not Rhetor's replies: the replies mostly restate what
+    is already in the document.
+    """
+    sections: list[str] = []
+    for earlier in range(1, stage):
+        said = [
+            m.content.strip()
+            for m in motion.messages_for_stage(earlier)
+            if m.role == "user" and m.content.strip()
+        ]
+        if said:
+            quoted = "\n\n".join(
+                "\n".join(f"> {line}" for line in text.splitlines()) for text in said
+            )
+            sections.append(f"### Stage {earlier}\n\n{quoted}")
+    if not sections:
+        return ""
+
+    body = "\n\n".join(sections)
+    if len(body) > DEBATER_NOTES_MAX_CHARS:
+        # Keep the most recent material; it is the most likely to still apply.
+        body = "[…earlier messages omitted…]\n\n" + body[-DEBATER_NOTES_MAX_CHARS:]
+
+    return (
+        "## What the debater said in earlier stages\n\n"
+        "Their own messages from earlier stages' chats, oldest first. These carry "
+        "their intentions — angles to run or avoid, framing, priorities — which "
+        "the documents may not fully reflect. Honour them wherever they still "
+        "apply to this stage; where two conflict, the later one wins.\n\n"
+        f"{body}"
+    )
 
 
 def _document_context(motion: Motion, stage: int) -> str:

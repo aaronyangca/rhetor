@@ -176,6 +176,12 @@ export const api = {
 
   logout: () => request<void>('/auth/logout', { method: 'POST' }),
 
+  forgotPassword: (email: string) =>
+    request<{ ok: true }>('/auth/password/forgot', { method: 'POST', body: json({ email }) }),
+
+  resetPassword: (token: string, password: string) =>
+    request<User>('/auth/password/reset', { method: 'POST', body: json({ token, password }) }),
+
   // --- account ------------------------------------------------------------
   getKeys: () => request<ApiKeys>('/account/keys'),
 
